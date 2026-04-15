@@ -398,6 +398,28 @@ select {
 select option { background: var(--black); color: var(--white); }
 textarea { resize: none; min-height: 100px; }
 
+/* cv upload */
+.file-upload-label {
+  display: flex; align-items: center; gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 0;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  color: rgba(245,245,243,0.25);
+  font-size: 0.95rem; font-weight: 300;
+}
+.file-upload-label:hover { border-bottom-color: var(--white); }
+.file-upload-label.has-file { color: var(--white); }
+.file-upload-label span.icon {
+  font-size: 0.75rem; color: var(--gray);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.6rem;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  white-space: nowrap;
+}
+input[type="file"] { display: none; }
+
 .form-submit {
   margin-top: 1rem;
   display: flex; gap: 1.5rem; align-items: center;
@@ -530,7 +552,7 @@ footer {
 <!-- ── HERO ── -->
 <section id="hero">
   <div class="hero-left">
-    <p class="hero-eyebrow">Batch 01 — Opens May 2026</p>
+    <p class="hero-eyebrow">Batch S26 — Opens June 2026</p>
     <h1 class="hero-h1">
       12 Seats.<br>
       <em>6 Months.</em><br>
@@ -703,7 +725,7 @@ footer {
       <span style="display:block;width:32px;height:1px;background:rgba(13,13,13,0.3);margin-right:1.5rem"></span>
       Cohort Timeline
     </div>
-    <h2 style="color:var(--black);margin-bottom:4rem;">Batch 01 —<br><em>What to expect</em></h2>
+    <h2 style="color:var(--black);margin-bottom:4rem;">Batch S26 —<br><em>What to expect</em></h2>
     <div class="program-timeline" style="--border:rgba(13,13,13,0.1)">
       <div class="timeline-line" style="background:rgba(13,13,13,0.1)"></div>
 
@@ -802,17 +824,17 @@ footer {
   <div class="section-label">Application</div>
   <div class="apply-grid">
     <div class="apply-left reveal">
-      <h2>Apply to<br><em>Batch 01</em></h2>
+      <h2>Apply to<br><em>Batch S26</em></h2>
       <p>12 seats. One cohort. Applications are reviewed on a rolling basis — the sooner you apply, the better.</p>
       <p>We don't care about your GPA. We care about what you've built, who knows you, and whether you can make things happen.</p>
       <div class="apply-meta">
         <div class="apply-meta-row">
           <span class="meta-key">Opens</span>
-          <span class="meta-val">May 1, 2026</span>
+          <span class="meta-val">June 1, 2026</span>
         </div>
         <div class="apply-meta-row">
           <span class="meta-key">Duration</span>
-          <span class="meta-val">8 months (Batch 01)</span>
+          <span class="meta-val">8 months (Batch S26)</span>
         </div>
         <div class="apply-meta-row">
           <span class="meta-key">Time</span>
@@ -823,6 +845,7 @@ footer {
           <span class="meta-val">12 globally</span>
         </div>
       </div>
+      <p style="margin-top:1.5rem;font-size:0.85rem;color:var(--gray);line-height:1.7;">All promising candidates will be invited for a personal interview.</p>
     </div>
 
     <div>
@@ -893,25 +916,36 @@ footer {
           <label for="linkedin">LinkedIn URL</label>
           <input type="url" id="linkedin" placeholder="linkedin.com/in/yourname">
         </div>
+
         <div class="form-group">
-          <label for="built">What have you built or started?</label>
-          <textarea id="built" placeholder="Tell us about a project, company, or thing you shipped — even if it failed."></textarea>
+          <label for="languages">Languages spoken</label>
+          <input type="text" id="languages" placeholder="e.g. English, German, Mandarin">
         </div>
+
         <div class="form-group">
-          <label for="why">Why HN12?</label>
-          <textarea id="why" placeholder="What makes you the right person for one of these 12 seats?"></textarea>
+          <label>CV / Résumé (PDF)</label>
+          <label class="file-upload-label" id="cvLabel" for="cvFile">
+            <span class="icon">↑ Upload</span>
+            <span id="cvFileName">No file chosen</span>
+          </label>
+          <input type="file" id="cvFile" accept=".pdf,.doc,.docx">
+        </div>
+
+        <div class="form-group">
+          <label>Why you? — Video (60–90 sec)</label>
+          <label class="file-upload-label" id="videoLabel" for="videoFile">
+            <span class="icon">↑ Upload</span>
+            <span id="videoFileName">No file chosen</span>
+          </label>
+          <input type="file" id="videoFile" accept="video/*">
+          <p style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;color:var(--gray);margin-top:0.5rem;line-height:1.7;">
+            60–90 sec video explaining why you are made for this role. You are free to decide what to include. Seen by the selection committee only.
+          </p>
         </div>
 
         <div class="form-submit">
           <button class="btn-submit" onclick="submitForm()">Submit Application</button>
-          <p class="form-note">Or complete the full<br>30-question form below.</p>
         </div>
-
-        <div class="form-or">or</div>
-
-        <a href="https://forms.gle/R25e9jNiurL7j9s5A" target="_blank" class="btn-google-form">
-          Open Full Application Form ↗
-        </a>
       </div>
 
       <div class="form-success" id="formSuccess">
@@ -925,12 +959,37 @@ footer {
 
 <!-- ── FOOTER ── -->
 <footer>
-  <span class="footer-word">HN12 — Batch 01 — 2026</span>
+  <span class="footer-word">HN12 — Batch S26 — 2026</span>
   <span class="footer-tagline">"Every network that matters started with twelve."</span>
   <span class="footer-word">Hack-Nation UG · München</span>
 </footer>
 
 <script>
+// ── CV UPLOAD LABEL ──
+document.getElementById('cvFile').addEventListener('change', function() {
+  const label = document.getElementById('cvLabel');
+  const nameEl = document.getElementById('cvFileName');
+  if (this.files && this.files[0]) {
+    nameEl.textContent = this.files[0].name;
+    label.classList.add('has-file');
+  } else {
+    nameEl.textContent = 'No file chosen';
+    label.classList.remove('has-file');
+  }
+});
+
+document.getElementById('videoFile').addEventListener('change', function() {
+  const label = document.getElementById('videoLabel');
+  const nameEl = document.getElementById('videoFileName');
+  if (this.files && this.files[0]) {
+    nameEl.textContent = this.files[0].name;
+    label.classList.add('has-file');
+  } else {
+    nameEl.textContent = 'No file chosen';
+    label.classList.remove('has-file');
+  }
+});
+
 // ── CURSOR ──
 const cursor = document.getElementById('cursor');
 document.addEventListener('mousemove', e => {
