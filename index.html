@@ -99,18 +99,16 @@ nav {
   position: relative;
   overflow: hidden;
 }
-/* combined grid + vignette in one layer */
-#hero::before {
-  content: '';
+/* canvas handles the hero background visuals */
+#hero::before { display: none; }
+#hero::after  { display: none; }
+
+#heroCanvas {
   position: absolute; inset: 0;
-  background-image:
-    radial-gradient(ellipse at 50% 42%, transparent 48%, rgba(13,13,13,0.62) 100%),
-    linear-gradient(rgba(245,245,243,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245,245,243,0.015) 1px, transparent 1px);
-  background-size: 100% 100%, 72px 72px, 72px 72px;
+  width: 100%; height: 100%;
   pointer-events: none;
+  z-index: 0;
 }
-#hero::after { display: none; }
 
 .hero-inner {
   position: relative; z-index: 1;
@@ -750,6 +748,7 @@ footer {
 
 <!-- ─────────────────── HERO ─────────────────── -->
 <section id="hero">
+  <canvas id="heroCanvas"></canvas>
   <div class="hero-inner">
     <div class="hero-wordmark">
       <span class="wm-hn">HN</span><span class="wm-12">12</span>
@@ -1189,6 +1188,272 @@ const revealObs = new IntersectionObserver(entries => {
 }, { threshold: 0.07 });
 
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ── HERO CANVAS ANIMATION ──
+(function () {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, cx, cy, dpr;
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    W = canvas.offsetWidth;
+    H = canvas.offsetHeight;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cx = W / 2;
+    cy = H / 2;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); reset(); });
+
+  let startTime = null;
+  let particles  = [];
+  let nodes      = [];
+  let edges      = [];
+  let trailPoints = [];
+  let star = { x: -100, y: 0, active: true, hit: false, hitTime: 0 };
+
+  const UNIVERSITIES = [
+    'Harvard', 'MIT', 'Stanford', 'Oxford', 'Cambridge',
+    'Berkeley', 'Columbia', 'Princeton', 'Imperial', 'Carnegie Mellon',
+    'ETH Zurich', 'TUM', 'Caltech', 'NYU', 'UCLA',
+    'EPFL', 'Technion', 'Georgia Tech', 'U Toronto'
+  ];
+
+  function shuffled(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function generateNodes() {
+    nodes = []; edges = [];
+    const names   = shuffled(UNIVERSITIES).slice(0, 12);
+    const safeW   = Math.min(W * 0.26, 300);
+    const safeH   = Math.min(H * 0.36, 280);
+    const margin  = 52;
+    const minGap  = Math.min(W, H) * 0.14; // minimum distance between nodes
+
+    for (let i = 0; i < 12; i++) {
+      let tx, ty, attempts = 0;
+      do {
+        tx = margin + Math.random() * (W - margin * 2);
+        ty = margin + Math.random() * (H - margin * 2);
+        attempts++;
+        // reject if inside text safe zone
+        if (Math.abs(tx - cx) < safeW && Math.abs(ty - cy) < safeH) continue;
+        // reject if too close to an already placed node
+        const tooClose = nodes.some(n => {
+          const dx = n.tx - tx, dy = n.ty - ty;
+          return Math.sqrt(dx*dx + dy*dy) < minGap;
+        });
+        if (!tooClose) break;
+      } while (attempts < 80);
+
+      nodes.push({
+        x: cx, y: cy,
+        tx, ty,
+        label: names[i],
+        r: 1.8 + Math.random() * 2,
+        opacity: 0,
+        delay: i * 0.04,
+        arrived: false
+      });
+    }
+
+    // connect every node to every other node (complete graph)
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        edges.push({ a: i, b: j, opacity: 0 });
+      }
+    }
+  }
+
+  function spawnBurst() {
+    particles = [];
+    for (let i = 0; i < 36; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const s = 1 + Math.random() * 3.5;
+      particles.push({
+        x: cx, y: cy,
+        vx: Math.cos(a) * s, vy: Math.sin(a) * s,
+        life: 1, decay: 0.009 + Math.random() * 0.014,
+        r: 0.5 + Math.random() * 1.5
+      });
+    }
+  }
+
+  function reset() {
+    startTime = null;
+    star = { x: -100, y: 0, active: true, hit: false, hitTime: 0 };
+    trailPoints = []; particles = [];
+    generateNodes();
+  }
+
+  generateNodes();
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+  function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
+
+  function draw(t) {
+    if (!startTime) startTime = t;
+    const elapsed = (t - startTime) / 1000;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Phase 1 — shooting star (0–1.2 s)
+    const starDur = 1.2;
+    if (star.active && elapsed < starDur) {
+      const p = easeOutQuint(elapsed / starDur);
+      star.x = lerp(-80, cx, p);
+      star.y = cy;
+      trailPoints.push({ x: star.x, y: star.y, birth: elapsed });
+
+      for (const tp of trailPoints) {
+        const age  = elapsed - tp.birth;
+        const fade = Math.max(0, 1 - age / 0.55);
+        if (fade <= 0) continue;
+        ctx.beginPath();
+        ctx.arc(tp.x, tp.y, fade * 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(245,245,243,${fade * 0.55})`;
+        ctx.fill();
+      }
+
+      const g = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, 14);
+      g.addColorStop(0, 'rgba(245,245,243,0.85)');
+      g.addColorStop(0.3, 'rgba(245,245,243,0.25)');
+      g.addColorStop(1, 'rgba(245,245,243,0)');
+      ctx.beginPath(); ctx.arc(star.x, star.y, 14, 0, Math.PI * 2);
+      ctx.fillStyle = g; ctx.fill();
+      ctx.beginPath(); ctx.arc(star.x, star.y, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#f5f5f3'; ctx.fill();
+    }
+
+    // Phase 2 — impact burst
+    if (elapsed >= starDur && !star.hit) {
+      star.hit = true; star.hitTime = elapsed; star.active = false;
+      spawnBurst();
+    }
+
+    if (star.hit) {
+      const burstAge = elapsed - star.hitTime;
+
+      // fade trail after impact
+      for (const tp of trailPoints) {
+        const fade = Math.max(0, 1 - burstAge / 0.5);
+        if (fade <= 0) continue;
+        ctx.beginPath(); ctx.arc(tp.x, tp.y, 1, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(245,245,243,${fade * 0.25})`; ctx.fill();
+      }
+
+      // burst particles
+      for (const p of particles) {
+        p.x += p.vx; p.y += p.vy;
+        p.vx *= 0.97; p.vy *= 0.97;
+        p.life -= p.decay;
+        if (p.life > 0) {
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(245,245,243,${p.life * 0.45})`; ctx.fill();
+        }
+      }
+
+      // Phase 3 — nodes scatter (starts 0.1 s after impact)
+      const scatterStart = star.hitTime + 0.1;
+      for (const n of nodes) {
+        const ne = elapsed - scatterStart - n.delay;
+        if (ne < 0) continue;
+        const prog  = Math.min(1, ne / 1.1);
+        const eased = easeOutCubic(prog);
+        n.x = lerp(cx, n.tx, eased);
+        n.y = lerp(cy, n.ty, eased);
+        n.opacity = Math.min(1, ne / 0.4);
+
+        const gn = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5);
+        gn.addColorStop(0, `rgba(245,245,243,${n.opacity * 0.12})`);
+        gn.addColorStop(1, 'rgba(245,245,243,0)');
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI * 2);
+        ctx.fillStyle = gn; ctx.fill();
+
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(245,245,243,${n.opacity * 0.75})`; ctx.fill();
+
+        // label — offset away from center, clamped inside canvas
+        const ldx = n.x - cx, ldy = n.y - cy;
+        const llen = Math.sqrt(ldx*ldx + ldy*ldy) || 1;
+        const lox = (ldx / llen) * (n.r + 9);
+        const loy = (ldy / llen) * (n.r + 9);
+        const labelText = n.label.toUpperCase();
+        ctx.font = '400 9px "DM Mono", monospace';
+        ctx.letterSpacing = '0.08em';
+        const alignRight = ldx < 0;
+        const alignBottom = ldy < 0;
+        ctx.textAlign    = alignRight  ? 'right' : 'left';
+        ctx.textBaseline = alignBottom ? 'bottom' : 'top';
+        const tw  = ctx.measureText(labelText).width;
+        const th  = 11;
+        const pad = 6;
+        // raw position
+        let lx = n.x + lox;
+        let ly = n.y + loy;
+        // clamp so text stays inside canvas
+        if (alignRight) {
+          lx = Math.max(lx, tw + pad);
+          lx = Math.min(lx, W - pad);
+        } else {
+          lx = Math.max(lx, pad);
+          lx = Math.min(lx, W - tw - pad);
+        }
+        if (alignBottom) {
+          ly = Math.max(ly, th + pad);
+          ly = Math.min(ly, H - pad);
+        } else {
+          ly = Math.max(ly, pad);
+          ly = Math.min(ly, H - th - pad);
+        }
+        ctx.fillStyle = `rgba(245,245,243,${n.opacity * 0.38})`;
+        ctx.fillText(labelText, lx, ly);
+      }
+
+      // Phase 4 — edges (starts 0.8 s after impact)
+      const edgeStart = star.hitTime + 0.8;
+      edges.forEach((e, i) => {
+        const ee = elapsed - edgeStart - i * 0.025;
+        if (ee < 0) return;
+        const prog = Math.min(1, ee / 1.4);
+        e.opacity = easeOutCubic(prog) * 0.09;
+        const a = nodes[e.a], b = nodes[e.b];
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(lerp(a.x, b.x, easeOutCubic(prog)), lerp(a.y, b.y, easeOutCubic(prog)));
+        ctx.strokeStyle = `rgba(245,245,243,${e.opacity})`;
+        ctx.lineWidth = 1; ctx.stroke();
+      });
+
+      // Phase 5 — idle breathing (after 3.5 s)
+      if (elapsed > star.hitTime + 3.5) {
+        const breathe = Math.sin(elapsed * 0.7) * 0.018;
+        for (const n of nodes) {
+          if (n.opacity <= 0) continue;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(245,245,243,${0.025 + Math.max(0, breathe)})`;
+          ctx.fill();
+        }
+      }
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+})();
 
 // ── TEAM TOGGLE ──
 function toggleTeam(btn) {
