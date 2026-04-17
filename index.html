@@ -148,9 +148,11 @@ nav {
 }
 
 .hero-tagline {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--gray);
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+  font-weight: 200;
+  letter-spacing: 0.04em;
+  color: rgba(245,245,243,0.82);
   margin-bottom: 2.25rem;
   opacity: 0;
   animation: fadeIn 0.7s ease forwards;
@@ -753,9 +755,8 @@ footer {
     <div class="hero-wordmark">
       <span class="wm-hn">HN</span><span class="wm-12">12</span>
     </div>
-    <p class="hero-tagline">A HackNation Fellowship.</p>
-    <p class="hero-value">Help us build the most personal scout program in the world.</p>
-    <p class="hero-desc">A six-month fellowship that puts you at the center of your campus's builder scene — backed by a cohort of eleven peers doing the same at Harvard, MIT, Stanford, Oxford, and ETH.</p>
+    <p class="hero-tagline">Talent & Venture Scout Program</p>
+    <p class="hero-desc">You know your campus better than we ever will. We give you the budget, the network and any needed support. You find exceptional people, enable them and introduce them to our community. On top of that you'll meet 11 peers from the best universities in the world and get to go on an all expenses paid trip with them.</p>
     <div class="hero-cta">
       <a href="#apply" class="btn-primary">Apply Now</a>
     </div>
@@ -1190,9 +1191,15 @@ const revealObs = new IntersectionObserver(entries => {
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
 // ── HERO CANVAS ANIMATION ──
+// Only run on non-touch devices with a real pointer (desktops/laptops)
 (function () {
   const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
+
+  if (!window.matchMedia('(hover: hover) and (min-width: 820px)').matches) {
+    canvas.style.display = 'none';
+    return;
+  }
   const ctx = canvas.getContext('2d');
   let W, H, cx, cy, dpr;
 
