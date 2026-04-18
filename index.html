@@ -16,28 +16,27 @@ html { scroll-behavior: smooth; font-size: 16px; }
   --black: #0d0d0d;
   --white: #f5f5f3;
   --gray: #6e6e6e;
-  --dim: rgba(245,245,243,0.52);
-  --border: rgba(245,245,243,0.09);
+  --dim: rgba(13,13,13,0.5);
+  --border: rgba(13,13,13,0.1);
 }
 
 body {
-  background: var(--black);
-  color: var(--white);
+  background: var(--white);
+  color: var(--black);
   font-family: 'DM Sans', sans-serif;
   font-weight: 300;
   line-height: 1.65;
   overflow-x: hidden;
 }
 
-/* ── CURSOR ──
-   Enabled only when body.has-cursor (non-touch devices) */
+/* ── CURSOR ── */
 #cursor { display: none; }
 body.has-cursor { cursor: none; }
 body.has-cursor #cursor {
   display: block;
   position: fixed;
   width: 8px; height: 8px;
-  background: var(--white);
+  background: var(--black);
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
@@ -47,6 +46,13 @@ body.has-cursor #cursor {
 }
 body.has-cursor #cursor.grow {
   width: 34px; height: 34px;
+  background: rgba(13,13,13,0.06);
+  border: 1px solid rgba(13,13,13,0.28);
+}
+body.has-cursor.hero-active #cursor {
+  background: var(--white);
+}
+body.has-cursor.hero-active #cursor.grow {
   background: rgba(245,245,243,0.06);
   border: 1px solid rgba(245,245,243,0.28);
 }
@@ -65,12 +71,14 @@ nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 1.5rem 3rem;
+  transition: color 0.3s;
 }
 .nav-brand {
   font-family: 'DM Mono', monospace;
   font-size: 0.8rem; font-weight: 400;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--white); text-decoration: none;
+  transition: color 0.3s;
 }
 .nav-links {
   display: flex; gap: 2.5rem; list-style: none; align-items: center;
@@ -79,7 +87,7 @@ nav {
   font-family: 'DM Mono', monospace;
   font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
   color: var(--white); text-decoration: none; opacity: 0.48;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, color 0.3s;
 }
 .nav-links a:hover { opacity: 1; }
 .nav-apply {
@@ -87,11 +95,24 @@ nav {
   color: var(--black) !important;
   padding: 0.45rem 1.15rem;
   opacity: 1 !important;
+  transition: background 0.3s, color 0.3s !important;
+}
+
+/* nav light state (scrolled past hero) */
+nav.nav-light .nav-brand { color: var(--black); }
+nav.nav-light .nav-links a { color: var(--black); }
+nav.nav-light .nav-apply {
+  background: var(--black);
+  color: var(--white) !important;
 }
 
 /* ── HERO ── */
 #hero {
-  min-height: 100vh;
+  --dim: rgba(245,245,243,0.52);
+  --border: rgba(245,245,243,0.09);
+  background: var(--black);
+  color: var(--white);
+  height: 100vh;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   text-align: center;
@@ -99,7 +120,6 @@ nav {
   position: relative;
   overflow: hidden;
 }
-/* canvas handles desktop visuals; mobile gets CSS atmosphere */
 #hero::before { display: none; }
 #hero::after  { display: none; }
 
@@ -151,7 +171,6 @@ nav {
   max-width: 780px;
 }
 
-/* wordmark */
 .hero-wordmark {
   font-size: clamp(5.5rem, 14vw, 14rem);
   font-weight: 200;
@@ -194,17 +213,9 @@ nav {
   animation: fadeIn 0.7s ease forwards;
   animation-delay: 1.75s;
 }
-.hero-value {
-  font-size: clamp(1.1rem, 2.4vw, 1.7rem);
-  font-weight: 200; line-height: 1.3; letter-spacing: -0.01em;
-  margin-bottom: 1.25rem;
-  opacity: 0;
-  animation: fadeUp 0.7s ease forwards;
-  animation-delay: 2s;
-}
 .hero-desc {
   font-size: 0.96rem; font-weight: 300;
-  color: var(--dim); line-height: 1.8;
+  color: rgba(245,245,243,0.52); line-height: 1.8;
   max-width: 600px; margin: 0 auto 2.75rem;
   opacity: 0;
   animation: fadeUp 0.7s ease forwards;
@@ -266,7 +277,7 @@ section { padding: 8rem 3rem; }
 .section-label::before {
   content: '';
   display: block; width: 26px; height: 1px;
-  background: rgba(245,245,243,0.18); flex-shrink: 0;
+  background: rgba(13,13,13,0.18); flex-shrink: 0;
 }
 
 h2 {
@@ -279,36 +290,65 @@ h2 em { font-style: italic; }
 /* ── PROGRAM ── */
 #program { border-top: 1px solid var(--border); }
 
+.program-what {
+  font-size: clamp(1.9rem, 3.8vw, 3rem);
+  font-weight: 200; line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.journey-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.journey-wrap svg {
+  min-width: 640px;
+  display: block;
+}
+
+/* SVG journey animations */
+@keyframes svgFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes cohortGlow {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 1; }
+}
+
+.j-anim { opacity: 0; }
+.journey-wrap.visible .j-anim {
+  animation: svgFadeIn 0.55s ease forwards;
+}
+.journey-wrap.visible .j-d0 { animation-delay: 0s; }
+.journey-wrap.visible .j-d1 { animation-delay: 0.18s; }
+.journey-wrap.visible .j-d2 { animation-delay: 0.34s; }
+.journey-wrap.visible .j-d3 { animation-delay: 0.5s; }
+.journey-wrap.visible .j-d4 { animation-delay: 0.66s; }
+.journey-wrap.visible .j-d5 { animation-delay: 0.82s; }
+.journey-wrap.visible .j-d6 { animation-delay: 1s; }
+
+.journey-wrap.visible .j-cohort {
+  animation: svgFadeIn 0.55s ease 0.66s forwards,
+             cohortGlow 2.8s ease-in-out 2s infinite;
+}
+
+/* Apply box hover */
+.j-apply-link { cursor: pointer; }
+.j-apply-link:hover .j-apply-rect { stroke: rgba(13,13,13,0.55) !important; }
+
 .program-intro {
-  max-width: 680px;
-  margin-bottom: 5rem;
+  max-width: 560px;
+  margin: 4rem auto 0;
+  text-align: center;
 }
-.program-intro h2 { margin-bottom: 1.5rem; line-height: 1.15; }
 .program-intro p {
-  font-size: 1.05rem; color: var(--dim); line-height: 1.85;
-}
-
-.role-list { border-top: 1px solid var(--border); }
-
-.role-item {
-  display: grid;
-  grid-template-columns: 3rem 1fr;
-  gap: 1.5rem;
-  padding: 2.25rem 0;
-  border-bottom: 1px solid var(--border);
-}
-.role-num {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.56rem; letter-spacing: 0.1em;
-  color: var(--gray); padding-top: 0.3rem;
-}
-.role-content h3 {
-  font-size: 1.15rem; font-weight: 300;
-  letter-spacing: -0.01em; margin-bottom: 0.65rem;
-}
-.role-content p {
-  font-size: 0.9rem; color: rgba(245,245,243,0.52);
-  line-height: 1.82; max-width: 540px;
+  font-size: 0.86rem;
+  color: var(--dim);
+  line-height: 1.9;
+  margin-bottom: 0.5rem;
 }
 
 /* ── INCLUDED ── */
@@ -324,7 +364,7 @@ h2 em { font-style: italic; }
   padding: 1.5rem 0 1.5rem 2.1rem;
   border-bottom: 1px solid var(--border);
   font-size: 0.94rem;
-  color: rgba(245,245,243,0.68);
+  color: rgba(13,13,13,0.68);
   line-height: 1.82;
 }
 .included-item:first-child { border-top: 1px solid var(--border); }
@@ -333,7 +373,7 @@ h2 em { font-style: italic; }
   position: absolute; left: 0; top: 1.55rem;
   font-family: 'DM Mono', monospace;
   font-size: 0.56rem;
-  color: rgba(245,245,243,0.18);
+  color: rgba(13,13,13,0.22);
 }
 
 /* ── WHY 12 ── */
@@ -347,32 +387,14 @@ h2 em { font-style: italic; }
   font-size: clamp(1.05rem, 2vw, 1.45rem);
   font-weight: 200; font-style: italic;
   line-height: 1.68; letter-spacing: -0.01em;
-  color: rgba(245,245,243,0.86);
+  color: rgba(13,13,13,0.86);
   margin-bottom: 1rem;
-}
-.quote-attribution {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.58rem; letter-spacing: 0.15em;
-  text-transform: uppercase; color: var(--gray);
 }
 .quote-footnote {
   font-family: 'DM Mono', monospace;
   font-size: 0.54rem; letter-spacing: 0.04em;
-  color: rgba(245,245,243,0.18);
+  color: rgba(13,13,13,0.3);
   margin-top: 0.7rem; line-height: 1.65;
-}
-
-.why-context {
-  max-width: 620px;
-  font-size: 1rem; font-weight: 300;
-  color: var(--dim); line-height: 1.87;
-  margin-bottom: 5rem;
-}
-
-.why-rule {
-  width: 1px; height: 56px;
-  background: var(--border);
-  margin: 0 0 4.5rem;
 }
 
 /* ── WHO ── */
@@ -381,8 +403,8 @@ h2 em { font-style: italic; }
 .who-body {
   max-width: 600px;
   font-size: 1.05rem; font-weight: 300;
-  color: rgba(245,245,243,0.7); line-height: 1.87;
-  margin: 1.5rem 0 4rem;
+  color: rgba(13,13,13,0.65); line-height: 1.87;
+  margin: 0 0 4rem;
 }
 
 .criteria-list {
@@ -399,15 +421,12 @@ h2 em { font-style: italic; }
 }
 .criteria-desc {
   font-size: 0.875rem;
-  color: rgba(245,245,243,0.42);
+  color: rgba(13,13,13,0.48);
   line-height: 1.72;
 }
-.criteria-note {
-  margin-top: 2rem;
-  font-family: 'DM Mono', monospace;
-  font-size: 0.58rem; letter-spacing: 0.08em;
-  color: rgba(245,245,243,0.22); line-height: 1.7;
-}
+
+/* ── NOT FOR ── */
+#not-for { border-top: 1px solid var(--border); }
 
 /* ── UNIVERSITIES ── */
 #universities { border-top: 1px solid var(--border); }
@@ -420,17 +439,17 @@ h2 em { font-style: italic; }
   font-family: 'DM Mono', monospace;
   font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
   padding: 0.58rem 1rem;
-  border: 1px solid var(--border);
-  color: rgba(245,245,243,0.32);
+  border: 1px solid rgba(13,13,13,0.12);
+  color: rgba(13,13,13,0.35);
   transition: color 0.2s, border-color 0.2s;
 }
 .uni-tag.t1 {
-  color: rgba(245,245,243,0.84);
-  border-color: rgba(245,245,243,0.28);
+  color: rgba(13,13,13,0.82);
+  border-color: rgba(13,13,13,0.32);
 }
 .uni-tag:hover {
-  color: var(--white);
-  border-color: rgba(245,245,243,0.44);
+  color: var(--black);
+  border-color: rgba(13,13,13,0.5);
 }
 
 /* ── APPLY ── */
@@ -463,7 +482,7 @@ label {
 input, select, textarea {
   background: transparent;
   border: none; border-bottom: 1px solid var(--border);
-  color: var(--white);
+  color: var(--black);
   font-family: 'DM Sans', sans-serif;
   font-size: 0.93rem; font-weight: 300;
   padding: 0.7rem 0;
@@ -472,18 +491,18 @@ input, select, textarea {
   width: 100%;
   appearance: none; -webkit-appearance: none;
 }
-input::placeholder, textarea::placeholder { color: rgba(245,245,243,0.18); }
-input:focus, select:focus, textarea:focus { border-bottom-color: rgba(245,245,243,0.55); }
-input.err, select.err { border-bottom-color: rgba(245,245,243,0.65); }
+input::placeholder, textarea::placeholder { color: rgba(13,13,13,0.25); }
+input:focus, select:focus, textarea:focus { border-bottom-color: rgba(13,13,13,0.55); }
+input.err, select.err { border-bottom-color: rgba(180,40,40,0.7); }
 
 select {
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23555'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0 center;
   padding-right: 1.2rem;
 }
-select option { background: var(--black); color: var(--white); }
+select option { background: var(--white); color: var(--black); }
 
 textarea { resize: none; min-height: 88px; }
 
@@ -494,11 +513,11 @@ textarea { resize: none; min-height: 88px; }
   padding: 0.7rem 0;
   cursor: pointer;
   transition: border-color 0.2s;
-  color: rgba(245,245,243,0.2);
+  color: rgba(13,13,13,0.28);
   font-size: 0.93rem; font-weight: 300;
 }
-.file-label:hover { border-bottom-color: rgba(245,245,243,0.45); }
-.file-label.has-file { color: var(--white); }
+.file-label:hover { border-bottom-color: rgba(13,13,13,0.45); }
+.file-label.has-file { color: var(--black); }
 .file-icon {
   font-family: 'DM Mono', monospace;
   font-size: 0.56rem; color: var(--gray);
@@ -511,22 +530,22 @@ input[type="file"] { display: none; }
 .file-note {
   font-family: 'DM Mono', monospace;
   font-size: 0.53rem; letter-spacing: 0.04em;
-  color: rgba(245,245,243,0.18); margin-top: 0.4rem;
+  color: rgba(13,13,13,0.3); margin-top: 0.4rem;
   line-height: 1.65;
 }
 
 /* submit */
 .form-submit { margin-top: 0.5rem; }
 .btn-submit {
-  background: var(--white); color: var(--black);
+  background: var(--black); color: var(--white);
   font-family: 'DM Mono', monospace;
   font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
   padding: 1rem 2.5rem;
-  border: 1px solid var(--white);
+  border: 1px solid var(--black);
   cursor: pointer;
   transition: background 0.25s, color 0.25s;
 }
-.btn-submit:hover { background: transparent; color: var(--white); }
+.btn-submit:hover { background: transparent; color: var(--black); }
 
 /* below form */
 .apply-below {
@@ -546,11 +565,11 @@ input[type="file"] { display: none; }
 .meta-v {
   font-family: 'DM Mono', monospace;
   font-size: 0.62rem; letter-spacing: 0.04em;
-  color: rgba(245,245,243,0.5);
+  color: rgba(13,13,13,0.5);
 }
 .apply-rolling {
   margin-top: 1rem;
-  font-size: 0.82rem; color: rgba(245,245,243,0.32);
+  font-size: 0.82rem; color: rgba(13,13,13,0.38);
   line-height: 1.7;
 }
 
@@ -561,7 +580,7 @@ input[type="file"] { display: none; }
 }
 .success-ring {
   width: 44px; height: 44px;
-  border: 1px solid rgba(245,245,243,0.6);
+  border: 1px solid rgba(13,13,13,0.5);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem;
@@ -591,20 +610,20 @@ footer {
 .footer-line {
   font-family: 'DM Mono', monospace;
   font-size: 0.58rem; letter-spacing: 0.1em;
-  color: rgba(245,245,243,0.26);
+  color: rgba(13,13,13,0.35);
 }
 .footer-addr {
   font-family: 'DM Mono', monospace;
   font-size: 0.54rem; letter-spacing: 0.08em;
-  color: rgba(245,245,243,0.16);
+  color: rgba(13,13,13,0.22);
   text-align: right; line-height: 1.82;
 }
 .footer-copy {
   font-family: 'DM Mono', monospace;
   font-size: 0.5rem; letter-spacing: 0.08em;
-  color: rgba(245,245,243,0.1);
+  color: rgba(13,13,13,0.18);
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(245,245,243,0.05);
+  border-top: 1px solid rgba(13,13,13,0.06);
 }
 
 /* ── KEYFRAMES ── */
@@ -663,21 +682,20 @@ footer {
   gap: 2rem 4.5rem;
 }
 .sponsor-item {
-  opacity: 0.42;
+  opacity: 0.45;
   transition: opacity 0.25s;
   line-height: 0;
 }
 .sponsor-item:hover { opacity: 1; }
 .sponsor-item svg {
   height: 28px; width: auto;
-  fill: var(--white);
+  fill: var(--black);
   display: block;
 }
-/* Mozilla uses stroke, not fill */
 .logo-stroke {
   fill: none !important;
-  stroke: var(--white);
-  stroke-width: 6;
+  stroke: var(--black);
+  stroke-width: 2;
 }
 
 /* ── TEAM ── */
@@ -691,7 +709,7 @@ footer {
   width: 100%;
   display: flex; align-items: center; justify-content: space-between;
   padding: 2rem 0;
-  background: none; border: none; color: var(--white);
+  background: none; border: none; color: var(--black);
   cursor: pointer;
   font-family: 'DM Mono', monospace;
   font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
@@ -730,26 +748,19 @@ footer {
   color: var(--gray); text-decoration: none;
   transition: color 0.2s;
 }
-.member-li:hover { color: var(--white); }
+.member-li:hover { color: var(--black); }
 
-/* ── CREDIBILITY / BATCH ── */
-.program-context {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem; letter-spacing: 0.06em;
-  color: rgba(245,245,243,0.3);
-  margin-bottom: 1.75rem; line-height: 1.72;
-}
+/* ── BATCH ── */
 .batch-label {
   font-family: 'DM Mono', monospace;
   font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase;
-  color: rgba(245,245,243,0.28);
+  color: rgba(13,13,13,0.3);
   margin-bottom: 3rem;
 }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 820px) {
   nav { padding: 1.2rem 1.5rem; }
-  /* hide all nav links except the apply button */
   .nav-links li:not(:last-child) { display: none; }
 
   section { padding: 5rem 1.5rem; }
@@ -778,7 +789,7 @@ footer {
   <a href="#" class="nav-brand">HN<sup>12</sup></a>
   <ul class="nav-links">
     <li><a href="#program">Program</a></li>
-    <li><a href="#included">Fellowship</a></li>
+    <li><a href="#who">Who</a></li>
     <li><a href="#universities">Universities</a></li>
     <li><a href="#apply" class="nav-apply">Apply</a></li>
   </ul>
@@ -792,7 +803,7 @@ footer {
       <span class="wm-hn">HN</span><span class="wm-12">12</span>
     </div>
     <p class="hero-tagline">Talent & Venture Scout Program</p>
-    <p class="hero-desc">You know your campus better than we ever will. We give you the budget, the network and any needed support. You find exceptional people, enable them and introduce them to our community. On top of that you'll meet 11 peers from the best universities in the world and get to go on an all expenses paid trip with them.</p>
+    <p class="hero-desc">You know your campus better than we ever will. We give you the budget and a team of eleven peers from the world's best universities. You find exceptional people and introduce them to our community. At the end, we fly you all out on a trip of your choice.</p>
     <div class="hero-cta">
       <a href="#apply" class="btn-primary">Apply Now</a>
     </div>
@@ -805,55 +816,246 @@ footer {
   <div class="section-inner">
     <div class="section-label">The Program</div>
 
-    <div class="program-intro reveal">
-      <h2>Find the most exceptional builders at your university. Give them a reason to show up.</h2>
-      <p class="program-context">HackNation runs one of the largest student hackathons in the world. HN<sup>12</sup> is the human layer underneath it.</p>
-      <p>How you do that is up to you. A founder dinner in someone's apartment. A pitch night in a lecture hall. A co-founder speed-dating event. A weekend build sprint. Whatever works for your campus, your people, your style.</p>
+    <div class="program-what reveal">A 6 month fellowship.</div>
+
+    <div class="journey-wrap reveal">
+      <svg width="100%" viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="rgba(13,13,13,0.4)"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="arr-dim" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="rgba(13,13,13,0.2)"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- Scout label + overline -->
+        <g class="j-anim j-d5">
+          <text x="562" y="22" text-anchor="middle"
+            font-family="DM Mono, monospace" font-size="9.5"
+            letter-spacing="0.18em" fill="rgba(13,13,13,0.3)">SCOUT TALENT THROUGHOUT</text>
+          <line x1="182" y1="34" x2="942" y2="34"
+            stroke="rgba(13,13,13,0.1)" stroke-width="0.75" stroke-dasharray="4 3"/>
+          <!-- drop arrows from overline into boxes -->
+          <line x1="264" y1="34" x2="264" y2="78"
+            stroke="rgba(13,13,13,0.15)" stroke-width="0.75"
+            marker-end="url(#arr-dim)"/>
+          <line x1="450" y1="34" x2="450" y2="78"
+            stroke="rgba(13,13,13,0.15)" stroke-width="0.75"
+            marker-end="url(#arr-dim)"/>
+          <line x1="635" y1="34" x2="635" y2="78"
+            stroke="rgba(13,13,13,0.15)" stroke-width="0.75"
+            marker-end="url(#arr-dim)"/>
+        </g>
+
+        <!-- Apply box (clickable) -->
+        <a href="#apply" class="j-apply-link">
+          <g class="j-anim j-d0">
+            <rect class="j-apply-rect" x="12" y="82" width="148" height="96" rx="10"
+              fill="rgba(13,13,13,0.03)"
+              stroke="rgba(13,13,13,0.22)" stroke-width="1"/>
+            <text x="86" y="118" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
+              fill="rgba(13,13,13,0.88)">Apply</text>
+            <text x="86" y="140" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="10.5"
+              fill="rgba(13,13,13,0.42)">by May 31</text>
+            <text x="86" y="160" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="9"
+              fill="rgba(13,13,13,0.3)">↓ apply form</text>
+          </g>
+        </a>
+
+        <!-- Arrow Apply → Week Zero -->
+        <line class="j-anim j-d0" x1="162" y1="130" x2="182" y2="130"
+          stroke="rgba(13,13,13,0.35)" stroke-width="0.75"
+          marker-end="url(#arr)"/>
+
+        <!-- Week Zero box -->
+        <g class="j-anim j-d1">
+          <rect x="182" y="82" width="162" height="96" rx="10"
+            fill="rgba(13,13,13,0.03)"
+            stroke="rgba(13,13,13,0.18)" stroke-width="1"/>
+          <text x="263" y="118" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
+            fill="rgba(13,13,13,0.88)">Week zero</text>
+          <text x="263" y="140" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10.5"
+            fill="rgba(13,13,13,0.42)">Meet the cohort</text>
+        </g>
+
+        <!-- Arrow Week Zero → 2 Events -->
+        <line class="j-anim j-d1" x1="346" y1="130" x2="366" y2="130"
+          stroke="rgba(13,13,13,0.35)" stroke-width="0.75"
+          marker-end="url(#arr)"/>
+
+        <!-- 2 Events box -->
+        <g class="j-anim j-d2">
+          <rect x="366" y="82" width="168" height="96" rx="10"
+            fill="rgba(13,13,13,0.03)"
+            stroke="rgba(13,13,13,0.2)" stroke-width="1"/>
+          <text x="450" y="118" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
+            fill="rgba(13,13,13,0.88)">2 events</text>
+          <text x="450" y="140" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10.5"
+            fill="rgba(13,13,13,0.42)">Your format · $1k</text>
+        </g>
+
+        <!-- Arrow 2 Events → 2 Hackathons -->
+        <line class="j-anim j-d2" x1="536" y1="130" x2="556" y2="130"
+          stroke="rgba(13,13,13,0.35)" stroke-width="0.75"
+          marker-end="url(#arr)"/>
+
+        <!-- 2 Hackathons box -->
+        <g class="j-anim j-d3">
+          <rect x="556" y="82" width="168" height="96" rx="10"
+            fill="rgba(13,13,13,0.03)"
+            stroke="rgba(13,13,13,0.2)" stroke-width="1"/>
+          <text x="640" y="118" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
+            fill="rgba(13,13,13,0.88)">2 hackathons</text>
+          <text x="640" y="140" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10.5"
+            fill="rgba(13,13,13,0.42)">Fully funded</text>
+        </g>
+
+        <!-- Arrow 2 Hackathons → Cohort Trip -->
+        <line class="j-anim j-d3" x1="726" y1="130" x2="746" y2="130"
+          stroke="rgba(13,13,13,0.35)" stroke-width="0.75"
+          marker-end="url(#arr)"/>
+
+        <!-- Cohort Trip box (larger, animated pulse) -->
+        <g class="j-anim j-cohort">
+          <rect x="746" y="64" width="202" height="132" rx="12"
+            fill="rgba(13,13,13,0.04)"
+            stroke="rgba(13,13,13,0.38)" stroke-width="1.25"/>
+          <text x="847" y="104" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Sans, sans-serif" font-size="16" font-weight="400"
+            fill="rgba(13,13,13,0.9)">Cohort trip</text>
+          <text x="847" y="126" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10.5"
+            fill="rgba(13,13,13,0.45)">3–5 days · your choice</text>
+          <text x="847" y="146" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10.5"
+            fill="rgba(13,13,13,0.45)">$500 + what you raise</text>
+          <text x="847" y="166" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="9.5"
+            fill="rgba(13,13,13,0.28)">✦ final destination</text>
+        </g>
+
+        <!-- Sponsor branch from Week Zero down -->
+        <g class="j-anim j-d4">
+          <path d="M263 178 L263 264"
+            fill="none" stroke="rgba(13,13,13,0.12)"
+            stroke-width="0.75" stroke-dasharray="4 3"
+            marker-end="url(#arr-dim)"/>
+
+          <!-- Sponsors box -->
+          <rect x="178" y="264" width="340" height="72" rx="10"
+            fill="rgba(13,13,13,0.02)"
+            stroke="rgba(13,13,13,0.15)" stroke-width="1"/>
+          <text x="348" y="290" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Sans, sans-serif" font-size="14" font-weight="400"
+            fill="rgba(13,13,13,0.78)">Get sponsors</text>
+          <text x="348" y="312" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10.5"
+            fill="rgba(13,13,13,0.38)">Every $ saved → trip fund</text>
+
+          <!-- Return arrow sponsors → Cohort Trip -->
+          <path d="M518 300 L847 300 L847 196"
+            fill="none" stroke="rgba(13,13,13,0.12)"
+            stroke-width="0.75" stroke-dasharray="4 3"
+            marker-end="url(#arr-dim)"/>
+        </g>
+
+        <!-- Split label -->
+        <text class="j-anim j-d6" x="480" y="350" text-anchor="middle"
+          font-family="DM Mono, monospace" font-size="8.5"
+          fill="rgba(13,13,13,0.22)" letter-spacing="0.04em">
+          Above $1k: 25% team · 15% you · 60% HackNation
+        </text>
+      </svg>
     </div>
 
-    <div class="role-list">
-      <div class="role-item reveal">
-        <span class="role-num">01</span>
-        <div class="role-content">
-          <h3>2 Campus Events</h3>
-          <p>You get $1,000 to make them happen. Food, venue, whatever you need. If you land a local sponsor to cover costs, the savings roll into the cohort trip fund.</p>
-        </div>
+    <div class="program-intro reveal">
+      <p>We're a collective of AI builders.</p>
+      <p>While we try to optimize and automate everything, there is one exception: Relationships.</p>
+      <p>HackNation is about people as much as it is about innovation.</p>
+      <p>Our talent & venture scout program is all about finding the right people and helping them fly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── WHO WE'RE LOOKING FOR ─────────────────── -->
+<section id="who">
+  <div class="section-inner">
+    <div class="section-label">Who we're looking for</div>
+
+    <p class="who-body reveal">Currently enrolled as an undergrad, Master's, or PhD at a target university. You'll likely recognize yourself in most of the below:</p>
+
+    <div class="criteria-list">
+      <div class="criteria-item reveal">
+        <div class="criteria-title">"You know everyone"</div>
+        <div class="criteria-desc">When something happens on your campus, you're either organizing it or you're invited. You're magnetic — people want to be around you.</div>
       </div>
-      <div class="role-item reveal rd1">
-        <span class="role-num">02</span>
-        <div class="role-content">
-          <h3>2 HackNation Hackathons</h3>
-          <p>You lead the hub at your university. Bring your people in, host the teams. Fully funded centrally — you don't pay for anything.</p>
-        </div>
+      <div class="criteria-item reveal rd1">
+        <div class="criteria-title">"You spot talent before it's obvious"</div>
+        <div class="criteria-desc">You recognize potential. You know which classmate is about to drop everything and build something insane. You are creatively ambitious. You go and find ways around walls.</div>
       </div>
-      <div class="role-item reveal rd2">
-        <span class="role-num">03</span>
-        <div class="role-content">
-          <h3>Scouting</h3>
-          <p>You know who's building what on your campus. When you find someone exceptional, you bring them into the community — into the hackathon, into the network, and if they're ready, into HackNation's accelerator.</p>
-        </div>
+      <div class="criteria-item reveal rd2">
+        <div class="criteria-title">"You're a connector"</div>
+        <div class="criteria-desc">You don't just know people — you introduce them to each other. You've already put people together who went on to build things.</div>
+      </div>
+      <div class="criteria-item reveal rd3">
+        <div class="criteria-title">"You care about tech and what it can do"</div>
+        <div class="criteria-desc">Not as a career path. As a genuine fascination.</div>
+      </div>
+      <div class="criteria-item reveal">
+        <div class="criteria-title">"You've shipped before"</div>
+        <div class="criteria-desc">At some point, you built something, launched something, started something. A project, a company, research, a community. We don't care if it failed.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─────────────────── INCLUDED ─────────────────── -->
+<!-- ─────────────────── WHO THIS IS NOT FOR ─────────────────── -->
+<section id="not-for">
+  <div class="section-inner">
+    <div class="section-label">Who this is not for</div>
+
+    <div class="criteria-list">
+      <div class="criteria-item reveal">
+        <div class="criteria-title">"You need a script"</div>
+        <div class="criteria-desc">There is no playbook. You get a budget, a network, and full creative freedom. What you do with it is on you.</div>
+      </div>
+      <div class="criteria-item reveal rd1">
+        <div class="criteria-title">"You want a big name on your CV"</div>
+        <div class="criteria-desc">HackNation is bottom-up. We have incredible sponsors but we're still building our name. You can grow with us — but if you're here to check a box on your CV, we're not the right fit.</div>
+      </div>
+      <div class="criteria-item reveal rd2">
+        <div class="criteria-title">"You don't enjoy leaving your comfort zone"</div>
+        <div class="criteria-desc">You'll host events where you don't know half the room. You'll cold-message founders. You'll put yourself out there in ways that feel uncomfortable at first.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── HOW WE BACK YOU ─────────────────── -->
 <section id="included">
   <div class="section-inner">
-    <div class="section-label">The Fellowship</div>
-
-    <div class="reveal">
-      <h2>A six-month fellowship.<br><em>Here's what it covers.</em></h2>
-    </div>
+    <div class="section-label">How We Back You</div>
 
     <ul class="included-list">
-      <li class="included-item reveal">$1,000 for your two campus events. Food, venue, drinks — whatever the event needs.</li>
-      <li class="included-item reveal rd1">Full central funding for two HackNation hackathons at your university.</li>
-      <li class="included-item reveal rd2">$500 floor on the end-of-cohort trip — Mexico or Colombia — with unlimited upside. Every dollar the twelve of you raise above event costs flows into the trip fund. 25% of any unrestricted sponsorship you personally land goes into your own travel fund.</li>
-      <li class="included-item reveal rd3">Bi-weekly sessions with founders, operators, and investors. Linn Bieske (Head of Product, Waymo) is hosting one. Group format, with 1:1 time when the work warrants it.</li>
-      <li class="included-item reveal">The sponsor network — OpenAI, Databricks, Lovable, ElevenLabs, Mozilla. Warm intros when you need them.</li>
-      <li class="included-item reveal rd1">Eleven peers at the other top universities, operating at your level.</li>
-      <li class="included-item reveal rd2">Branded merch — cap, hoodie, t-shirt, laptop stickers.</li>
+      <li class="included-item reveal">Work with peers from the world's best universities. Harvard, MIT, Stanford, Berkeley, Oxford. This is the group you'll scout with, travel with, and possibly be friends with for life.</li>
+      <li class="included-item reveal rd1">A trip at the end. We want you to have fun. The cohort picks the destination, we cover the trip. Three to five days, twelve people, one city.</li>
+      <li class="included-item reveal rd2">Warm introductions to the industry. Founders, accelerators, VCs, tech and beyond. Our sponsors include OpenAI, Databricks, Lovable, ElevenLabs and Mozilla.</li>
+      <li class="included-item reveal rd3">$1,000 for your campus events and full funding for two hackathons.</li>
+      <li class="included-item reveal">Exposure. Learn how to assess potential, recognize patterns, understand team dynamics, validate ideas, and build technical fluency across fields.</li>
     </ul>
   </div>
 </section>
@@ -861,51 +1063,50 @@ footer {
 <!-- ─────────────────── SPONSORS ─────────────────── -->
 <section id="sponsors">
   <div class="section-inner">
-    <p class="sponsors-label">Backed by</p>
+    <div class="sponsors-label">Backed by</div>
     <div class="sponsors-row">
 
-      <!-- OpenAI: 6-petal bloom — each capsule goes from near-edge inward to center -->
-      <div class="sponsor-item" title="OpenAI">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <rect x="45" y="8" width="10" height="42" rx="5" transform="rotate(0 50 50)"/>
-          <rect x="45" y="8" width="10" height="42" rx="5" transform="rotate(60 50 50)"/>
-          <rect x="45" y="8" width="10" height="42" rx="5" transform="rotate(120 50 50)"/>
-          <rect x="45" y="8" width="10" height="42" rx="5" transform="rotate(180 50 50)"/>
-          <rect x="45" y="8" width="10" height="42" rx="5" transform="rotate(240 50 50)"/>
-          <rect x="45" y="8" width="10" height="42" rx="5" transform="rotate(300 50 50)"/>
+      <!-- OpenAI -->
+      <div class="sponsor-item">
+        <svg viewBox="0 0 24 24" height="26" aria-label="OpenAI">
+          <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zM8.307 12.863l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/>
         </svg>
       </div>
 
-      <!-- Databricks: three-slab spark diamond -->
-      <div class="sponsor-item" title="Databricks">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50,6 L80,38 L50,44 L20,38 Z"/>
-          <path d="M17,48 L83,48 L83,56 L17,56 Z"/>
-          <path d="M20,60 L50,66 L80,60 L50,94 Z"/>
+      <!-- Databricks -->
+      <div class="sponsor-item">
+        <svg viewBox="0 0 120 32" height="22" aria-label="Databricks">
+          <path d="M0 16 L14 8 L28 16 L14 24 Z" opacity="1"/>
+          <path d="M16 10 L30 2 L44 10 L30 18 Z" opacity="0.75"/>
+          <path d="M8 22 L22 14 L36 22 L22 30 Z" opacity="0.55"/>
+          <text x="52" y="22" font-family="DM Sans, sans-serif" font-size="15" font-weight="300" fill="currentColor" letter-spacing="-0.3">Databricks</text>
         </svg>
       </div>
 
-      <!-- Lovable: heart -->
-      <div class="sponsor-item" title="Lovable">
-        <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50,80 C18,60 5,44 5,30 C5,16 15,6 28,6 C36,6 43,10 50,19 C57,10 64,6 72,6 C85,6 95,16 95,30 C95,44 82,60 50,80 Z"/>
+      <!-- Lovable -->
+      <div class="sponsor-item">
+        <svg viewBox="0 0 88 32" height="26" aria-label="Lovable">
+          <path d="M14 8 C14 5.2 11.8 3 9 3 C6.2 3 4 5.2 4 8 C4 14 14 20 14 20 C14 20 24 14 24 8 C24 5.2 21.8 3 19 3 C16.2 3 14 5.2 14 8 Z" transform="translate(0,2) scale(0.85)"/>
+          <text x="26" y="22" font-family="DM Sans, sans-serif" font-size="15" font-weight="300" fill="currentColor" letter-spacing="-0.3">Lovable</text>
         </svg>
       </div>
 
-      <!-- ElevenLabs: "11" — two vertical bars -->
-      <div class="sponsor-item" title="ElevenLabs">
-        <svg viewBox="0 0 52 80" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="5" width="18" height="70" rx="4"/>
-          <rect x="32" y="5" width="18" height="70" rx="4"/>
+      <!-- ElevenLabs -->
+      <div class="sponsor-item">
+        <svg viewBox="0 0 120 32" height="26" aria-label="ElevenLabs">
+          <rect x="0"  y="8"  width="4" height="16" rx="1"/>
+          <rect x="7"  y="2"  width="4" height="28" rx="1"/>
+          <rect x="14" y="10" width="4" height="12" rx="1"/>
+          <rect x="21" y="5"  width="4" height="22" rx="1"/>
+          <text x="34" y="22" font-family="DM Sans, sans-serif" font-size="15" font-weight="300" fill="currentColor" letter-spacing="-0.3">ElevenLabs</text>
         </svg>
       </div>
 
-      <!-- Mozilla: globe outline (stroke-based) -->
-      <div class="sponsor-item" title="Mozilla">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="logo-stroke">
-          <circle cx="50" cy="50" r="40"/>
-          <ellipse cx="50" cy="50" rx="40" ry="15"/>
-          <line x1="50" y1="10" x2="50" y2="90"/>
+      <!-- Mozilla -->
+      <div class="sponsor-item">
+        <svg viewBox="0 0 90 32" height="26" aria-label="Mozilla">
+          <path d="M2 28 L2 4 L10 4 L16 18 L22 4 L30 4 L30 28 L24 28 L24 13 L18 28 L14 28 L8 13 L8 28 Z" class="logo-stroke"/>
+          <text x="36" y="22" font-family="DM Sans, sans-serif" font-size="15" font-weight="300" fill="currentColor" letter-spacing="-0.3">Mozilla</text>
         </svg>
       </div>
 
@@ -919,56 +1120,9 @@ footer {
     <div class="section-label">Why Twelve</div>
 
     <div class="quote-block reveal">
-      <p class="quote-text">"Twelve is not arbitrary. It's roughly the largest group where every person still knows every relationship in the room. Past that, subgroups form, people hide, accountability dissolves. We picked twelve because it's the last number where no one disappears."</p>
+      <p class="quote-text">"Twelve is roughly the largest group where every person still knows every relationship in the room."</p>
       <p class="quote-footnote">Based on Dunbar's social layers research (Oxford) and group cohesion studies.</p>
     </div>
-
-    <div class="why-context reveal">
-      HN<sup>12</sup> exists because HackNation's accelerator is building the next cohort of AI-native founders. That doesn't happen through applications. It happens through people on the ground who know which sophomore at MIT just shipped something insane, which PhD at ETH is about to drop out.
-    </div>
-
-    <div class="why-rule reveal"></div>
-
-    <div class="quote-block reveal">
-      <p class="quote-text">"You need to make yourself a big target for luck, and the way to do that is to be curious. Try lots of things, meet lots of people, read lots of books, ask lots of questions."</p>
-      <p class="quote-attribution">— Paul Graham, "How to Do Great Work"</p>
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────────── WHO ─────────────────── -->
-<section id="who">
-  <div class="section-inner">
-    <div class="section-label">Who We're Looking For</div>
-
-    <div class="reveal">
-      <h2>We select humans,<br><em>not résumés.</em></h2>
-    </div>
-
-    <p class="who-body reveal">
-      People who've already shipped something — a company, a project, research, a competition win. People who know everyone worth knowing on their campus and get invited to everything. People who would host these events anyway if someone handed them a budget.
-    </p>
-
-    <div class="criteria-list">
-      <div class="criteria-item reveal">
-        <div class="criteria-title">Entrepreneurial Fire</div>
-        <div class="criteria-desc">Built something. Shipped something. Started something. We don't care if it failed.</div>
-      </div>
-      <div class="criteria-item reveal rd1">
-        <div class="criteria-title">Raw Achievement</div>
-        <div class="criteria-desc">Top of class, competitions, research, funded startups. Evidence of an exceptional mind.</div>
-      </div>
-      <div class="criteria-item reveal rd2">
-        <div class="criteria-title">Network Density</div>
-        <div class="criteria-desc">Knows everyone on campus. Gets invited to everything. When they throw an event, people come.</div>
-      </div>
-      <div class="criteria-item reveal rd3">
-        <div class="criteria-title">The Gravity Factor</div>
-        <div class="criteria-desc">Magnetic. People follow them. Rooms shift when they enter.</div>
-      </div>
-    </div>
-
-    <p class="criteria-note reveal">Currently enrolled at a target university (undergrad, Master's, or PhD). Valid passport.</p>
   </div>
 </section>
 
@@ -1012,13 +1166,11 @@ footer {
     <p class="batch-label">Batch 01 — Founding Cohort</p>
 
     <div class="apply-grid">
-      <!-- left: header -->
       <div class="apply-left reveal">
         <h2>Apply until<br><em>May 31st.</em></h2>
         <p class="apply-timing">Six months. Starts September 2026.</p>
       </div>
 
-      <!-- right: form -->
       <div class="reveal rd1">
         <form class="apply-form" id="appForm" onsubmit="return false;">
 
@@ -1122,14 +1274,12 @@ footer {
           </div>
         </form>
 
-        <!-- success state -->
         <div class="form-success" id="formSuccess">
           <div class="success-ring">✓</div>
           <h3>Application received.</h3>
           <p>We review applications on a rolling basis.<br>Expect to hear from us within two weeks.</p>
         </div>
 
-        <!-- meta info below form -->
         <div class="apply-below" id="applyBelow">
           <div class="apply-meta-row">
             <span class="meta-k">Deadline</span>
@@ -1137,7 +1287,7 @@ footer {
           </div>
           <div class="apply-meta-row">
             <span class="meta-k">Duration</span>
-            <span class="meta-v">6–8 months</span>
+            <span class="meta-v">6 months</span>
           </div>
           <div class="apply-meta-row">
             <span class="meta-k">Spots</span>
@@ -1196,23 +1346,36 @@ footer {
 
 <script>
 // ── CURSOR ──
-// Only enable custom cursor on devices that support hover (non-touch)
 if (window.matchMedia('(hover: hover)').matches) {
   document.body.classList.add('has-cursor');
-
   const cursor = document.getElementById('cursor');
-
   document.addEventListener('mousemove', e => {
     cursor.style.left = e.clientX + 'px';
     cursor.style.top  = e.clientY + 'px';
   });
-
-  // grow on interactive elements
   document.querySelectorAll('a, button, .uni-tag, .file-label, select, .sponsor-item').forEach(el => {
     el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
     el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
   });
 }
+
+// ── NAV LIGHT/DARK SWITCH ──
+(function() {
+  const nav = document.querySelector('nav');
+  const hero = document.getElementById('hero');
+  function updateNav() {
+    const heroBottom = hero.offsetHeight * 0.55;
+    if (window.scrollY > heroBottom) {
+      nav.classList.add('nav-light');
+      document.body.classList.remove('hero-active');
+    } else {
+      nav.classList.remove('nav-light');
+      document.body.classList.add('hero-active');
+    }
+  }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+})();
 
 // ── SCROLL REVEAL ──
 const revealObs = new IntersectionObserver(entries => {
@@ -1223,15 +1386,23 @@ const revealObs = new IntersectionObserver(entries => {
     }
   });
 }, { threshold: 0.07 });
-
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
+// Journey SVG visibility trigger
+const journeyObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      journeyObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.journey-wrap').forEach(el => journeyObs.observe(el));
+
 // ── HERO CANVAS ANIMATION ──
-// Only run on non-touch devices with a real pointer (desktops/laptops)
 (function () {
   const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
-
   if (!window.matchMedia('(hover: hover) and (min-width: 820px)').matches) {
     canvas.style.display = 'none';
     return;
@@ -1241,29 +1412,21 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
   function resize() {
     dpr = window.devicePixelRatio || 1;
-    W = canvas.offsetWidth;
-    H = canvas.offsetHeight;
-    canvas.width  = W * dpr;
-    canvas.height = H * dpr;
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    cx = W / 2;
-    cy = H / 2;
+    cx = W / 2; cy = H / 2;
   }
   resize();
   window.addEventListener('resize', () => { resize(); reset(); });
 
-  let startTime = null;
-  let particles  = [];
-  let nodes      = [];
-  let edges      = [];
-  let trailPoints = [];
+  let startTime = null, particles = [], nodes = [], edges = [], trailPoints = [];
   let star = { x: -100, y: 0, active: true, hit: false, hitTime: 0 };
 
   const UNIVERSITIES = [
-    'Harvard', 'MIT', 'Stanford', 'Oxford', 'Cambridge',
-    'Berkeley', 'Columbia', 'Princeton', 'Imperial', 'Carnegie Mellon',
-    'ETH Zurich', 'TUM', 'Caltech', 'NYU', 'UCLA',
-    'EPFL', 'Technion', 'Georgia Tech', 'U Toronto'
+    'Harvard','MIT','Stanford','Oxford','Cambridge',
+    'Berkeley','Columbia','Princeton','Imperial','Carnegie Mellon',
+    'ETH Zurich','TUM','Caltech','NYU','UCLA','EPFL','Technion','Georgia Tech','U Toronto'
   ];
 
   function shuffled(arr) {
@@ -1277,58 +1440,36 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
   function generateNodes() {
     nodes = []; edges = [];
-    const names   = shuffled(UNIVERSITIES).slice(0, 12);
-    const safeW   = Math.min(W * 0.26, 300);
-    const safeH   = Math.min(H * 0.36, 280);
-    const margin  = 52;
-    const minGap  = Math.min(W, H) * 0.14; // minimum distance between nodes
-
+    const names  = shuffled(UNIVERSITIES).slice(0, 12);
+    const safeW  = Math.min(W * 0.26, 300);
+    const safeH  = Math.min(H * 0.36, 280);
+    const margin = 52;
+    const minGap = Math.min(W, H) * 0.14;
     for (let i = 0; i < 12; i++) {
       let tx, ty, attempts = 0;
       do {
         tx = margin + Math.random() * (W - margin * 2);
         ty = margin + Math.random() * (H - margin * 2);
         attempts++;
-        // reject if inside text safe zone
         if (Math.abs(tx - cx) < safeW && Math.abs(ty - cy) < safeH) continue;
-        // reject if too close to an already placed node
         const tooClose = nodes.some(n => {
           const dx = n.tx - tx, dy = n.ty - ty;
           return Math.sqrt(dx*dx + dy*dy) < minGap;
         });
         if (!tooClose) break;
       } while (attempts < 80);
-
-      nodes.push({
-        x: cx, y: cy,
-        tx, ty,
-        label: names[i],
-        r: 1.8 + Math.random() * 2,
-        opacity: 0,
-        delay: i * 0.04,
-        arrived: false
-      });
+      nodes.push({ x: cx, y: cy, tx, ty, label: names[i], r: 1.8 + Math.random() * 2, opacity: 0, delay: i * 0.04, arrived: false });
     }
-
-    // connect every node to every other node (complete graph)
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
+    for (let i = 0; i < nodes.length; i++)
+      for (let j = i + 1; j < nodes.length; j++)
         edges.push({ a: i, b: j, opacity: 0 });
-      }
-    }
   }
 
   function spawnBurst() {
     particles = [];
     for (let i = 0; i < 36; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const s = 1 + Math.random() * 3.5;
-      particles.push({
-        x: cx, y: cy,
-        vx: Math.cos(a) * s, vy: Math.sin(a) * s,
-        life: 1, decay: 0.009 + Math.random() * 0.014,
-        r: 0.5 + Math.random() * 1.5
-      });
+      const a = Math.random() * Math.PI * 2, s = 1 + Math.random() * 3.5;
+      particles.push({ x: cx, y: cy, vx: Math.cos(a)*s, vy: Math.sin(a)*s, life: 1, decay: 0.009 + Math.random() * 0.014, r: 0.5 + Math.random() * 1.5 });
     }
   }
 
@@ -1338,7 +1479,6 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
     trailPoints = []; particles = [];
     generateNodes();
   }
-
   generateNodes();
 
   function lerp(a, b, t) { return a + (b - a) * t; }
@@ -1348,123 +1488,64 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
   function draw(t) {
     if (!startTime) startTime = t;
     const elapsed = (t - startTime) / 1000;
-
     ctx.clearRect(0, 0, W, H);
 
-    // Phase 1 — shooting star (0–1.2 s)
     const starDur = 1.2;
     if (star.active && elapsed < starDur) {
       const p = easeOutQuint(elapsed / starDur);
-      star.x = lerp(-80, cx, p);
-      star.y = cy;
+      star.x = lerp(-80, cx, p); star.y = cy;
       trailPoints.push({ x: star.x, y: star.y, birth: elapsed });
-
       for (const tp of trailPoints) {
-        const age  = elapsed - tp.birth;
-        const fade = Math.max(0, 1 - age / 0.55);
+        const age = elapsed - tp.birth, fade = Math.max(0, 1 - age / 0.55);
         if (fade <= 0) continue;
-        ctx.beginPath();
-        ctx.arc(tp.x, tp.y, fade * 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(245,245,243,${fade * 0.55})`;
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(tp.x, tp.y, fade * 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(245,245,243,${fade * 0.55})`; ctx.fill();
       }
-
       const g = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, 14);
-      g.addColorStop(0, 'rgba(245,245,243,0.85)');
-      g.addColorStop(0.3, 'rgba(245,245,243,0.25)');
-      g.addColorStop(1, 'rgba(245,245,243,0)');
-      ctx.beginPath(); ctx.arc(star.x, star.y, 14, 0, Math.PI * 2);
-      ctx.fillStyle = g; ctx.fill();
-      ctx.beginPath(); ctx.arc(star.x, star.y, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = '#f5f5f3'; ctx.fill();
+      g.addColorStop(0, 'rgba(245,245,243,0.85)'); g.addColorStop(0.3, 'rgba(245,245,243,0.25)'); g.addColorStop(1, 'rgba(245,245,243,0)');
+      ctx.beginPath(); ctx.arc(star.x, star.y, 14, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+      ctx.beginPath(); ctx.arc(star.x, star.y, 2.5, 0, Math.PI * 2); ctx.fillStyle = '#f5f5f3'; ctx.fill();
     }
 
-    // Phase 2 — impact burst
-    if (elapsed >= starDur && !star.hit) {
-      star.hit = true; star.hitTime = elapsed; star.active = false;
-      spawnBurst();
-    }
+    if (elapsed >= starDur && !star.hit) { star.hit = true; star.hitTime = elapsed; star.active = false; spawnBurst(); }
 
     if (star.hit) {
       const burstAge = elapsed - star.hitTime;
-
-      // fade trail after impact
       for (const tp of trailPoints) {
         const fade = Math.max(0, 1 - burstAge / 0.5);
         if (fade <= 0) continue;
         ctx.beginPath(); ctx.arc(tp.x, tp.y, 1, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(245,245,243,${fade * 0.25})`; ctx.fill();
       }
-
-      // burst particles
       for (const p of particles) {
-        p.x += p.vx; p.y += p.vy;
-        p.vx *= 0.97; p.vy *= 0.97;
-        p.life -= p.decay;
-        if (p.life > 0) {
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(245,245,243,${p.life * 0.45})`; ctx.fill();
-        }
+        p.x += p.vx; p.y += p.vy; p.vx *= 0.97; p.vy *= 0.97; p.life -= p.decay;
+        if (p.life > 0) { ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2); ctx.fillStyle = `rgba(245,245,243,${p.life * 0.45})`; ctx.fill(); }
       }
-
-      // Phase 3 — nodes scatter (starts 0.1 s after impact)
       const scatterStart = star.hitTime + 0.1;
       for (const n of nodes) {
         const ne = elapsed - scatterStart - n.delay;
         if (ne < 0) continue;
-        const prog  = Math.min(1, ne / 1.1);
-        const eased = easeOutCubic(prog);
-        n.x = lerp(cx, n.tx, eased);
-        n.y = lerp(cy, n.ty, eased);
-        n.opacity = Math.min(1, ne / 0.4);
-
+        const prog = Math.min(1, ne / 1.1), eased = easeOutCubic(prog);
+        n.x = lerp(cx, n.tx, eased); n.y = lerp(cy, n.ty, eased); n.opacity = Math.min(1, ne / 0.4);
         const gn = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5);
-        gn.addColorStop(0, `rgba(245,245,243,${n.opacity * 0.12})`);
-        gn.addColorStop(1, 'rgba(245,245,243,0)');
-        ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI * 2);
-        ctx.fillStyle = gn; ctx.fill();
-
-        ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(245,245,243,${n.opacity * 0.75})`; ctx.fill();
-
-        // label — offset away from center, clamped inside canvas
-        const ldx = n.x - cx, ldy = n.y - cy;
-        const llen = Math.sqrt(ldx*ldx + ldy*ldy) || 1;
-        const lox = (ldx / llen) * (n.r + 9);
-        const loy = (ldy / llen) * (n.r + 9);
+        gn.addColorStop(0, `rgba(245,245,243,${n.opacity * 0.12})`); gn.addColorStop(1, 'rgba(245,245,243,0)');
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI * 2); ctx.fillStyle = gn; ctx.fill();
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(245,245,243,${n.opacity * 0.75})`; ctx.fill();
+        const ldx = n.x - cx, ldy = n.y - cy, llen = Math.sqrt(ldx*ldx + ldy*ldy) || 1;
+        const lox = (ldx/llen)*(n.r+9), loy = (ldy/llen)*(n.r+9);
         const labelText = n.label.toUpperCase();
-        ctx.font = '400 9px "DM Mono", monospace';
-        ctx.letterSpacing = '0.08em';
-        const alignRight = ldx < 0;
-        const alignBottom = ldy < 0;
-        ctx.textAlign    = alignRight  ? 'right' : 'left';
+        ctx.font = '400 9px "DM Mono", monospace'; ctx.letterSpacing = '0.08em';
+        const alignRight = ldx < 0, alignBottom = ldy < 0;
+        ctx.textAlign = alignRight ? 'right' : 'left';
         ctx.textBaseline = alignBottom ? 'bottom' : 'top';
-        const tw  = ctx.measureText(labelText).width;
-        const th  = 11;
-        const pad = 6;
-        // raw position
-        let lx = n.x + lox;
-        let ly = n.y + loy;
-        // clamp so text stays inside canvas
-        if (alignRight) {
-          lx = Math.max(lx, tw + pad);
-          lx = Math.min(lx, W - pad);
-        } else {
-          lx = Math.max(lx, pad);
-          lx = Math.min(lx, W - tw - pad);
-        }
-        if (alignBottom) {
-          ly = Math.max(ly, th + pad);
-          ly = Math.min(ly, H - pad);
-        } else {
-          ly = Math.max(ly, pad);
-          ly = Math.min(ly, H - th - pad);
-        }
-        ctx.fillStyle = `rgba(245,245,243,${n.opacity * 0.38})`;
-        ctx.fillText(labelText, lx, ly);
+        const tw = ctx.measureText(labelText).width, th = 11, pad = 6;
+        let lx = n.x + lox, ly = n.y + loy;
+        if (alignRight) { lx = Math.max(lx, tw+pad); lx = Math.min(lx, W-pad); }
+        else { lx = Math.max(lx, pad); lx = Math.min(lx, W-tw-pad); }
+        if (alignBottom) { ly = Math.max(ly, th+pad); ly = Math.min(ly, H-pad); }
+        else { ly = Math.max(ly, pad); ly = Math.min(ly, H-th-pad); }
+        ctx.fillStyle = `rgba(245,245,243,${n.opacity * 0.38})`; ctx.fillText(labelText, lx, ly);
       }
-
-      // Phase 4 — edges (starts 0.8 s after impact)
       const edgeStart = star.hitTime + 0.8;
       edges.forEach((e, i) => {
         const ee = elapsed - edgeStart - i * 0.025;
@@ -1472,35 +1553,27 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
         const prog = Math.min(1, ee / 1.4);
         e.opacity = easeOutCubic(prog) * 0.09;
         const a = nodes[e.a], b = nodes[e.b];
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y);
         ctx.lineTo(lerp(a.x, b.x, easeOutCubic(prog)), lerp(a.y, b.y, easeOutCubic(prog)));
-        ctx.strokeStyle = `rgba(245,245,243,${e.opacity})`;
-        ctx.lineWidth = 1; ctx.stroke();
+        ctx.strokeStyle = `rgba(245,245,243,${e.opacity})`; ctx.lineWidth = 1; ctx.stroke();
       });
-
-      // Phase 5 — idle breathing (after 3.5 s)
       if (elapsed > star.hitTime + 3.5) {
         const breathe = Math.sin(elapsed * 0.7) * 0.018;
         for (const n of nodes) {
           if (n.opacity <= 0) continue;
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(245,245,243,${0.025 + Math.max(0, breathe)})`;
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(245,245,243,${0.025 + Math.max(0, breathe)})`; ctx.fill();
         }
       }
     }
-
     requestAnimationFrame(draw);
   }
-
   requestAnimationFrame(draw);
 })();
 
 // ── TEAM TOGGLE ──
 function toggleTeam(btn) {
-  const body   = document.getElementById('teamBody');
+  const body = document.getElementById('teamBody');
   const isOpen = body.classList.contains('open');
   body.classList.toggle('open');
   btn.classList.toggle('open');
@@ -1523,45 +1596,90 @@ function bindFile(inputId, labelId, nameId) {
     }
   });
 }
-bindFile('cvFile',    'cvLabel',    'cvFileName');
+bindFile('cvFile', 'cvLabel', 'cvFileName');
 bindFile('videoFile', 'videoLabel', 'videoFileName');
+
+// ── SCROLL SNAP ──
+(function () {
+  const snapEls = () => Array.from(document.querySelectorAll('#hero, section'));
+  let timer = null;
+  let busy  = false;
+
+  function snap() {
+    if (busy) return;
+    const els = snapEls();
+    let target = els[0];
+    let minDist = Infinity;
+    for (const el of els) {
+      const dist = Math.abs(el.getBoundingClientRect().top);
+      if (dist < minDist) { minDist = dist; target = el; }
+    }
+    if (minDist < 5) return;
+    busy = true;
+    target.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => { busy = false; }, 800);
+  }
+
+  window.addEventListener('scroll', () => {
+    clearTimeout(timer);
+    timer = setTimeout(snap, 140);
+  }, { passive: true });
+
+  let wheelBusy = false;
+  window.addEventListener('wheel', (e) => {
+    if (wheelBusy) { e.preventDefault(); return; }
+    const els = snapEls();
+    let cur = 0, minD = Infinity;
+    els.forEach((el, i) => {
+      const d = Math.abs(el.getBoundingClientRect().top);
+      if (d < minD) { minD = d; cur = i; }
+    });
+    const next = e.deltaY > 0 ? cur + 1 : cur - 1;
+    if (next < 0 || next >= els.length) return;
+    e.preventDefault();
+    wheelBusy = true;
+    busy = true;
+    els[next].scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => { wheelBusy = false; busy = false; }, 900);
+  }, { passive: false });
+
+  let ty0 = 0;
+  window.addEventListener('touchstart', e => { ty0 = e.touches[0].clientY; }, { passive: true });
+  window.addEventListener('touchend', e => {
+    const dy = ty0 - e.changedTouches[0].clientY;
+    if (Math.abs(dy) < 40) return;
+    const els = snapEls();
+    let cur = 0, minD = Infinity;
+    els.forEach((el, i) => {
+      const d = Math.abs(el.getBoundingClientRect().top);
+      if (d < minD) { minD = d; cur = i; }
+    });
+    const next = dy > 0 ? cur + 1 : cur - 1;
+    if (next < 0 || next >= els.length) return;
+    busy = true;
+    els[next].scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => { busy = false; }, 800);
+  }, { passive: true });
+})();
 
 // ── FORM SUBMISSION ──
 function submitForm() {
   const fname = document.getElementById('fname');
   const email = document.getElementById('email');
   const uni   = document.getElementById('university');
-
-  // clear previous errors
-  [fname, email, uni].forEach(el => {
-    el.classList.remove('err');
-    el.style.animation = '';
-  });
-
+  [fname, email, uni].forEach(el => { el.classList.remove('err'); el.style.animation = ''; });
   let valid = true;
   [fname, email, uni].forEach(el => {
     if (!el.value.trim()) {
       el.classList.add('err');
-      // restart shake animation
       void el.offsetWidth;
       el.style.animation = 'shake 0.3s ease';
       valid = false;
     }
   });
-
   if (!valid) return;
-
-  // TODO: Wire up backend here — send form data to your submission endpoint.
-  // Example:
-  //   const data = new FormData(document.getElementById('appForm'));
-  //   data.append('cvFile', document.getElementById('cvFile').files[0]);
-  //   data.append('videoFile', document.getElementById('videoFile').files[0]);
-  //   const res = await fetch('/api/apply', { method: 'POST', body: data });
-  // Currently shows success state immediately without persisting to a server.
-
   document.getElementById('appForm').style.display    = 'none';
   document.getElementById('formSuccess').style.display = 'block';
-  // keep meta visible below success message
 }
 </script>
 </body>
