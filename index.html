@@ -66,6 +66,37 @@ sup {
   letter-spacing: 0.02em;
 }
 
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+#hnTag {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  color: var(--white);
+  transition: color 0.3s;
+  border-left: 1px solid rgba(245,245,243,0.18);
+  padding-left: 1.25rem;
+}
+.hn-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+nav.nav-light #hnTag {
+  color: var(--black);
+  border-left-color: rgba(13,13,13,0.15);
+}
+
+@media (max-width: 820px) {
+  #hnTag { display: none; }
+}
+
 /* ── NAV ── */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -113,12 +144,14 @@ nav.nav-light .nav-apply {
   background: var(--black);
   color: var(--white);
   height: 100vh;
+  min-height: 100vh;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   text-align: center;
   padding: 9rem 3rem 5rem;
   position: relative;
   overflow: hidden;
+  border-top: none;
 }
 #hero::before { display: none; }
 #hero::after  { display: none; }
@@ -222,14 +255,18 @@ nav.nav-light .nav-apply {
   animation-delay: 2.2s;
 }
 .hero-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
   opacity: 0;
   animation: fadeUp 0.7s ease forwards;
   animation-delay: 2.4s;
 }
 
-/* scroll hint */
+/* scroll hint (hero) */
 .scroll-hint {
-  position: absolute; bottom: 2.5rem; left: 50%;
+  position: absolute; bottom: 2rem; left: 50%;
   transform: translateX(-50%);
   font-family: 'DM Mono', monospace;
   font-size: 0.54rem; letter-spacing: 0.28em; text-transform: uppercase;
@@ -248,6 +285,21 @@ nav.nav-light .nav-apply {
 }
 @keyframes scrollPulse { 0%,100%{width:22px} 50%{width:40px} }
 
+/* section scroll indicators */
+.section-scroll {
+  position: absolute; bottom: 2rem; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: rgba(13,13,13,0.18);
+  animation: scrollBob 2s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+@keyframes scrollBob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(4px); }
+}
+
 /* ── BUTTONS ── */
 .btn-primary {
   display: inline-block;
@@ -259,19 +311,41 @@ nav.nav-light .nav-apply {
   transition: background 0.25s, color 0.25s;
 }
 .btn-primary:hover { background: transparent; color: var(--white); }
+.btn-learn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.68);
+  text-decoration: none;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+.btn-learn:hover { color: rgba(255,255,255,0.95); text-decoration: underline; }
 
 /* ── SECTION CHROME ── */
-section { padding: 8rem 3rem; }
+section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 7rem 3rem;
+  border-top: 1px solid rgba(13,13,13,0.14);
+  position: relative;
+}
+
+/* remove individual border-top declarations handled globally now */
+#program, #included, #who, #apply { border-top: 1px solid rgba(13,13,13,0.14); }
 
 .section-inner {
   max-width: 1080px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .section-label {
   font-family: 'DM Mono', monospace;
   font-size: 0.55rem; letter-spacing: 0.34em; text-transform: uppercase;
-  color: var(--gray); margin-bottom: 4rem;
+  color: var(--gray); margin-bottom: 3rem;
   display: flex; align-items: center; gap: 1.5rem;
 }
 .section-label::before {
@@ -280,25 +354,36 @@ section { padding: 8rem 3rem; }
   background: rgba(13,13,13,0.18); flex-shrink: 0;
 }
 
-h2 {
-  font-size: clamp(1.9rem, 3.8vw, 3rem);
-  font-weight: 200; line-height: 1.1; letter-spacing: -0.02em;
-  margin-bottom: 1rem;
+/* section counter in top-left corner */
+section:not(#hero)::before {
+  content: attr(data-n);
+  position: absolute;
+  top: 2rem; left: 3rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.48rem;
+  letter-spacing: 0.2em;
+  color: rgba(13,13,13,0.2);
+  text-transform: uppercase;
 }
+
+/* ── SHARED SECTION TITLE ── */
+.section-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 200; line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 2rem;
+}
+.section-title em { font-style: italic; }
+
+h2 { margin-bottom: 0.75rem; }
 h2 em { font-style: italic; }
 
 /* ── PROGRAM ── */
 #program { border-top: 1px solid var(--border); }
+#program .section-title { text-align: center; margin-bottom: 4rem; }
 
-.program-what {
-  font-size: clamp(1.9rem, 3.8vw, 3rem);
-  font-weight: 200; line-height: 1.1; letter-spacing: -0.02em;
-  margin-bottom: 3rem;
-  text-align: center;
-}
 
 .journey-wrap {
-  max-width: 960px;
+  max-width: 1080px;
   margin: 0 auto;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -306,6 +391,40 @@ h2 em { font-style: italic; }
 .journey-wrap svg {
   min-width: 640px;
   display: block;
+}
+
+/* SVG box hover */
+.j-box { cursor: default; }
+.j-box .j-rect {
+  transition: stroke 0.18s, fill 0.18s;
+}
+.j-box:hover .j-rect {
+  fill: rgba(13,13,13,0.07);
+  stroke: rgba(13,13,13,0.55);
+}
+
+/* diagram tooltip */
+#diagramTip {
+  display: none;
+  position: fixed;
+  z-index: 300;
+  background: var(--white);
+  border: 1px solid rgba(13,13,13,0.22);
+  box-shadow: 0 4px 20px rgba(13,13,13,0.1);
+  padding: 0.85rem 1.1rem;
+  pointer-events: none;
+  max-width: 220px;
+}
+#diagramTip.visible { display: block; }
+.dtip-title {
+  font-size: 0.82rem; font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.dtip-body {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.03em;
+  color: rgba(13,13,13,0.55);
+  line-height: 1.7;
 }
 
 /* SVG journey animations */
@@ -422,100 +541,89 @@ h2 em { font-style: italic; }
   font-weight: 600;
 }
 
-/* ── INCLUDED CENTERED ── */
+/* ── INCLUDED ── */
 #included .section-inner {
   max-width: 720px;
-  margin: 0 auto;
-  text-align: center;
 }
-#included .who-col-label {
-  margin-bottom: 2rem;
-}
-#included .criteria-list {
-  text-align: left;
-}
+#included { align-items: center; }
 
-/* ── POPUPS ── */
-.popup-wrap {
-  position: relative;
-  display: inline-block;
-  vertical-align: baseline;
-}
-.popup-link {
-  background: none;
-  border: none;
-  padding: 0;
+/* ── ITEM DRAWERS ── */
+.expand-btn {
+  background: none; border: none; padding: 0;
   cursor: pointer;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
+  font-family: inherit; font-size: inherit; font-weight: inherit;
   color: var(--black);
   text-decoration: underline;
-  text-decoration-color: rgba(13,13,13,0.35);
+  text-decoration-color: rgba(13,13,13,0.3);
   text-underline-offset: 2px;
   transition: text-decoration-color 0.2s;
 }
-.popup-link:hover {
-  text-decoration-color: var(--black);
+.expand-btn:hover, .expand-btn.open {
+  text-decoration-color: rgba(13,13,13,0.75);
 }
-.popup-box {
-  display: none;
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 0;
-  z-index: 200;
-  width: 280px;
-  background: var(--white);
-  border: 1px solid rgba(13,13,13,0.18);
-  padding: 1.1rem 1.25rem;
-  box-shadow: 0 4px 24px rgba(13,13,13,0.08);
+.item-drawer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.popup-box.open { display: block; }
-.popup-title {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.54rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gray);
-  margin-bottom: 0.75rem;
+.item-drawer.open { max-height: 400px; }
+.item-drawer-inner {
+  border: 1px solid rgba(13,13,13,0.11);
+  margin-top: 0.85rem;
+  margin-bottom: 0.2rem;
+  padding: 1rem 1.25rem;
+  background: rgba(13,13,13,0.018);
 }
-.popup-body {
-  font-size: 0.82rem;
-  font-weight: 300;
-  line-height: 1.7;
-  color: rgba(13,13,13,0.75);
-}
-.popup-tier {
-  display: block;
+.drawer-tier {
   font-family: 'DM Mono', monospace;
   font-size: 0.5rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--gray);
-  margin: 0.6rem 0 0.2rem;
+  color: rgba(13,13,13,0.38);
+  margin-bottom: 0.3rem;
+  margin-top: 0.75rem;
 }
-.popup-tier:first-child { margin-top: 0; }
-.popup-row {
-  display: grid;
-  grid-template-columns: 5.5rem 1fr;
-  gap: 0.5rem;
-  padding: 0.3rem 0;
-  border-bottom: 1px solid var(--border);
-}
-.popup-row:last-child { border-bottom: none; }
-.popup-k {
+.drawer-tier:first-child { margin-top: 0; }
+.drawer-vals {
   font-family: 'DM Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.06em;
-  color: var(--gray);
-  padding-top: 0.1rem;
+  font-size: 0.62rem;
+  color: rgba(13,13,13,0.62);
+  line-height: 1.7;
 }
-.popup-v { font-size: 0.8rem; }
-.popup-sponsors {
-  font-size: 0.88rem;
-  letter-spacing: 0.01em;
+.drawer-row {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: 0.75rem;
+  padding: 0.42rem 0;
+  border-bottom: 1px solid rgba(13,13,13,0.06);
+  align-items: baseline;
+}
+.drawer-row:last-child { border-bottom: none; }
+.drawer-k {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(13,13,13,0.38);
+}
+.drawer-v {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: rgba(13,13,13,0.62);
+  line-height: 1.6;
+}
+.drawer-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.56rem;
+  color: rgba(13,13,13,0.38);
+  line-height: 1.65;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(13,13,13,0.07);
+  font-style: italic;
 }
 .who-col--not .who-col-label,
+.who-col--not .who-col-title,
 .who-col--not .criteria-item {
   color: rgba(13,13,13,0.45);
 }
@@ -541,6 +649,15 @@ h2 em { font-style: italic; }
   letter-spacing: -0.01em;
   margin-bottom: 1.25rem;
   padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.who-col-title {
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  font-weight: 200;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.85rem;
   border-bottom: 1px solid var(--border);
 }
 .not-mono {
@@ -592,11 +709,16 @@ h2 em { font-style: italic; }
 
 .apply-grid {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
+  grid-template-columns: 1fr 1fr;
   gap: 6rem; align-items: start;
 }
 
 .apply-left h2 { margin-bottom: 0.75rem; }
+.apply-left .apply-below {
+  margin-top: 3rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0;
+}
 .apply-timing {
   font-family: 'DM Mono', monospace;
   font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
@@ -833,13 +955,14 @@ footer {
   stroke-width: 2;
 }
 
-/* ── TEAM ── */
-#team {
+/* ── DRAWERS (team / about) ── */
+.team-drawer {
   border-top: 1px solid var(--border);
   max-width: 1080px;
   margin: 0 auto;
   padding: 0 3rem;
 }
+#team, #about { border-top: 1px solid var(--border); }
 .team-toggle {
   width: 100%;
   display: flex; align-items: center; justify-content: space-between;
@@ -861,7 +984,21 @@ footer {
   overflow: hidden;
   transition: max-height 0.52s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.team-body.open { max-height: 260px; }
+.team-body.open { max-height: 320px; }
+#aboutBody.open { max-height: 360px; }
+.about-body {
+  padding: 1.75rem 0 3rem;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.about-body p {
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: rgba(13,13,13,0.62);
+  line-height: 1.82;
+}
 .team-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -901,8 +1038,9 @@ footer {
   nav { padding: 1.2rem 1.5rem; }
   .nav-links li:not(:last-child) { display: none; }
 
-  section { padding: 4rem 1.5rem; }
-  #hero { padding: 6.5rem 1.5rem 4rem; }
+  section { padding: 5rem 1.5rem; min-height: auto; }
+  section:not(#hero)::before { left: 1.5rem; top: 1.5rem; }
+  #hero { padding: 6.5rem 1.5rem 4rem; min-height: 100vh; }
 
   /* diagram: hide SVG, show step list */
   .journey-wrap svg { display: none; }
@@ -927,6 +1065,19 @@ footer {
     background: rgba(13,13,13,0.04);
   }
   .jm-step--apply { border-style: solid; }
+  .jm-step--scout-events,
+  .jm-step--scout-hack {
+    border-color: rgba(236,72,153,0.4);
+    background: rgba(236,72,153,0.05);
+  }
+  .jm-scout-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    color: rgba(190,30,110,0.75);
+    padding: 0.3rem 0;
+    text-align: center;
+  }
   .jm-label {
     font-size: 0.95rem;
     font-weight: 300;
@@ -962,15 +1113,15 @@ footer {
   /* what's in it for you */
   #included .section-inner { max-width: 100%; }
   #included .criteria-list { max-width: 100%; }
-  .popup-box { width: 240px; left: auto; right: 0; }
 
   /* apply */
   .apply-grid { grid-template-columns: 1fr; gap: 3.5rem; }
   .form-row { grid-template-columns: 1fr; gap: 1.35rem; }
 
   /* team */
-  #team { padding: 0 1.5rem; }
+  #team, #about { padding: 0 1.5rem; }
   .team-body.open { max-height: 520px; }
+  #aboutBody.open { max-height: 480px; }
   .team-grid { grid-template-columns: 1fr; }
 
   /* footer */
@@ -978,28 +1129,36 @@ footer {
   .footer-top { flex-direction: column; }
   .footer-addr { text-align: left; }
 
-  /* program heading */
-  .program-what { font-size: clamp(1.5rem, 6vw, 2.2rem); }
+  /* section titles */
+  .section-title { font-size: clamp(1.5rem, 6vw, 2.2rem); }
 
   /* headings */
   h2 { font-size: clamp(1.6rem, 5vw, 2.4rem); }
 
   /* who col label */
   .who-col-label { font-size: 1rem; }
+  .who-col-title { font-size: clamp(1.3rem, 5vw, 1.7rem); }
 }
 </style>
 </head>
 <body>
 
 <div id="cursor"></div>
+<div id="diagramTip"><div class="dtip-title"></div><div class="dtip-body"></div></div>
 
 <!-- ─────────────────── NAV ─────────────────── -->
 <nav>
-  <a href="#" class="nav-brand">HN<sup>12</sup></a>
+  <div class="nav-left">
+    <a href="#" class="nav-brand">HN<sup>12</sup></a>
+    <div id="hnTag">
+      <div class="ss-label">Powered by</div>
+      <div class="hn-name">HackNation</div>
+    </div>
+  </div>
   <ul class="nav-links">
     <li><a href="#program">Program</a></li>
-    <li><a href="#who">Who</a></li>
-    <li><a href="#universities">Universities</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#about">About</a></li>
     <li><a href="#apply" class="nav-apply">Apply</a></li>
   </ul>
 </nav>
@@ -1015,17 +1174,16 @@ footer {
     <p class="hero-desc">You know your campus better than we ever will. We give you the budget and a team of eleven peers from the world's best universities. You find exceptional people and introduce them to our community. At the end, we fly you all out on a trip of your choice.</p>
     <div class="hero-cta">
       <a href="#apply" class="btn-primary">Apply Now</a>
+      <a href="#program" class="btn-learn">or learn more</a>
     </div>
   </div>
   <div class="scroll-hint">Scroll</div>
 </section>
 
 <!-- ─────────────────── PROGRAM ─────────────────── -->
-<section id="program">
+<section id="program" data-n="01 — Program">
   <div class="section-inner">
-    <div class="section-label">The Program</div>
-
-    <div class="program-what reveal">A 6 month fellowship.</div>
+    <div class="section-title reveal">A 6 month fellowship.</div>
 
     <div class="journey-wrap reveal">
       <div class="journey-mobile">
@@ -1039,13 +1197,14 @@ footer {
           <div class="jm-sub">Meet the cohort</div>
         </div>
         <div class="jm-arrow">↓</div>
-        <div class="jm-step">
-          <div class="jm-label">2 events</div>
+        <div class="jm-scout-label">↓ Scout Talent ↓</div>
+        <div class="jm-step jm-step--scout-events">
+          <div class="jm-label">Host 2 events</div>
           <div class="jm-sub">Your format · $1k</div>
         </div>
         <div class="jm-arrow">↓</div>
-        <div class="jm-step">
-          <div class="jm-label">2 hackathons</div>
+        <div class="jm-step jm-step--scout-hack">
+          <div class="jm-label">Host 2 hackathons</div>
           <div class="jm-sub">Fully funded</div>
         </div>
         <div class="jm-arrow">↓</div>
@@ -1055,178 +1214,149 @@ footer {
         </div>
         <div class="jm-note">Above $1k: 25% team · 15% you · 60% HackNation</div>
       </div>
-      <svg width="100%" viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg">
+      <svg width="100%" viewBox="0 0 960 440" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5"
-            markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="rgba(13,13,13,0.4)"
-              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- solid filled arrowhead for main flow -->
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 1L9 5L0 9L2.5 5Z" fill="rgba(13,13,13,0.55)"/>
           </marker>
-          <marker id="arr-dim" viewBox="0 0 10 10" refX="8" refY="5"
-            markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="rgba(13,13,13,0.2)"
-              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- dimmer arrow for secondary paths -->
+          <marker id="arr-dim" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 1L9 5L0 9L2.5 5Z" fill="rgba(13,13,13,0.2)"/>
           </marker>
         </defs>
 
-        <!-- Scout label + overline -->
+        <!-- ── SCOUT TALENT BANNER ── -->
         <g class="j-anim j-d5">
-          <text x="562" y="22" text-anchor="middle"
-            font-family="DM Mono, monospace" font-size="9.5"
-            letter-spacing="0.18em" fill="rgba(13,13,13,0.3)">SCOUT TALENT THROUGHOUT</text>
-          <line x1="182" y1="34" x2="942" y2="34"
-            stroke="rgba(13,13,13,0.1)" stroke-width="0.75" stroke-dasharray="4 3"/>
-          <!-- drop arrows from overline into boxes -->
-          <line x1="264" y1="34" x2="264" y2="78"
-            stroke="rgba(13,13,13,0.15)" stroke-width="0.75"
-            marker-end="url(#arr-dim)"/>
-          <line x1="450" y1="34" x2="450" y2="78"
-            stroke="rgba(13,13,13,0.15)" stroke-width="0.75"
-            marker-end="url(#arr-dim)"/>
-          <line x1="635" y1="34" x2="635" y2="78"
-            stroke="rgba(13,13,13,0.15)" stroke-width="0.75"
-            marker-end="url(#arr-dim)"/>
+          <rect x="182" y="8" width="572" height="52" rx="10"
+            fill="rgba(236,72,153,0.10)" stroke="rgba(236,72,153,0.32)" stroke-width="1"/>
+          <text x="468" y="40" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="12"
+            letter-spacing="0.24em" fill="rgba(190,30,110,0.82)">↓  SCOUT TALENT THROUGHOUT  ↓</text>
         </g>
 
-        <!-- Apply box (clickable) -->
+        <!-- Apply box -->
         <a href="#apply" class="j-apply-link">
-          <g class="j-anim j-d0">
-            <rect class="j-apply-rect" x="12" y="82" width="148" height="96" rx="10"
-              fill="rgba(13,13,13,0.03)"
-              stroke="rgba(13,13,13,0.22)" stroke-width="1"/>
-            <text x="86" y="118" text-anchor="middle" dominant-baseline="central"
+          <g class="j-anim j-d0 j-box" data-box="apply">
+            <rect class="j-apply-rect j-rect" x="12" y="90" width="148" height="88" rx="8"
+              fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.28)" stroke-width="1.5"/>
+            <text x="86" y="126" text-anchor="middle" dominant-baseline="central"
               font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
               fill="rgba(13,13,13,0.88)">Apply</text>
-            <text x="86" y="140" text-anchor="middle" dominant-baseline="central"
-              font-family="DM Mono, monospace" font-size="10.5"
-              fill="rgba(13,13,13,0.42)">by May 31</text>
-            <text x="86" y="160" text-anchor="middle" dominant-baseline="central"
-              font-family="DM Mono, monospace" font-size="9"
-              fill="rgba(13,13,13,0.3)">↓ apply form</text>
+            <text x="86" y="148" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="10"
+              fill="rgba(13,13,13,0.42)">Rolling · by May 31</text>
           </g>
         </a>
 
         <!-- Arrow Apply → Week Zero -->
-        <line class="j-anim j-d0" x1="162" y1="130" x2="182" y2="130"
-          stroke="rgba(13,13,13,0.35)" stroke-width="0.75"
+        <line class="j-anim j-d0" x1="162" y1="134" x2="178" y2="134"
+          stroke="rgba(13,13,13,0.45)" stroke-width="1.5"
           marker-end="url(#arr)"/>
 
         <!-- Week Zero box -->
-        <g class="j-anim j-d1">
-          <rect x="182" y="82" width="162" height="96" rx="10"
-            fill="rgba(13,13,13,0.03)"
-            stroke="rgba(13,13,13,0.18)" stroke-width="1"/>
-          <text x="263" y="118" text-anchor="middle" dominant-baseline="central"
+        <g class="j-anim j-d1 j-box" data-box="weekzero">
+          <rect class="j-rect" x="182" y="90" width="162" height="88" rx="8"
+            fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.2)" stroke-width="1.5"/>
+          <text x="263" y="126" text-anchor="middle" dominant-baseline="central"
             font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
             fill="rgba(13,13,13,0.88)">Week zero</text>
-          <text x="263" y="140" text-anchor="middle" dominant-baseline="central"
-            font-family="DM Mono, monospace" font-size="10.5"
+          <text x="263" y="148" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10"
             fill="rgba(13,13,13,0.42)">Meet the cohort</text>
         </g>
 
         <!-- Arrow Week Zero → 2 Events -->
-        <line class="j-anim j-d1" x1="346" y1="130" x2="366" y2="130"
-          stroke="rgba(13,13,13,0.35)" stroke-width="0.75"
+        <line class="j-anim j-d1" x1="346" y1="134" x2="362" y2="134"
+          stroke="rgba(13,13,13,0.45)" stroke-width="1.5"
           marker-end="url(#arr)"/>
 
         <!-- 2 Events box -->
-        <g class="j-anim j-d2">
-          <rect x="366" y="82" width="168" height="96" rx="10"
-            fill="rgba(13,13,13,0.03)"
-            stroke="rgba(13,13,13,0.2)" stroke-width="1"/>
-          <text x="450" y="118" text-anchor="middle" dominant-baseline="central"
+        <g class="j-anim j-d2 j-box" data-box="events">
+          <rect class="j-rect" x="366" y="90" width="168" height="88" rx="8"
+            fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.2)" stroke-width="1.5"/>
+          <text x="450" y="126" text-anchor="middle" dominant-baseline="central"
             font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
-            fill="rgba(13,13,13,0.88)">2 events</text>
-          <text x="450" y="140" text-anchor="middle" dominant-baseline="central"
-            font-family="DM Mono, monospace" font-size="10.5"
-            fill="rgba(13,13,13,0.42)">Your format · $1k</text>
+            fill="rgba(13,13,13,0.88)">Host 2 events</text>
+          <text x="450" y="148" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10"
+            fill="rgba(13,13,13,0.42)">Your format · $1k budget</text>
         </g>
 
         <!-- Arrow 2 Events → 2 Hackathons -->
-        <line class="j-anim j-d2" x1="536" y1="130" x2="556" y2="130"
-          stroke="rgba(13,13,13,0.35)" stroke-width="0.75"
+        <line class="j-anim j-d2" x1="536" y1="134" x2="552" y2="134"
+          stroke="rgba(13,13,13,0.45)" stroke-width="1.5"
           marker-end="url(#arr)"/>
 
         <!-- 2 Hackathons box -->
-        <g class="j-anim j-d3">
-          <rect x="556" y="82" width="168" height="96" rx="10"
-            fill="rgba(13,13,13,0.03)"
-            stroke="rgba(13,13,13,0.2)" stroke-width="1"/>
-          <text x="640" y="118" text-anchor="middle" dominant-baseline="central"
+        <g class="j-anim j-d3 j-box" data-box="hack">
+          <rect class="j-rect" x="556" y="90" width="168" height="88" rx="8"
+            fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.2)" stroke-width="1.5"/>
+          <text x="640" y="126" text-anchor="middle" dominant-baseline="central"
             font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
-            fill="rgba(13,13,13,0.88)">2 hackathons</text>
-          <text x="640" y="140" text-anchor="middle" dominant-baseline="central"
-            font-family="DM Mono, monospace" font-size="10.5"
-            fill="rgba(13,13,13,0.42)">Fully funded</text>
+            fill="rgba(13,13,13,0.88)">Host 2 hackathons</text>
+          <text x="640" y="148" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10"
+            fill="rgba(13,13,13,0.42)">On campus · co-host ok</text>
         </g>
 
         <!-- Arrow 2 Hackathons → Cohort Trip -->
-        <line class="j-anim j-d3" x1="726" y1="130" x2="746" y2="130"
-          stroke="rgba(13,13,13,0.35)" stroke-width="0.75"
+        <line class="j-anim j-d3" x1="726" y1="134" x2="742" y2="134"
+          stroke="rgba(13,13,13,0.45)" stroke-width="1.5"
           marker-end="url(#arr)"/>
 
-        <!-- Cohort Trip box (larger, animated pulse) -->
-        <g class="j-anim j-cohort">
-          <rect x="746" y="64" width="202" height="132" rx="12"
-            fill="rgba(13,13,13,0.04)"
-            stroke="rgba(13,13,13,0.38)" stroke-width="1.25"/>
-          <text x="847" y="104" text-anchor="middle" dominant-baseline="central"
+        <!-- Cohort Trip box -->
+        <g class="j-anim j-cohort j-box" data-box="trip">
+          <rect class="j-rect" x="746" y="72" width="202" height="120" rx="10"
+            fill="rgba(13,13,13,0.04)" stroke="rgba(13,13,13,0.42)" stroke-width="1.75"/>
+          <text x="847" y="112" text-anchor="middle" dominant-baseline="central"
             font-family="DM Sans, sans-serif" font-size="16" font-weight="400"
             fill="rgba(13,13,13,0.9)">Cohort trip</text>
-          <text x="847" y="126" text-anchor="middle" dominant-baseline="central"
-            font-family="DM Mono, monospace" font-size="10.5"
+          <text x="847" y="134" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10"
             fill="rgba(13,13,13,0.45)">3–5 days · your choice</text>
-          <text x="847" y="146" text-anchor="middle" dominant-baseline="central"
-            font-family="DM Mono, monospace" font-size="10.5"
+          <text x="847" y="152" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10"
             fill="rgba(13,13,13,0.45)">$500 + what you raise</text>
-          <text x="847" y="166" text-anchor="middle" dominant-baseline="central"
-            font-family="DM Mono, monospace" font-size="9.5"
+          <text x="847" y="170" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="9"
             fill="rgba(13,13,13,0.28)">✦ final destination</text>
         </g>
 
-        <!-- Sponsor branch from Week Zero down -->
+        <!-- Sponsor branch (arrow from Host 2 Events) -->
         <g class="j-anim j-d4">
-          <path d="M263 178 L263 264"
-            fill="none" stroke="rgba(13,13,13,0.12)"
-            stroke-width="0.75" stroke-dasharray="4 3"
-            marker-end="url(#arr-dim)"/>
-
-          <!-- Sponsors box -->
-          <rect x="178" y="264" width="340" height="72" rx="10"
-            fill="rgba(13,13,13,0.02)"
-            stroke="rgba(13,13,13,0.15)" stroke-width="1"/>
-          <text x="348" y="290" text-anchor="middle" dominant-baseline="central"
-            font-family="DM Sans, sans-serif" font-size="14" font-weight="400"
-            fill="rgba(13,13,13,0.78)">Get sponsors</text>
-          <text x="348" y="312" text-anchor="middle" dominant-baseline="central"
-            font-family="DM Mono, monospace" font-size="10.5"
-            fill="rgba(13,13,13,0.38)">Every $ saved → trip fund</text>
-
-          <!-- Return arrow sponsors → Cohort Trip -->
-          <path d="M518 300 L847 300 L847 196"
-            fill="none" stroke="rgba(13,13,13,0.12)"
-            stroke-width="0.75" stroke-dasharray="4 3"
-            marker-end="url(#arr-dim)"/>
+          <path d="M450 178 L450 290"
+            fill="none" stroke="rgba(13,13,13,0.18)" stroke-width="1"
+            stroke-dasharray="5 4" marker-end="url(#arr-dim)"/>
+          <g class="j-box" data-box="sponsors">
+            <rect class="j-rect" x="260" y="290" width="380" height="74" rx="8"
+              fill="rgba(13,13,13,0.02)" stroke="rgba(13,13,13,0.15)" stroke-width="1.5"/>
+            <text x="450" y="318" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Sans, sans-serif" font-size="14" font-weight="400"
+              fill="rgba(13,13,13,0.75)">Secure sponsorships</text>
+            <text x="450" y="340" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="10"
+              fill="rgba(13,13,13,0.38)">Every dollar saved → grows the trip fund</text>
+          </g>
+          <path d="M640 327 L847 327 L847 192"
+            fill="none" stroke="rgba(13,13,13,0.18)" stroke-width="1"
+            stroke-dasharray="5 4" marker-end="url(#arr-dim)"/>
         </g>
-
-        <!-- Split label -->
-        <text class="j-anim j-d6" x="480" y="350" text-anchor="middle"
-          font-family="DM Mono, monospace" font-size="8.5"
-          fill="rgba(13,13,13,0.22)" letter-spacing="0.04em">
-          Above $1k: 25% team · 15% you · 60% HackNation
-        </text>
       </svg>
     </div>
 
   </div>
+  <div class="section-scroll">↓</div>
 </section>
 
 <!-- ─────────────────── WHO ─────────────────── -->
-<section id="who">
+<section id="who" data-n="02 — Who">
   <div class="section-inner">
     <div class="who-split">
       <div class="who-col">
-        <div class="who-col-label">Who this is for</div>
+        <div class="who-col-title reveal">Who this is for.</div>
         <div class="criteria-list">
           <div class="criteria-item reveal"><span class="ci-key">Currently enrolled student:</span> you're currently enrolled in an undergrad, master's, or PhD graduating 2027 or later</div>
           <div class="criteria-item reveal"><span class="ci-key">Intellectually curious:</span> you dig deeper than the surface, teach yourself new domains, and follow questions wherever they lead</div>
@@ -1239,7 +1369,7 @@ footer {
 
       <div class="who-divider"></div>
       <div class="who-col who-col--not">
-        <div class="who-col-label">Who this is not for</div>
+        <div class="who-col-title">Who this is not for.</div>
         <div class="criteria-list">
           <div class="criteria-item reveal"><span class="ci-key">You're not a student:</span> if you're not currently enrolled in a degree-seeking program you are unfortunately ineligible to apply for a HN12 fellowship. If you are interested in collaborating with, sponsoring or supporting HN12 please contact us through the form below!</div>
           <div class="criteria-item reveal"><span class="ci-key">You want to be managed closely:</span> there's no playbook. You get a budget, a network, and full creative freedom. What you build with it is up to you.</div>
@@ -1249,33 +1379,92 @@ footer {
       </div>
     </div>
   </div>
+  <div class="section-scroll">↓</div>
 </section>
 
 <!-- ─────────────────── HOW WE BACK YOU ─────────────────── -->
-<section id="included">
+<section id="included" data-n="03 — What's in it for you">
   <div class="section-inner">
-    <div class="who-col-label reveal">What's in it for you</div>
+    <div class="section-title reveal">What's in it for you.</div>
 
     <div class="criteria-list">
-      <div class="criteria-item reveal"><span class="ci-key">A world-class cohort:</span> you'll work alongside peers from the best schools in the world. This is the group you'll scout with, travel with, and possibly be friends with for life. <span class="popup-wrap"><button class="popup-link" onclick="togglePopup(this)">See where we recruit from.</button><div class="popup-box"><div class="popup-title">Target Universities</div><div class="popup-body"><span class="popup-tier">Tier 1</span>Harvard · MIT · Stanford · Oxford · Cambridge<span class="popup-tier">Core Targets</span>Berkeley · Columbia · Princeton · Imperial College · Carnegie Mellon · ETH Zurich · TU Munich · Caltech · NYU · UCLA<span class="popup-tier">High Priority</span>EPFL · Technion · Georgia Tech · U Toronto</div></div></span></div>
-      <div class="criteria-item reveal rd1"><span class="ci-key">A cohort trip:</span> $500 floor — with unlimited upside if you get sponsors to cover your campus events! You pick the destination. One weekend, twelve people, one city. <span class="popup-wrap"><button class="popup-link" onclick="togglePopup(this)">Learn more about the cohort trip math.</button><div class="popup-box"><div class="popup-title">Cohort Trip Math</div><div class="popup-body"><div class="popup-row"><span class="popup-k">Base</span><span class="popup-v">$500 covered by HN12</span></div><div class="popup-row"><span class="popup-k">Events budget</span><span class="popup-v">$1,000 — save on events and it rolls into your trip fund</span></div><div class="popup-row"><span class="popup-k">Sponsorships</span><span class="popup-v">Every dollar you raise above $1k splits: 25% to the cohort trip · 15% to you · 60% to HackNation</span></div><div class="popup-row"><span class="popup-k">Upside</span><span class="popup-v">The more you hustle, the better the trip</span></div></div></div></span></div>
+
+      <div class="criteria-item reveal">
+        <span class="ci-key">A world-class cohort:</span> you'll work alongside peers from the best schools in the world. This is the group you'll scout with, travel with, and possibly be friends with for life. <button class="expand-btn" onclick="toggleDrawer(this, 'drawer-cohort')" aria-expanded="false">See where we recruit from</button>
+        <div class="item-drawer" id="drawer-cohort">
+          <div class="item-drawer-inner">
+            <div class="drawer-tier">USA</div>
+            <div class="drawer-vals">Harvard · MIT · Stanford · Berkeley · Columbia · Princeton · Carnegie Mellon · Caltech · NYU · UCLA · Georgia Tech</div>
+            <div class="drawer-tier">UK</div>
+            <div class="drawer-vals">Oxford · Cambridge · Imperial College</div>
+            <div class="drawer-tier">Other</div>
+            <div class="drawer-vals">ETH Zurich · TU Munich · Technion · U Toronto</div>
+            <div class="drawer-note">Not on this list? We accept applications from any university — select "Not on this list" in the form below.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-item reveal rd1">
+        <span class="ci-key">A cohort trip:</span> $500 floor — with unlimited upside if you get sponsors to cover your campus events! You pick the destination. One weekend, twelve people, one city. <button class="expand-btn" onclick="toggleDrawer(this, 'drawer-trip')" aria-expanded="false">How the math works</button>
+        <div class="item-drawer" id="drawer-trip">
+          <div class="item-drawer-inner">
+            <div class="drawer-row"><span class="drawer-k">Base</span><span class="drawer-v">$500 covered by HN12</span></div>
+            <div class="drawer-row"><span class="drawer-k">Events budget</span><span class="drawer-v">$1,000 — save on events and it rolls into your trip fund</span></div>
+            <div class="drawer-row"><span class="drawer-k">Sponsorships</span><span class="drawer-v">Every dollar above $1k: 25% cohort · 15% you · 60% HN12</span></div>
+            <div class="drawer-row"><span class="drawer-k">Upside</span><span class="drawer-v">The more you hustle, the better the trip</span></div>
+          </div>
+        </div>
+      </div>
+
       <div class="criteria-item reveal rd2"><span class="ci-key">Real skill-building:</span> learn how to assess potential, recognize patterns, understand team dynamics, validate ideas, and build technical fluency across fields.</div>
-      <div class="criteria-item reveal rd3"><span class="ci-key">Warm intros to the industry:</span> founders, accelerators, VCs, tech leaders and our wonderful sponsors. <span class="popup-wrap"><button class="popup-link" onclick="togglePopup(this)">See who our sponsors are.</button><div class="popup-box"><div class="popup-title">Our Sponsors</div><div class="popup-body"><div class="popup-sponsors">OpenAI · Databricks · Lovable · ElevenLabs · Mozilla</div></div></div></span></div>
+
+      <div class="criteria-item reveal rd3">
+        <span class="ci-key">Warm intros to the industry:</span> founders, accelerators, VCs, tech leaders and our wonderful sponsors. <button class="expand-btn" onclick="toggleDrawer(this, 'drawer-sponsors')" aria-expanded="false">See our sponsors</button>
+        <div class="item-drawer" id="drawer-sponsors">
+          <div class="item-drawer-inner">
+            <div class="drawer-vals">OpenAI · Databricks · Lovable · ElevenLabs · Mozilla</div>
+          </div>
+        </div>
+      </div>
+
       <div class="criteria-item reveal"><span class="ci-key">Full flexibility:</span> this fellowship is designed around your schedule. Your academics stay your priority, and we'll never expect you to attend anything that conflicts with school.</div>
+
     </div>
   </div>
+  <div class="section-scroll">↓</div>
 </section>
 
 <!-- ─────────────────── APPLY ─────────────────── -->
-<section id="apply">
+<section id="apply" data-n="04 — Apply">
   <div class="section-inner">
-    <div class="section-label">Apply</div>
-    <p class="batch-label">Batch 01 — Founding Cohort</p>
-
     <div class="apply-grid">
       <div class="apply-left reveal">
-        <h2>Apply until<br><em>May 31st.</em></h2>
-        <p class="apply-timing">Six months. Starts September 2026.</p>
+        <h2 class="section-title">Apply until<br><em>May 31st.</em></h2>
+        <p class="batch-label">Batch 01 — Founding Cohort</p>
+        <p class="apply-timing">Six months · Starts September 2026</p>
+
+        <div class="apply-below" id="applyBelow">
+          <div class="apply-meta-row">
+            <span class="meta-k">Deadline</span>
+            <span class="meta-v">May 31, 2026</span>
+          </div>
+          <div class="apply-meta-row">
+            <span class="meta-k">Duration</span>
+            <span class="meta-v">6 months</span>
+          </div>
+          <div class="apply-meta-row">
+            <span class="meta-k">Spots</span>
+            <span class="meta-v">12 globally</span>
+          </div>
+          <div class="apply-meta-row">
+            <span class="meta-k">Reviews</span>
+            <span class="meta-v">Rolling basis</span>
+          </div>
+          <div class="apply-meta-row">
+            <span class="meta-k">Next step</span>
+            <span class="meta-v">Personal conversation with the team</span>
+          </div>
+        </div>
       </div>
 
       <div class="reveal rd1">
@@ -1297,40 +1486,39 @@ footer {
             <input type="email" id="email" autocomplete="email" placeholder="ada@university.edu">
           </div>
 
-          <div class="form-group">
-            <label for="university">University</label>
-            <select id="university">
-              <option value="" disabled selected>Select your university</option>
-              <optgroup label="Tier 1">
-                <option>Harvard</option>
-                <option>MIT</option>
-                <option>Stanford</option>
-                <option>Oxford</option>
-                <option>Cambridge</option>
-              </optgroup>
-              <optgroup label="Core Targets">
-                <option>Berkeley</option>
-                <option>Columbia</option>
-                <option>Princeton</option>
-                <option>Imperial College London</option>
-                <option>Carnegie Mellon</option>
-                <option>ETH Zurich</option>
-                <option>TU Munich</option>
-                <option>Caltech</option>
-                <option>NYU</option>
-                <option>UCLA</option>
-              </optgroup>
-              <optgroup label="High Priority">
-                <option>EPFL</option>
-                <option>Technion</option>
-                <option>Georgia Tech</option>
-                <option>University of Toronto</option>
-              </optgroup>
-              <option value="other">Other</option>
-            </select>
-          </div>
-
           <div class="form-row">
+            <div class="form-group">
+              <label for="university">University</label>
+              <select id="university" onchange="handleUniversitySelect(this)">
+                <option value="" disabled selected>Select your university</option>
+                <optgroup label="USA">
+                  <option>Harvard</option>
+                  <option>MIT</option>
+                  <option>Stanford</option>
+                  <option>Berkeley</option>
+                  <option>Columbia</option>
+                  <option>Princeton</option>
+                  <option>Carnegie Mellon</option>
+                  <option>Caltech</option>
+                  <option>NYU</option>
+                  <option>UCLA</option>
+                  <option>Georgia Tech</option>
+                </optgroup>
+                <optgroup label="UK">
+                  <option>Oxford</option>
+                  <option>Cambridge</option>
+                  <option>Imperial College London</option>
+                </optgroup>
+                <optgroup label="Other">
+                  <option>ETH Zurich</option>
+                  <option>TU Munich</option>
+                  <option>Technion</option>
+                  <option>University of Toronto</option>
+                </optgroup>
+                <option value="other">Not on this list</option>
+              </select>
+              <input type="text" id="universityOther" placeholder="Your university" style="display:none; margin-top:0.6rem;">
+            </div>
             <div class="form-group">
               <label for="degree">Degree</label>
               <select id="degree">
@@ -1341,9 +1529,16 @@ footer {
                 <option>MBA</option>
               </select>
             </div>
+          </div>
+
+          <div class="form-row">
             <div class="form-group">
               <label for="gradyear">Grad Year</label>
-              <input type="text" id="gradyear" placeholder="2026">
+              <input type="text" id="gradyear" placeholder="2027">
+            </div>
+            <div class="form-group">
+              <label for="languages">Languages spoken</label>
+              <input type="text" id="languages" placeholder="e.g. English, German, Mandarin">
             </div>
           </div>
 
@@ -1353,27 +1548,12 @@ footer {
           </div>
 
           <div class="form-group">
-            <label for="languages">Languages spoken</label>
-            <input type="text" id="languages" placeholder="e.g. English, German, Mandarin">
-          </div>
-
-          <div class="form-group">
             <label>CV / Résumé (PDF)</label>
             <label class="file-label" id="cvLabel" for="cvFile">
               <span class="file-icon">↑ Upload</span>
               <span id="cvFileName">No file chosen</span>
             </label>
             <input type="file" id="cvFile" accept=".pdf,.doc,.docx">
-          </div>
-
-          <div class="form-group">
-            <label>Why you? — Video (60–90 sec)</label>
-            <label class="file-label" id="videoLabel" for="videoFile">
-              <span class="file-icon">↑ Upload</span>
-              <span id="videoFileName">No file chosen</span>
-            </label>
-            <input type="file" id="videoFile" accept="video/*">
-            <p class="file-note">60–90 sec video explaining why you are made for this role. You are free to decide what to include. Seen by the selection committee only.</p>
           </div>
 
           <div class="form-submit">
@@ -1386,31 +1566,32 @@ footer {
           <h3>Application received.</h3>
           <p>We review applications on a rolling basis.<br>Expect to hear from us within two weeks.</p>
         </div>
-
-        <div class="apply-below" id="applyBelow">
-          <div class="apply-meta-row">
-            <span class="meta-k">Deadline</span>
-            <span class="meta-v">May 31, 2026</span>
-          </div>
-          <div class="apply-meta-row">
-            <span class="meta-k">Duration</span>
-            <span class="meta-v">6 months</span>
-          </div>
-          <div class="apply-meta-row">
-            <span class="meta-k">Spots</span>
-            <span class="meta-v">12 globally</span>
-          </div>
-          <p class="apply-rolling">Applications are reviewed on a rolling basis. All promising candidates will be invited for a personal conversation.</p>
-        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─────────────────── TEAM ─────────────────── -->
-<div id="team">
+<!-- ─────────────────── ABOUT ─────────────────── -->
+<div id="about" class="team-drawer">
   <div class="team-inner">
-    <button class="team-toggle" onclick="toggleTeam(this)" aria-expanded="false">
+    <button class="team-toggle" onclick="toggleDrawer(this, 'aboutBody')" aria-expanded="false">
+      <span>About HN12</span>
+      <span class="team-icon" aria-hidden="true">+</span>
+    </button>
+    <div class="team-body" id="aboutBody">
+      <div class="about-body">
+        <p>HN<sup>12</sup> is a talent and venture scout fellowship run by HackNation — a collective of builders, founders, and operators who believe the best ideas come from the right people in the same room.</p>
+        <p>We started HN12 because scouting talent at universities is still largely manual, relationship-driven, and done by people who went to the same three schools. We want to change that by putting scouts on the ground at every great university in the world — people who are already embedded in those communities.</p>
+        <p>HackNation is backed by OpenAI, Databricks, Lovable, ElevenLabs, and Mozilla.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── TEAM ─────────────────── -->
+<div id="team" class="team-drawer">
+  <div class="team-inner">
+    <button class="team-toggle" onclick="toggleDrawer(this, 'teamBody')" aria-expanded="false">
       <span>The Team</span>
       <span class="team-icon" aria-hidden="true">+</span>
     </button>
@@ -1550,13 +1731,14 @@ document.querySelectorAll('.journey-wrap').forEach(el => journeyObs.observe(el))
     const names  = shuffled(UNIVERSITIES).slice(0, 12);
     const safeW  = Math.min(W * 0.26, 300);
     const safeH  = Math.min(H * 0.36, 280);
-    const margin = 52;
-    const minGap = Math.min(W, H) * 0.14;
+    const edgeMargin = Math.max(90, Math.min(W, H) * 0.1); // keep away from screen edges
+    const topMargin  = 110; // extra clearance for nav bar
+    const minGap = Math.min(W, H) * 0.16;
     for (let i = 0; i < 12; i++) {
       let tx, ty, attempts = 0;
       do {
-        tx = margin + Math.random() * (W - margin * 2);
-        ty = margin + Math.random() * (H - margin * 2);
+        tx = edgeMargin + Math.random() * (W - edgeMargin * 2);
+        ty = topMargin  + Math.random() * (H - topMargin - edgeMargin);
         attempts++;
         if (Math.abs(tx - cx) < safeW && Math.abs(ty - cy) < safeH) continue;
         const tooClose = nodes.some(n => {
@@ -1678,13 +1860,61 @@ document.querySelectorAll('.journey-wrap').forEach(el => journeyObs.observe(el))
   requestAnimationFrame(draw);
 })();
 
-// ── TEAM TOGGLE ──
-function toggleTeam(btn) {
-  const body = document.getElementById('teamBody');
+// ── DIAGRAM TOOLTIPS ──
+(function() {
+  const tip = document.getElementById('diagramTip');
+  const tipTitle = tip.querySelector('.dtip-title');
+  const tipBody  = tip.querySelector('.dtip-body');
+  const details = {
+    apply:    { title: 'Apply',            body: 'Applications are reviewed on a rolling basis.\nDeadline: May 31, 2026.\nAll promising candidates get a personal call.' },
+    weekzero: { title: 'Week Zero',        body: 'Virtual kickoff session.\nMeet your 11 cohort members.\nOnboarding, goal-setting & first scout briefing.' },
+    events:   { title: '2 Campus Events',  body: 'Host 2 events at your university.\n$1,000 budget — any format you choose.\nGoal: surface exceptional talent on your campus.' },
+    hack:     { title: '2 Hackathons',     body: 'Host 2 hackathons on your campus — or team up with a nearby scout to co-host.\nFully funded by HN12.\nThis is where you bring your scouted talent.' },
+    trip:     { title: 'Cohort Trip',      body: '3–5 days with your full cohort.\n$500 base covered by HN12.\nUnlimited upside from sponsorships you close.' },
+    sponsors: { title: 'Sponsorships',     body: 'Pitch sponsors to cover your campus events.\nEvery dollar saved rolls into the trip fund.\nAbove $1k: 25% cohort · 15% you · 60% HN12.' },
+  };
+  document.querySelectorAll('.j-box').forEach(el => {
+    el.addEventListener('mouseenter', e => {
+      const key = el.dataset.box;
+      if (!key || !details[key]) return;
+      tipTitle.textContent = details[key].title;
+      tipBody.textContent  = details[key].body;
+      tip.classList.add('visible');
+    });
+    el.addEventListener('mousemove', e => {
+      const pad = 14;
+      let x = e.clientX + pad, y = e.clientY + pad;
+      if (x + 220 > window.innerWidth)  x = e.clientX - 220 - pad;
+      if (y + 160 > window.innerHeight) y = e.clientY - 160 - pad;
+      tip.style.left = x + 'px';
+      tip.style.top  = y + 'px';
+    });
+    el.addEventListener('mouseleave', () => tip.classList.remove('visible'));
+  });
+})();
+
+// ── DRAWER TOGGLE ──
+function toggleDrawer(btn, bodyId) {
+  const body = document.getElementById(bodyId);
   const isOpen = body.classList.contains('open');
   body.classList.toggle('open');
   btn.classList.toggle('open');
   btn.setAttribute('aria-expanded', String(!isOpen));
+}
+// legacy alias
+function toggleTeam(btn) { toggleDrawer(btn, 'teamBody'); }
+
+// ── UNIVERSITY SELECT ──
+function handleUniversitySelect(sel) {
+  const other = document.getElementById('universityOther');
+  if (sel.value === 'other') {
+    other.style.display = 'block';
+    other.required = true;
+  } else {
+    other.style.display = 'none';
+    other.required = false;
+    other.value = '';
+  }
 }
 
 // ── FILE UPLOAD LABELS ──
@@ -1704,21 +1934,8 @@ function bindFile(inputId, labelId, nameId) {
   });
 }
 bindFile('cvFile', 'cvLabel', 'cvFileName');
-bindFile('videoFile', 'videoLabel', 'videoFileName');
 
 
-// ── POPUPS ──
-function togglePopup(btn) {
-  const box = btn.nextElementSibling;
-  const isOpen = box.classList.contains('open');
-  document.querySelectorAll('.popup-box.open').forEach(b => b.classList.remove('open'));
-  if (!isOpen) box.classList.add('open');
-}
-document.addEventListener('click', e => {
-  if (!e.target.closest('.popup-wrap')) {
-    document.querySelectorAll('.popup-box.open').forEach(b => b.classList.remove('open'));
-  }
-});
 
 // ── FORM SUBMISSION ──
 function submitForm() {
