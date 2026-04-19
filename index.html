@@ -1,0 +1,3112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HN¹² — Scout Fellowship</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+
+/* ── RESET ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+:root {
+  --black: #0d0d0d;
+  --white: #f5f5f3;
+  --gray: #6e6e6e;
+  --dim: rgba(13,13,13,0.5);
+  --border: rgba(13,13,13,0.1);
+}
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ── CURSOR ── */
+#cursor { display: none; }
+body.has-cursor { cursor: none; }
+body.has-cursor #cursor {
+  display: block;
+  position: fixed;
+  width: 8px; height: 8px;
+  background: var(--black);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.15s ease, height 0.15s ease,
+              background 0.15s ease, border 0.15s ease;
+}
+body.has-cursor #cursor.grow {
+  width: 34px; height: 34px;
+  background: rgba(13,13,13,0.06);
+  border: 1px solid rgba(13,13,13,0.28);
+}
+body.has-cursor.hero-active #cursor {
+  background: var(--white);
+}
+body.has-cursor.hero-active #cursor.grow {
+  background: rgba(245,245,243,0.06);
+  border: 1px solid rgba(245,245,243,0.28);
+}
+
+/* ── GLOBAL SUP ── */
+sup {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52em;
+  font-weight: 300;
+  vertical-align: super;
+  letter-spacing: 0.02em;
+}
+
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+#hnTag {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  color: var(--white);
+  transition: color 0.3s;
+  border-left: 1px solid rgba(245,245,243,0.18);
+  padding-left: 1.25rem;
+}
+.hn-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+nav.nav-light #hnTag {
+  color: var(--black);
+  border-left-color: rgba(13,13,13,0.15);
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  transition: color 0.3s;
+}
+.nav-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.5rem 3rem;
+}
+.nav-ticker { display: none; } /* mobile-only */
+.nav-brand {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--white); text-decoration: none;
+  transition: color 0.3s;
+}
+.nav-links {
+  display: flex; gap: 2.5rem; list-style: none; align-items: center;
+}
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--white); text-decoration: none; opacity: 0.48;
+  transition: opacity 0.2s, color 0.3s;
+}
+.nav-links a:hover { opacity: 1; }
+.nav-apply {
+  background: var(--white);
+  color: var(--black) !important;
+  padding: 0.45rem 1.15rem;
+  opacity: 1 !important;
+  transition: background 0.3s, color 0.3s !important;
+}
+
+/* nav light state (scrolled past hero) */
+nav.nav-light .nav-brand { color: var(--black); }
+nav.nav-light .nav-links a { color: var(--black); }
+nav.nav-light .nav-apply {
+  background: var(--black);
+  color: var(--white) !important;
+}
+
+/* ── HERO ── */
+#hero {
+  --dim: rgba(245,245,243,0.52);
+  --border: rgba(245,245,243,0.09);
+  background: var(--black);
+  color: var(--white);
+  height: 100vh;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 9rem 3rem 5rem;
+  position: relative;
+  overflow: hidden;
+  border-top: none;
+}
+#hero::before { display: none; }
+#hero::after  { display: none; }
+
+@media (max-width: 820px) {
+  /* clean flat black hero on mobile — no grid, no radial glow */
+  #hero::before { display: none; }
+  #hero::after  { display: none; }
+}
+
+#heroCanvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-inner {
+  position: relative; z-index: 1;
+  max-width: 780px;
+}
+
+.hero-wordmark {
+  font-size: clamp(5.5rem, 14vw, 14rem);
+  font-weight: 200;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  display: inline-block;
+  margin-bottom: 2.5rem;
+}
+.wm-hn {
+  display: inline-block;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: wmFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.3s;
+}
+.wm-12 {
+  display: inline-block;
+  font-size: 0.36em;
+  font-family: 'DM Mono', monospace;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  vertical-align: top;
+  margin-top: 0.1em;
+  opacity: 0;
+  transform: translateY(62%);
+  will-change: transform, opacity;
+  animation: wmLift 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.95s;
+}
+
+.hero-tagline {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245,245,243,0.75);
+  margin-bottom: 2.25rem;
+  opacity: 0;
+  animation: fadeIn 0.7s ease forwards;
+  animation-delay: 1.75s;
+}
+.hero-desc {
+  font-size: 0.96rem; font-weight: 300;
+  color: rgba(245,245,243,0.52); line-height: 1.8;
+  max-width: 600px; margin: 0 auto 2.75rem;
+  opacity: 0;
+  animation: fadeUp 0.7s ease forwards;
+  animation-delay: 2.2s;
+}
+.hero-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0;
+  animation: fadeUp 0.7s ease forwards;
+  animation-delay: 2.4s;
+}
+
+/* scroll hint (hero) */
+.scroll-hint {
+  position: absolute; bottom: 2rem; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.54rem; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--gray);
+  display: flex; align-items: center; gap: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  animation: fadeIn 0.8s ease forwards;
+  animation-delay: 3.1s;
+  z-index: 1;
+}
+.scroll-hint::before {
+  content: '';
+  display: block; width: 22px; height: 1px; background: var(--gray);
+  animation: scrollPulse 2.4s ease-in-out infinite;
+}
+@keyframes scrollPulse { 0%,100%{width:22px} 50%{width:40px} }
+
+/* section scroll indicators */
+.section-scroll {
+  position: absolute; bottom: 2rem; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: rgba(13,13,13,0.18);
+  animation: scrollBob 2s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+@keyframes scrollBob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(4px); }
+}
+
+/* ── BUTTONS ── */
+.btn-primary {
+  display: inline-block;
+  background: var(--white); color: var(--black);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 1rem 2.6rem; text-decoration: none;
+  border: 1px solid var(--white);
+  transition: background 0.25s, color 0.25s;
+}
+.btn-primary:hover { background: transparent; color: var(--white); }
+.btn-learn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.68);
+  text-decoration: none;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+.btn-learn:hover { color: rgba(255,255,255,0.95); text-decoration: underline; }
+
+/* ── SECTION CHROME ── */
+section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 7rem 3rem;
+  border-top: 1px solid rgba(13,13,13,0.14);
+  position: relative;
+}
+
+/* remove individual border-top declarations handled globally now */
+#program, #included, #who, #apply { border-top: 1px solid rgba(13,13,13,0.14); }
+
+.section-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem; letter-spacing: 0.34em; text-transform: uppercase;
+  color: var(--gray); margin-bottom: 3rem;
+  display: flex; align-items: center; gap: 1.5rem;
+}
+.section-label::before {
+  content: '';
+  display: block; width: 26px; height: 1px;
+  background: rgba(13,13,13,0.18); flex-shrink: 0;
+}
+
+/* section counter in top-left corner */
+section:not(#hero)::before {
+  content: attr(data-n);
+  position: absolute;
+  top: 2rem; left: 3rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.48rem;
+  letter-spacing: 0.2em;
+  color: rgba(13,13,13,0.2);
+  text-transform: uppercase;
+}
+
+/* ── SHARED SECTION TITLE ── */
+.section-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 200; line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 2rem;
+}
+.section-title em { font-style: italic; }
+
+h2 { margin-bottom: 0.75rem; }
+h2 em { font-style: italic; }
+
+/* ── PROGRAM ── */
+#program { border-top: 1px solid var(--border); }
+#program .section-title { text-align: center; margin-bottom: 4rem; }
+
+
+.journey-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.journey-wrap svg {
+  min-width: 640px;
+  display: block;
+}
+
+/* SVG box hover */
+.j-box { cursor: default; }
+.j-box .j-rect {
+  transition: stroke 0.18s, fill 0.18s;
+}
+.j-box:hover .j-rect {
+  fill: rgba(13,13,13,0.07);
+  stroke: rgba(13,13,13,0.55);
+}
+
+/* diagram tooltip */
+#diagramTip {
+  display: none;
+  position: fixed;
+  z-index: 300;
+  background: var(--white);
+  border: 1px solid rgba(13,13,13,0.22);
+  box-shadow: 0 4px 20px rgba(13,13,13,0.1);
+  padding: 0.85rem 1.1rem;
+  pointer-events: none;
+  max-width: 220px;
+}
+#diagramTip.visible { display: block; }
+.dtip-title {
+  font-size: 0.82rem; font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.dtip-body {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.03em;
+  color: rgba(13,13,13,0.55);
+  line-height: 1.7;
+}
+
+/* SVG journey animations */
+@keyframes svgFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes cohortGlow {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 1; }
+}
+
+.j-anim { opacity: 0; }
+.journey-wrap.visible .j-anim {
+  animation: svgFadeIn 0.55s ease forwards;
+}
+.journey-wrap.visible .j-d0 { animation-delay: 0s; }
+.journey-wrap.visible .j-d1 { animation-delay: 0.18s; }
+.journey-wrap.visible .j-d2 { animation-delay: 0.34s; }
+.journey-wrap.visible .j-d3 { animation-delay: 0.5s; }
+.journey-wrap.visible .j-d4 { animation-delay: 0.66s; }
+.journey-wrap.visible .j-d5 { animation-delay: 0.82s; }
+.journey-wrap.visible .j-d6 { animation-delay: 1s; }
+
+.journey-wrap.visible .j-cohort {
+  animation: svgFadeIn 0.55s ease 0.66s forwards,
+             cohortGlow 2.8s ease-in-out 2s infinite;
+}
+
+/* Apply box hover */
+.j-apply-link { cursor: pointer; }
+.j-apply-link:hover .j-apply-rect { stroke: rgba(13,13,13,0.55) !important; }
+
+.program-intro {
+  max-width: 560px;
+  margin: 4rem auto 0;
+  text-align: center;
+}
+.program-intro p {
+  font-size: 0.86rem;
+  color: var(--dim);
+  line-height: 1.9;
+  margin-bottom: 0.5rem;
+}
+
+/* ── INCLUDED ── */
+#included { border-top: 1px solid var(--border); }
+
+.included-list {
+  list-style: none;
+  margin-top: 4rem;
+  max-width: 700px;
+}
+.included-item {
+  position: relative;
+  padding: 1.5rem 0 1.5rem 2.1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.94rem;
+  color: rgba(13,13,13,0.68);
+  line-height: 1.82;
+}
+.included-item:first-child { border-top: 1px solid var(--border); }
+.included-item::before {
+  content: '—';
+  position: absolute; left: 0; top: 1.55rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.56rem;
+  color: rgba(13,13,13,0.22);
+}
+
+/* ── WHY 12 ── */
+#why12 { border-top: 1px solid var(--border); }
+
+.quote-block {
+  max-width: 720px;
+  margin-bottom: 4.5rem;
+}
+.quote-text {
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
+  font-weight: 200; font-style: italic;
+  line-height: 1.68; letter-spacing: -0.01em;
+  color: rgba(13,13,13,0.86);
+  margin-bottom: 1rem;
+}
+.quote-footnote {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.54rem; letter-spacing: 0.04em;
+  color: rgba(13,13,13,0.3);
+  margin-top: 0.7rem; line-height: 1.65;
+}
+
+/* ── WHO ── */
+#who { border-top: 1px solid var(--border); }
+
+.who-body {
+  font-size: 1.1rem; font-weight: 300;
+  color: var(--black);
+  letter-spacing: -0.01em;
+  text-align: center;
+  margin: 0 auto 2.5rem;
+  padding: 1.1rem 2rem;
+  border: 1px solid var(--border);
+  max-width: fit-content;
+}
+
+.criteria-list {
+  max-width: 660px;
+}
+.criteria-item {
+  padding: 0.6rem 0 0.6rem 1.1rem;
+  border-bottom: none;
+}
+.ci-key {
+  font-weight: 600;
+}
+
+/* ── INCLUDED ── */
+#included .section-inner {
+  max-width: 720px;
+}
+#included { align-items: center; }
+
+/* ── ITEM DRAWERS ── */
+.expand-btn {
+  background: none; border: none; padding: 0;
+  cursor: pointer;
+  font-family: inherit; font-size: inherit; font-weight: inherit;
+  color: var(--black);
+  text-decoration: underline;
+  text-decoration-color: rgba(13,13,13,0.3);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.2s;
+}
+.expand-btn:hover, .expand-btn.open {
+  text-decoration-color: rgba(13,13,13,0.75);
+}
+.item-drawer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.item-drawer.open { max-height: 400px; }
+.item-drawer-inner {
+  border: 1px solid rgba(13,13,13,0.11);
+  margin-top: 0.85rem;
+  margin-bottom: 0.2rem;
+  padding: 1rem 1.25rem;
+  background: rgba(13,13,13,0.018);
+}
+.drawer-tier {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(13,13,13,0.38);
+  margin-bottom: 0.3rem;
+  margin-top: 0.75rem;
+}
+.drawer-tier:first-child { margin-top: 0; }
+.drawer-vals {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: rgba(13,13,13,0.62);
+  line-height: 1.7;
+}
+.drawer-row {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: 0.75rem;
+  padding: 0.42rem 0;
+  border-bottom: 1px solid rgba(13,13,13,0.06);
+  align-items: baseline;
+}
+.drawer-row:last-child { border-bottom: none; }
+.drawer-k {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(13,13,13,0.38);
+}
+.drawer-v {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: rgba(13,13,13,0.62);
+  line-height: 1.6;
+}
+.drawer-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.56rem;
+  color: rgba(13,13,13,0.38);
+  line-height: 1.65;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(13,13,13,0.07);
+  font-style: italic;
+}
+.who-col--not .who-col-label,
+.who-col--not .who-col-title,
+.who-col--not .criteria-item {
+  color: rgba(13,13,13,0.45);
+}
+.who-col--not .ci-key {
+  color: rgba(13,13,13,0.55);
+}
+
+/* ── WHO SPLIT ── */
+.who-split {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0 3rem;
+  align-items: start;
+}
+.who-divider {
+  background: var(--border);
+  align-self: stretch;
+}
+.who-col { padding: 0; }
+.who-col .criteria-list { max-width: none; border-top: none; }
+.who-col-label {
+  font-size: 1.15rem; font-weight: 300;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.who-col-title {
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  font-weight: 200;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+.not-mono {
+  font-weight: 600;
+}
+.criteria-item {
+  padding: 0.6rem 0 0.6rem 1.1rem;
+  border-bottom: none;
+  position: relative;
+}
+.criteria-item::before {
+  content: '•';
+  position: absolute; left: 0; top: 0.62rem;
+  font-size: 0.7rem;
+  color: rgba(13,13,13,0.35);
+}
+
+@media (max-width: 820px) {
+  .who-split { grid-template-columns: 1fr; gap: 2.5rem; }
+  .who-divider { display: none; }
+}
+
+/* ── UNIVERSITIES ── */
+#universities { border-top: 1px solid var(--border); }
+
+.uni-grid {
+  display: flex; flex-wrap: wrap;
+  gap: 3px; margin-top: 4rem;
+}
+.uni-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.58rem 1rem;
+  border: 1px solid rgba(13,13,13,0.12);
+  color: rgba(13,13,13,0.35);
+  transition: color 0.2s, border-color 0.2s;
+}
+.uni-tag.t1 {
+  color: rgba(13,13,13,0.82);
+  border-color: rgba(13,13,13,0.32);
+}
+.uni-tag:hover {
+  color: var(--black);
+  border-color: rgba(13,13,13,0.5);
+}
+
+/* ── APPLY ── */
+#apply { border-top: 1px solid var(--border); }
+
+.apply-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem; align-items: start;
+}
+
+.apply-left h2 { margin-bottom: 0.75rem; }
+.apply-left .apply-below {
+  margin-top: 3rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0;
+}
+.apply-timing {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gray);
+}
+
+/* form */
+.apply-form { display: flex; flex-direction: column; gap: 1.35rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.45rem; }
+
+label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.54rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gray);
+}
+
+input, select, textarea {
+  background: transparent;
+  border: none; border-bottom: 1px solid var(--border);
+  color: var(--black);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.93rem; font-weight: 300;
+  padding: 0.7rem 0;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  appearance: none; -webkit-appearance: none;
+}
+input::placeholder, textarea::placeholder { color: rgba(13,13,13,0.25); }
+input:focus, select:focus, textarea:focus { border-bottom-color: rgba(13,13,13,0.55); }
+input.err, select.err { border-bottom-color: rgba(180,40,40,0.7); }
+
+select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+  padding-right: 1.2rem;
+}
+select option { background: var(--white); color: var(--black); }
+
+textarea { resize: none; min-height: 88px; }
+
+/* file upload */
+.file-label {
+  display: flex; align-items: center; gap: 0.9rem;
+  border-bottom: 1px solid var(--border);
+  padding: 0.7rem 0;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  color: rgba(13,13,13,0.28);
+  font-size: 0.93rem; font-weight: 300;
+}
+.file-label:hover { border-bottom-color: rgba(13,13,13,0.45); }
+.file-label.has-file { color: var(--black); }
+.file-icon {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.56rem; color: var(--gray);
+  border: 1px solid var(--border);
+  padding: 0.2rem 0.5rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  white-space: nowrap; flex-shrink: 0;
+}
+input[type="file"] { display: none; }
+.file-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.53rem; letter-spacing: 0.04em;
+  color: rgba(13,13,13,0.3); margin-top: 0.4rem;
+  line-height: 1.65;
+}
+
+/* submit */
+.form-submit { margin-top: 0.5rem; }
+.btn-submit {
+  background: var(--black); color: var(--white);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 1rem 2.5rem;
+  border: 1px solid var(--black);
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s;
+}
+.btn-submit:hover { background: transparent; color: var(--black); }
+
+/* below form */
+.apply-below {
+  margin-top: 2.5rem;
+  display: flex; flex-direction: column; gap: 0.6rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--border);
+}
+.apply-meta-row {
+  display: flex; gap: 1.25rem; align-items: baseline;
+}
+.meta-k {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.54rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--gray); flex-shrink: 0; width: 5rem;
+}
+.meta-v {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.04em;
+  color: rgba(13,13,13,0.5);
+}
+.apply-rolling {
+  margin-top: 1rem;
+  font-size: 0.82rem; color: rgba(13,13,13,0.38);
+  line-height: 1.7;
+}
+
+/* success */
+.form-success {
+  display: none;
+  padding: 3rem 0;
+}
+.success-ring {
+  width: 44px; height: 44px;
+  border: 1px solid rgba(13,13,13,0.5);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+.form-success h3 {
+  font-size: 1.4rem; font-weight: 300;
+  letter-spacing: -0.01em; margin-bottom: 0.75rem;
+}
+.form-success p {
+  font-size: 0.9rem; color: var(--dim); line-height: 1.7;
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 3rem;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+.footer-top {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 2rem;
+  margin-bottom: 2rem;
+}
+.footer-left { display: flex; flex-direction: column; gap: 0.55rem; }
+.footer-line {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.1em;
+  color: rgba(13,13,13,0.35);
+}
+.footer-addr {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.54rem; letter-spacing: 0.08em;
+  color: rgba(13,13,13,0.22);
+  text-align: right; line-height: 1.82;
+}
+.footer-copy {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem; letter-spacing: 0.08em;
+  color: rgba(13,13,13,0.18);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(13,13,13,0.06);
+}
+
+/* ── KEYFRAMES ── */
+@keyframes wmFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes wmLift {
+  0%  { opacity: 0; transform: translateY(62%); }
+  28% { opacity: 0.75; }
+  100%{ opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes shake {
+  0%,100%{ transform: translateX(0); }
+  25%    { transform: translateX(-5px); }
+  75%    { transform: translateX(5px); }
+}
+
+/* scroll-reveal */
+.reveal {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+  will-change: transform, opacity;
+}
+.reveal.visible {
+  opacity: 1; transform: translateY(0);
+  will-change: auto;
+}
+.rd1 { transition-delay: 0.1s; }
+.rd2 { transition-delay: 0.2s; }
+.rd3 { transition-delay: 0.3s; }
+.rd4 { transition-delay: 0.4s; }
+
+/* ── SPONSORS ── */
+#sponsors {
+  padding: 5rem 3rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.sponsors-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.54rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gray); margin-bottom: 2.5rem;
+}
+.sponsors-row {
+  display: flex; flex-wrap: wrap;
+  justify-content: center; align-items: center;
+  gap: 2rem 4.5rem;
+}
+.sponsor-item {
+  opacity: 0.45;
+  transition: opacity 0.25s;
+  line-height: 0;
+}
+.sponsor-item:hover { opacity: 1; }
+.sponsor-item svg {
+  height: 28px; width: auto;
+  fill: var(--black);
+  display: block;
+}
+.logo-stroke {
+  fill: none !important;
+  stroke: var(--black);
+  stroke-width: 2;
+}
+
+/* ── DRAWERS (team / about) ── */
+.team-drawer {
+  border-top: 1px solid var(--border);
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 3rem;
+}
+#team, #about { border-top: 1px solid var(--border); }
+.team-toggle {
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 2rem 0;
+  background: none; border: none; color: var(--black);
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+  transition: opacity 0.2s;
+}
+.team-toggle:hover { opacity: 0.62; }
+.team-icon {
+  font-size: 1.1rem; font-weight: 300; line-height: 1;
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.team-toggle.open .team-icon { transform: rotate(45deg); }
+.team-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.team-body.open { max-height: 320px; }
+#aboutBody.open { max-height: 360px; }
+#faqBody.open { max-height: 1600px; }
+
+/* ── DESKTOP FAQ (inside team-drawer collapsible) ── */
+.faq-body {
+  padding: 1rem 0 3rem;
+  max-width: 720px;
+}
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+.faq-item:first-child {
+  border-top: 1px solid var(--border);
+}
+.faq-q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.15rem 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  letter-spacing: -0.005em;
+  line-height: 1.45;
+  color: var(--black);
+  text-align: left;
+  transition: opacity 0.2s;
+}
+.faq-q:hover { opacity: 0.68; }
+.faq-q em { font-style: italic; color: rgba(13,13,13,0.68); }
+.faq-icon {
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1;
+  color: rgba(13,13,13,0.45);
+  flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.faq-q.open .faq-icon { transform: rotate(45deg); }
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.faq-a.open { max-height: 600px; }
+.faq-a > p,
+.faq-a > ul {
+  padding: 0.2rem 0 1.3rem;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: rgba(13,13,13,0.62);
+}
+.faq-sublist {
+  list-style: none;
+  padding: 0.2rem 0 1.3rem;
+  margin: 0;
+}
+.faq-sublist li {
+  padding: 0.5rem 0;
+  font-size: 0.88rem;
+  line-height: 1.75;
+  color: rgba(13,13,13,0.62);
+}
+.faq-sublist .faq-k {
+  font-weight: 600;
+  color: rgba(13,13,13,0.82);
+}
+.about-body {
+  padding: 1.75rem 0 3rem;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.about-body p {
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: rgba(13,13,13,0.62);
+  line-height: 1.82;
+}
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding: 2rem 0 3rem;
+}
+.member-name {
+  font-size: 0.93rem; font-weight: 300;
+  margin-bottom: 0.3rem;
+}
+.member-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.56rem; letter-spacing: 0.04em;
+  color: var(--dim); margin-bottom: 0.75rem; line-height: 1.6;
+}
+.member-li {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.54rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gray); text-decoration: none;
+  transition: color 0.2s;
+}
+.member-li:hover { color: var(--black); }
+
+/* ── BATCH ── */
+.batch-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(13,13,13,0.3);
+  margin-bottom: 3rem;
+}
+
+/* ── MOBILE BOOT SPLASH ── */
+#bootSplash { display: none; }
+
+/* mobile-only elements hidden on desktop */
+.m-about { display: none; }
+.m-about-header { display: none; }
+.mini-drawer { display: contents; }
+.mini-drawer-toggle { display: none; }
+.mini-drawer-body { display: contents; }
+/* the legacy inline mobile steps and the mobile diagram wrapper never render on desktop */
+.journey-mobile { display: none; }
+
+@media (max-width: 820px) {
+  #bootSplash {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: #0d0d0d;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  #bootSplash.boot-done {
+    opacity: 0;
+    transition: opacity 0.45s ease;
+  }
+  #bootSplash.boot-gone { display: none; }
+  .boot-mark {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 200;
+    font-size: 4.5rem;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: #f5f5f3;
+  }
+  .boot-mark sup {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.36em;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    vertical-align: top;
+    margin-top: 0.1em;
+  }
+  body.booting .wm-hn,
+  body.booting .wm-12,
+  body.booting .hero-tagline,
+  body.booting .hero-desc,
+  body.booting .hero-cta,
+  body.booting .scroll-hint {
+    animation-play-state: paused;
+    opacity: 0;
+  }
+
+  /* ── MOBILE NAV BAR — single row: logo+tag · ticker · apply ── */
+  nav {
+    background: var(--white);
+    border-bottom: 1px solid rgba(13,13,13,0.08);
+    padding: 0;
+  }
+  .nav-row {
+    padding: 0.6rem 0.85rem;
+    gap: 0.65rem;
+  }
+  nav .nav-brand,
+  nav.nav-light .nav-brand { color: var(--black); }
+  nav .nav-links a,
+  nav.nav-light .nav-links a { color: var(--black); }
+  nav .nav-apply,
+  nav.nav-light .nav-apply {
+    background: var(--black);
+    color: var(--white) !important;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.18em;
+  }
+  .nav-brand { font-size: 0.7rem; letter-spacing: 0.14em; }
+  .nav-links { gap: 0; flex-shrink: 0; }
+  .nav-links li:not(:last-child) { display: none; }
+
+  /* left cluster: HN12 + compact "Powered by HackNation" */
+  .nav-left {
+    flex-shrink: 0;
+    gap: 0.55rem;
+    align-items: center;
+  }
+  nav #hnTag {
+    display: flex;
+    color: var(--black);
+    border-left: 1px solid rgba(13,13,13,0.12);
+    padding-left: 0.55rem;
+    gap: 0;
+  }
+  nav #hnTag .ss-label,
+  nav #hnTag .hn-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.4rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.35;
+  }
+  nav #hnTag .ss-label { opacity: 0.42; }
+  nav #hnTag .hn-name { opacity: 0.75; }
+
+  /* sponsor ticker — fills the middle */
+  .nav-ticker {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    flex: 1 1 auto;
+    min-width: 0; /* allow shrinking in flex */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
+  }
+  .nav-ticker-track {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    white-space: nowrap;
+    animation: tickerScroll 55s linear infinite;
+    will-change: transform;
+  }
+  .nav-ticker-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.46rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(13,13,13,0.3);
+  }
+  .nav-ticker-dot {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    color: rgba(13,13,13,0.16);
+  }
+  @keyframes tickerScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-ticker-track { animation: none; }
+  }
+
+  /* ── MOBILE DIAGRAM COLLAPSIBLE (inside program overview card) ── */
+  .m-diagram {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(13,13,13,0.08);
+  }
+  .m-diagram-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: none;
+    border: none;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(13,13,13,0.65);
+  }
+  .m-diagram-icon {
+    font-size: 1.1rem;
+    font-weight: 300;
+    line-height: 1;
+    color: rgba(13,13,13,0.5);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .m-diagram-toggle.open .m-diagram-icon { transform: rotate(45deg); }
+  .m-diagram-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .m-diagram-body.open {
+    max-height: 500px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+  .m-diagram-svg {
+    display: block;
+    /* fixed min-width so the diagram stays legible; user swipes horizontally */
+    min-width: 720px;
+    height: auto;
+  }
+
+  /* ── MOBILE /ABOUT CARD SYSTEM ── */
+  /* hide the original desktop sections on mobile — replaced by .m-about cards */
+  #program,
+  #who,
+  #included,
+  #apply,
+  #faq { display: none !important; }
+
+  /* the mobile /about container */
+  .m-about {
+    display: block;
+    padding: 3rem 1rem 2rem;
+    background: var(--white);
+  }
+
+  /* each card is a slightly lighter/whiter surface than the page */
+  .m-card {
+    background: #ffffff;
+    border: 1px solid rgba(13,13,13,0.11);
+    border-radius: 14px;
+    padding: 1.75rem 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(13,13,13,0.03);
+  }
+
+  /* eyebrow label: /section-name */
+  .m-card-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+    color: rgba(13,13,13,0.45);
+    margin-bottom: 1.25rem;
+  }
+
+  /* optional card title (only used on Apply + FAQ cards for emphasis) */
+  .m-card-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 300;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    color: var(--black);
+    margin-bottom: 0.75rem;
+  }
+
+  .m-card-lede {
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: rgba(13,13,13,0.72);
+    margin-bottom: 1.25rem;
+  }
+
+  /* step bullets (program overview) */
+  .m-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .m-steps li {
+    position: relative;
+    padding: 0.7rem 0 0.7rem 1.1rem;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: rgba(13,13,13,0.72);
+    border-bottom: 1px solid rgba(13,13,13,0.07);
+  }
+  .m-steps li:last-child { border-bottom: none; }
+  .m-steps li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 1.1rem;
+    width: 0.35rem; height: 1px;
+    background: rgba(13,13,13,0.3);
+  }
+  .m-steps strong,
+  .m-criteria strong {
+    color: var(--black);
+    font-weight: 500;
+  }
+
+  /* criteria bullets (who / what you can expect) */
+  .m-criteria {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .m-criteria li {
+    padding: 0.7rem 0;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: rgba(13,13,13,0.72);
+    border-bottom: 1px solid rgba(13,13,13,0.07);
+  }
+  .m-criteria li:last-child { border-bottom: none; }
+
+  /* ── MOBILE FORM ── */
+  .m-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    margin-top: 0.5rem;
+  }
+  .m-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .m-form label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(13,13,13,0.5);
+  }
+  .m-form input,
+  .m-form select {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(13,13,13,0.15);
+    color: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; /* prevent iOS zoom */
+    font-weight: 300;
+    padding: 0.55rem 0;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    appearance: none; -webkit-appearance: none;
+  }
+  .m-form input::placeholder { color: rgba(13,13,13,0.28); }
+  .m-form input:focus,
+  .m-form select:focus { border-bottom-color: rgba(13,13,13,0.55); }
+  .m-form input.err,
+  .m-form select.err { border-bottom-color: rgba(180,40,40,0.7); }
+  .m-form select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0 center;
+    padding-right: 1.2rem;
+  }
+  .m-form select option { background: #ffffff; color: var(--black); }
+
+  .m-file-label {
+    display: flex; align-items: center; gap: 0.9rem;
+    border-bottom: 1px solid rgba(13,13,13,0.15);
+    padding: 0.55rem 0;
+    cursor: pointer;
+    color: rgba(13,13,13,0.38);
+    font-size: 16px;
+    font-weight: 300;
+  }
+  .m-file-label.has-file { color: var(--black); }
+  .m-file-icon {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.56rem; color: rgba(13,13,13,0.5);
+    border: 1px solid rgba(13,13,13,0.15);
+    padding: 0.25rem 0.55rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .m-form input[type="file"] { display: none; }
+
+  .m-submit {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 1rem;
+    border: 1px solid var(--black);
+    border-radius: 999px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.75rem;
+    transition: background 0.25s, color 0.25s;
+  }
+  .m-submit:hover { background: transparent; color: var(--black); }
+
+  .m-form-success { display: none; padding: 1.5rem 0; }
+  .m-form-success.visible { display: block; }
+  .m-form-success .success-ring {
+    width: 44px; height: 44px;
+    border: 1px solid rgba(13,13,13,0.5);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .m-form-success h3 {
+    font-size: 1.15rem; font-weight: 300;
+    letter-spacing: -0.01em; margin-bottom: 0.5rem;
+  }
+  .m-form-success p {
+    font-size: 0.85rem; color: rgba(13,13,13,0.55); line-height: 1.7;
+  }
+
+  /* ── MOBILE FAQ ── */
+  .m-faq {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .m-faq-item {
+    border-bottom: 1px solid rgba(13,13,13,0.08);
+  }
+  .m-faq-item:last-child { border-bottom: none; }
+  .m-faq-q {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--black);
+    text-align: left;
+  }
+  .m-faq-q em { font-style: italic; color: rgba(13,13,13,0.7); }
+  .m-faq-icon {
+    font-size: 1.2rem;
+    font-weight: 300;
+    line-height: 1;
+    color: rgba(13,13,13,0.5);
+    flex-shrink: 0;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .m-faq-q.open .m-faq-icon { transform: rotate(45deg); }
+  .m-faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .m-faq-a.open { max-height: 800px; }
+  .m-faq-a > p,
+  .m-faq-a > ul {
+    padding: 0 0 1.1rem;
+    font-size: 0.86rem;
+    line-height: 1.75;
+    color: rgba(13,13,13,0.68);
+  }
+  .m-faq-sublist {
+    list-style: none;
+    padding: 0 0 1.1rem;
+    margin: 0;
+  }
+  .m-faq-sublist li {
+    padding: 0.55rem 0;
+    font-size: 0.86rem;
+    line-height: 1.7;
+    color: rgba(13,13,13,0.68);
+    border-bottom: 1px solid rgba(13,13,13,0.05);
+  }
+  .m-faq-sublist li:last-child { border-bottom: none; }
+  .m-faq-sublist strong { color: var(--black); font-weight: 500; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 820px) {
+  section { padding: 4.5rem 1.25rem; min-height: auto; }
+  section:not(#hero)::before { left: 1.25rem; top: 1.25rem; }
+
+  /* hero */
+  #hero {
+    padding: 7rem 1.25rem 5rem;
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+  .hero-tagline {
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 1.75rem;
+    padding: 0 0.5rem;
+  }
+  .hero-desc {
+    font-size: 0.86rem;
+    line-height: 1.75;
+    margin-bottom: 2.25rem;
+    padding: 0 0.25rem;
+  }
+  .btn-primary {
+    padding: 0.9rem 2.2rem;
+    font-size: 0.64rem;
+  }
+  .scroll-hint {
+    font-size: 0.48rem;
+    letter-spacing: 0.22em;
+    bottom: 1.5rem;
+  }
+
+  /* section titles + headings */
+  .section-title { font-size: clamp(1.5rem, 6vw, 2.2rem); }
+  h2 { font-size: clamp(1.6rem, 5vw, 2.4rem); }
+
+  /* who section */
+  .who-split { grid-template-columns: 1fr; gap: 2.5rem; }
+  .who-divider { display: none; }
+  .who-body {
+    max-width: 100%;
+    font-size: 1rem;
+    padding: 1rem 1.25rem;
+  }
+  .who-col-label { font-size: 1rem; }
+  .who-col-title { font-size: clamp(1.3rem, 5vw, 1.7rem); }
+  .criteria-item {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    padding: 0.55rem 0 0.55rem 1rem;
+  }
+
+  /* who section — mobile: restore full contrast (no dimming), add separator between cols */
+  .who-col--not .who-col-label,
+  .who-col--not .who-col-title,
+  .who-col--not .criteria-item {
+    color: rgba(13,13,13,0.72);
+  }
+  .who-col--not .ci-key {
+    color: var(--black);
+  }
+  .who-col--not {
+    margin-top: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* what's in it for you */
+  #included .section-inner { max-width: 100%; }
+  #included .criteria-list { max-width: 100%; }
+  .included-item {
+    font-size: 0.88rem;
+    line-height: 1.75;
+    padding: 1.25rem 0 1.25rem 1.75rem;
+  }
+  .included-item::before { top: 1.3rem; }
+
+  /* expand buttons */
+  .expand-btn {
+    display: inline-block;
+    margin-top: 0.35rem;
+    font-size: 0.85rem;
+  }
+
+  /* drawer rows stack */
+  .item-drawer.open { max-height: 600px; }
+  .item-drawer-inner { padding: 0.9rem 1rem; }
+  .drawer-row {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+    padding: 0.55rem 0;
+  }
+  .drawer-v { font-size: 0.66rem; }
+
+  /* apply layout */
+  .apply-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .form-row { grid-template-columns: 1fr; gap: 1.35rem; }
+  .apply-meta-row {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(13,13,13,0.05);
+  }
+  .apply-meta-row:last-child { border-bottom: none; }
+  .meta-k { width: auto; }
+  .btn-submit { width: 100%; padding: 1rem 1rem; }
+  .file-label { flex-wrap: wrap; gap: 0.7rem; }
+
+  /* universities */
+  .uni-grid { margin-top: 2.5rem; gap: 2px; }
+  .uni-tag {
+    font-size: 0.56rem;
+    padding: 0.5rem 0.75rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* team/about drawers */
+  #team, #about { padding: 0 1.25rem; }
+  .team-toggle {
+    padding: 1.5rem 0;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+  }
+  .team-body.open { max-height: 520px; }
+  #aboutBody.open { max-height: 560px; }
+  .team-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding: 1.5rem 0 2.5rem;
+  }
+  .about-body { padding: 1.25rem 0 2.5rem; }
+  .about-body p { font-size: 0.86rem; line-height: 1.8; }
+
+  /* sponsors */
+  #sponsors { padding: 3.5rem 1.25rem; }
+  .sponsors-row { gap: 1.5rem 2.5rem; }
+  .sponsor-item svg { height: 22px; }
+
+  /* footer */
+  footer { padding: 2.5rem 1.25rem; }
+  .footer-top {
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .footer-addr { text-align: left; }
+
+  /* quote */
+  .quote-block { margin-bottom: 3rem; }
+  .quote-text { font-size: clamp(1rem, 4.5vw, 1.3rem); line-height: 1.6; }
+}
+
+@media (max-width: 380px) {
+  nav { padding: 0; }
+  .nav-row { padding: 0.55rem 0.7rem; gap: 0.5rem; }
+  .nav-brand { font-size: 0.66rem; }
+  .nav-apply { padding: 0.4rem 0.7rem; font-size: 0.48rem; }
+  nav #hnTag .ss-label,
+  nav #hnTag .hn-name { font-size: 0.36rem; }
+  .nav-ticker-item { font-size: 0.42rem; letter-spacing: 0.16em; }
+  section { padding: 4rem 1rem; }
+  section:not(#hero)::before { left: 1rem; top: 1rem; }
+  #hero { padding: 6rem 1rem 4.5rem; }
+  .hero-desc { font-size: 0.82rem; }
+  #team, #about { padding: 0 1rem; }
+  footer { padding: 2rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="bootSplash" aria-hidden="true"><div class="boot-mark">HN<sup>12</sup></div></div>
+
+<div id="cursor"></div>
+<div id="diagramTip"><div class="dtip-title"></div><div class="dtip-body"></div></div>
+
+<!-- ─────────────────── NAV ─────────────────── -->
+<nav>
+  <div class="nav-row">
+    <div class="nav-left">
+      <a href="#" class="nav-brand">HN<sup>12</sup></a>
+      <div id="hnTag">
+        <div class="ss-label">Powered by</div>
+        <div class="hn-name">HackNation</div>
+      </div>
+    </div>
+    <div class="nav-ticker" aria-hidden="true">
+      <div class="nav-ticker-track">
+        <span class="nav-ticker-item">Backed by</span>
+        <span class="nav-ticker-dot">·</span>
+        <span class="nav-ticker-item">OpenAI</span>
+        <span class="nav-ticker-dot">·</span>
+        <span class="nav-ticker-item">Databricks</span>
+        <span class="nav-ticker-dot">·</span>
+        <span class="nav-ticker-item">Lovable</span>
+        <span class="nav-ticker-dot">·</span>
+        <span class="nav-ticker-item">ElevenLabs</span>
+        <span class="nav-ticker-dot">·</span>
+        <span class="nav-ticker-item">Mozilla</span>
+        <span class="nav-ticker-dot">·</span>
+        <span class="nav-ticker-item">Backed by</span>
+        <span class="nav-ticker-dot">·</span>
+        <span class="nav-ticker-item">OpenAI</span>
+        <span class="nav-ticker-dot">·</span>
+        <span class="nav-ticker-item">Databricks</span>
+        <span class="nav-ticker-dot">·</span>
+        <span class="nav-ticker-item">Lovable</span>
+        <span class="nav-ticker-dot">·</span>
+        <span class="nav-ticker-item">ElevenLabs</span>
+        <span class="nav-ticker-dot">·</span>
+        <span class="nav-ticker-item">Mozilla</span>
+        <span class="nav-ticker-dot">·</span>
+      </div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#program">Program</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#apply" class="nav-apply">Apply</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─────────────────── HERO ─────────────────── -->
+<section id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-inner">
+    <div class="hero-wordmark">
+      <span class="wm-hn">HN</span><span class="wm-12">12</span>
+    </div>
+    <p class="hero-tagline">Talent & Venture Scout Program</p>
+    <p class="hero-desc">You know your campus better than we ever will. We give you the budget and a team of eleven peers from the world's best universities. You find exceptional people and introduce them to our community. At the end, we fly you all out on a trip of your choice.</p>
+    <div class="hero-cta">
+      <a href="#apply" class="btn-primary">Apply Now</a>
+      <a href="#program" class="btn-learn">or learn more</a>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<!-- ═════════════════════════════════════════════════════════
+     MOBILE-ONLY /ABOUT VIEW — hidden on desktop
+     Replaces the Program / Who / Included / Apply sections
+     with a unified card-based flow
+     ═════════════════════════════════════════════════════════ -->
+<div class="m-about" id="m-about">
+
+  <!-- /program overview -->
+  <article class="m-card">
+    <div class="m-card-eyebrow">/ program overview</div>
+    <p class="m-card-lede">A six-month fellowship for twelve students from the world's best universities. We give you the budget and a cohort; you find exceptional people on your campus and bring them into our community.</p>
+    <ul class="m-steps">
+      <li><strong>Apply</strong>: rolling basis, deadline May 31, 2026. Promising candidates get a personal interview.</li>
+      <li><strong>Week zero</strong>: virtual kickoff, meet your 11 cohort members, first scout briefing.</li>
+      <li><strong>Host 2 campus events</strong>: any format, $1,000 budget. Goal: surface exceptional talent.</li>
+      <li><strong>Host 2 hackathons</strong>: on your campus or co-hosted with a nearby scout. Fully funded.</li>
+      <li><strong>Secure sponsorships</strong>: every dollar a sponsor covers rolls into your trip fund.</li>
+      <li><strong>Cohort trip</strong>: 3–5 days, your pick of city. $500 base + whatever you raise above $1k (25% cohort · 15% you · 60% HN12).</li>
+    </ul>
+
+    <!-- collapsible visual flow diagram -->
+    <div class="m-diagram">
+      <button class="m-diagram-toggle" onclick="toggleMDiagram(this)" aria-expanded="false">
+        <span>Visual flow</span>
+        <span class="m-diagram-icon">+</span>
+      </button>
+      <div class="m-diagram-body">
+        <svg class="m-diagram-svg" viewBox="0 0 960 440" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="m-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0 1L9 5L0 9L2.5 5Z" fill="rgba(13,13,13,0.55)"/>
+            </marker>
+            <marker id="m-arr-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0 1L9 5L0 9L2.5 5Z" fill="rgba(13,13,13,0.25)"/>
+            </marker>
+          </defs>
+
+          <!-- SCOUT TALENT banner -->
+          <g>
+            <rect x="182" y="8" width="572" height="52" rx="10"
+              fill="rgba(236,72,153,0.10)" stroke="rgba(236,72,153,0.32)" stroke-width="1"/>
+            <text x="468" y="40" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="14"
+              letter-spacing="0.24em" fill="rgba(190,30,110,0.82)">↓  SCOUT TALENT  ↓</text>
+          </g>
+
+          <!-- Apply -->
+          <g>
+            <rect x="12" y="90" width="148" height="88" rx="8"
+              fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.28)" stroke-width="1.5"/>
+            <text x="86" y="124" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Sans, sans-serif" font-size="17" font-weight="400"
+              fill="rgba(13,13,13,0.9)">Apply</text>
+            <text x="86" y="150" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="11"
+              fill="rgba(13,13,13,0.45)">by May 31</text>
+          </g>
+          <line x1="162" y1="134" x2="178" y2="134" stroke="rgba(13,13,13,0.45)" stroke-width="1.5" marker-end="url(#m-arr)"/>
+
+          <!-- Week zero -->
+          <g>
+            <rect x="182" y="90" width="162" height="88" rx="8"
+              fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.22)" stroke-width="1.5"/>
+            <text x="263" y="124" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Sans, sans-serif" font-size="17" font-weight="400"
+              fill="rgba(13,13,13,0.9)">Week zero</text>
+            <text x="263" y="150" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="11"
+              fill="rgba(13,13,13,0.45)">Meet the cohort</text>
+          </g>
+          <line x1="346" y1="134" x2="362" y2="134" stroke="rgba(13,13,13,0.45)" stroke-width="1.5" marker-end="url(#m-arr)"/>
+
+          <!-- 2 Events -->
+          <g>
+            <rect x="366" y="90" width="168" height="88" rx="8"
+              fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.22)" stroke-width="1.5"/>
+            <text x="450" y="124" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Sans, sans-serif" font-size="17" font-weight="400"
+              fill="rgba(13,13,13,0.9)">Host 2 events</text>
+            <text x="450" y="150" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="11"
+              fill="rgba(13,13,13,0.45)">$1k budget</text>
+          </g>
+          <line x1="536" y1="134" x2="552" y2="134" stroke="rgba(13,13,13,0.45)" stroke-width="1.5" marker-end="url(#m-arr)"/>
+
+          <!-- 2 Hackathons -->
+          <g>
+            <rect x="556" y="90" width="168" height="88" rx="8"
+              fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.22)" stroke-width="1.5"/>
+            <text x="640" y="124" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Sans, sans-serif" font-size="17" font-weight="400"
+              fill="rgba(13,13,13,0.9)">Host 2 hackathons</text>
+            <text x="640" y="150" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="11"
+              fill="rgba(13,13,13,0.45)">On campus</text>
+          </g>
+          <line x1="726" y1="134" x2="742" y2="134" stroke="rgba(13,13,13,0.45)" stroke-width="1.5" marker-end="url(#m-arr)"/>
+
+          <!-- Cohort trip -->
+          <g>
+            <rect x="746" y="72" width="202" height="120" rx="10"
+              fill="rgba(13,13,13,0.04)" stroke="rgba(13,13,13,0.42)" stroke-width="1.75"/>
+            <text x="847" y="110" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Sans, sans-serif" font-size="18" font-weight="400"
+              fill="rgba(13,13,13,0.92)">Cohort trip</text>
+            <text x="847" y="134" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="11"
+              fill="rgba(13,13,13,0.48)">3–5 days · your choice</text>
+            <text x="847" y="154" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="11"
+              fill="rgba(13,13,13,0.48)">$500 + what you raise</text>
+            <text x="847" y="176" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="10"
+              fill="rgba(13,13,13,0.32)">✦ final destination</text>
+          </g>
+
+          <!-- Sponsor branch -->
+          <g>
+            <path d="M450 178 L450 290" fill="none" stroke="rgba(13,13,13,0.2)" stroke-width="1"
+              stroke-dasharray="5 4" marker-end="url(#m-arr-dim)"/>
+            <rect x="260" y="290" width="380" height="74" rx="8"
+              fill="rgba(13,13,13,0.02)" stroke="rgba(13,13,13,0.17)" stroke-width="1.5"/>
+            <text x="450" y="316" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Sans, sans-serif" font-size="16" font-weight="400"
+              fill="rgba(13,13,13,0.78)">Secure sponsorships</text>
+            <text x="450" y="340" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="11"
+              fill="rgba(13,13,13,0.42)">Every $ saved → grows the trip fund</text>
+            <path d="M640 327 L847 327 L847 192" fill="none" stroke="rgba(13,13,13,0.2)" stroke-width="1"
+              stroke-dasharray="5 4" marker-end="url(#m-arr-dim)"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </article>
+
+  <!-- /who this is for -->
+  <article class="m-card">
+    <div class="m-card-eyebrow">/ who this is for</div>
+    <ul class="m-criteria">
+      <li><strong>Currently enrolled student</strong>: undergrad, master's, or PhD graduating 2027 or later.</li>
+      <li><strong>Intellectually curious</strong>: you dig deeper than the surface, teach yourself new domains, follow questions wherever they lead.</li>
+      <li><strong>Creatively ambitious</strong>: you find unconventional paths forward and stay committed to seeing things through.</li>
+      <li><strong>Network builder</strong>: you invest in genuine relationships with people you admire and learn from, across levels and backgrounds.</li>
+      <li><strong>Thoughtful judge of talent</strong>: you notice potential others overlook and can articulate clearly why someone stands out.</li>
+      <li><strong>Tech-impact oriented</strong>: you think in systems, drawn to how startups and technology create outsized change.</li>
+    </ul>
+  </article>
+
+  <!-- /what you can expect -->
+  <article class="m-card">
+    <div class="m-card-eyebrow">/ what you can expect</div>
+    <ul class="m-criteria">
+      <li><strong>A world-class cohort</strong>: peers from the best schools in the world. The group you'll scout with, travel with, and possibly be friends with for life.</li>
+      <li><strong>A cohort trip</strong>: $500 floor with unlimited upside if you get sponsors to cover your campus events. You pick the destination.</li>
+      <li><strong>Real skill-building</strong>: learn how to assess potential, recognize patterns, understand team dynamics, validate ideas, and build technical fluency across fields.</li>
+      <li><strong>Warm intros to the industry</strong>: founders, accelerators, VCs, tech leaders and our sponsors (OpenAI, Databricks, Lovable, ElevenLabs, Mozilla).</li>
+      <li><strong>Full flexibility</strong>: the fellowship is designed around your schedule. Your academics stay your priority.</li>
+    </ul>
+  </article>
+
+  <!-- /apply -->
+  <article class="m-card" id="m-apply">
+    <div class="m-card-eyebrow">/ apply</div>
+    <h2 class="m-card-title">Request a spot</h2>
+    <p class="m-card-lede">We're reviewing applications on a rolling basis. If selected for the next round, we'll contact you for a personal interview.</p>
+
+    <form class="m-form" id="mAppForm" onsubmit="return false;">
+      <div class="m-form-group">
+        <label for="m-fname">First name</label>
+        <input type="text" id="m-fname" autocomplete="given-name" placeholder="Ada">
+      </div>
+      <div class="m-form-group">
+        <label for="m-lname">Last name</label>
+        <input type="text" id="m-lname" autocomplete="family-name" placeholder="Lovelace">
+      </div>
+      <div class="m-form-group">
+        <label for="m-email">Email</label>
+        <input type="email" id="m-email" autocomplete="email" placeholder="ada@university.edu">
+      </div>
+      <div class="m-form-group">
+        <label for="m-university">University</label>
+        <select id="m-university" onchange="handleMUniversitySelect(this)">
+          <option value="" disabled selected>Select your university</option>
+          <optgroup label="USA">
+            <option>Harvard</option><option>MIT</option><option>Stanford</option><option>Berkeley</option>
+            <option>Columbia</option><option>Princeton</option><option>Carnegie Mellon</option>
+            <option>Caltech</option><option>NYU</option><option>UCLA</option><option>Georgia Tech</option>
+          </optgroup>
+          <optgroup label="UK">
+            <option>Oxford</option><option>Cambridge</option><option>Imperial College London</option>
+          </optgroup>
+          <optgroup label="Other">
+            <option>ETH Zurich</option><option>TU Munich</option><option>Technion</option><option>University of Toronto</option>
+          </optgroup>
+          <option value="other">Not on this list</option>
+        </select>
+        <input type="text" id="m-universityOther" placeholder="Your university" style="display:none; margin-top:0.6rem;">
+      </div>
+      <div class="m-form-group">
+        <label for="m-degree">Degree</label>
+        <select id="m-degree">
+          <option value="" disabled selected>Select</option>
+          <option>Bachelor's</option><option>Master's</option><option>PhD</option><option>MBA</option>
+        </select>
+      </div>
+      <div class="m-form-group">
+        <label for="m-gradyear">Graduation year</label>
+        <input type="text" id="m-gradyear" placeholder="2027">
+      </div>
+      <div class="m-form-group">
+        <label for="m-linkedin">LinkedIn URL</label>
+        <input type="url" id="m-linkedin" placeholder="linkedin.com/in/yourname">
+      </div>
+      <div class="m-form-group">
+        <label>CV / Résumé (PDF)</label>
+        <label class="m-file-label" id="mCvLabel" for="m-cvFile">
+          <span class="m-file-icon">↑ Upload</span>
+          <span id="mCvFileName">No file chosen</span>
+        </label>
+        <input type="file" id="m-cvFile" accept=".pdf,.doc,.docx">
+      </div>
+      <button class="m-submit" type="button" onclick="submitMForm()">Submit application</button>
+    </form>
+
+    <div class="m-form-success" id="mFormSuccess">
+      <div class="success-ring">✓</div>
+      <h3>Application received.</h3>
+      <p>We review applications on a rolling basis. Expect to hear from us within two weeks.</p>
+    </div>
+  </article>
+
+  <!-- /faq -->
+  <article class="m-card">
+    <div class="m-card-eyebrow">/ faq</div>
+    <h2 class="m-card-title">Applicant FAQs</h2>
+    <ul class="m-faq">
+      <li class="m-faq-item">
+        <button class="m-faq-q" onclick="toggleMFaq(this)" aria-expanded="false">
+          <span>My university is not listed, can I apply?</span>
+          <span class="m-faq-icon">+</span>
+        </button>
+        <div class="m-faq-a"><p>Yes. We accept applications from other universities if you can make a strong case for why you and your campus are a good fit for the program.</p></div>
+      </li>
+      <li class="m-faq-item">
+        <button class="m-faq-q" onclick="toggleMFaq(this)" aria-expanded="false">
+          <span>Who should <em>not</em> apply?</span>
+          <span class="m-faq-icon">+</span>
+        </button>
+        <div class="m-faq-a">
+          <ul class="m-faq-sublist">
+            <li><strong>You're not a student</strong>: if you're not currently enrolled in a degree-seeking program you're ineligible. If you're interested in collaborating with, sponsoring or supporting HN12, reach out via the form above.</li>
+            <li><strong>You want to be managed closely</strong>: there's no playbook. You get a budget, a network, and full creative freedom. What you build with it is up to you.</li>
+            <li><strong>You want a logo on your résumé</strong>: we have incredible sponsors, but we're still making a name for ourselves. If you're here to check a box, this isn't the right fit.</li>
+            <li><strong>You don't want to live outside your comfort zone</strong>: you'll be in a lot of new rooms, meeting and reaching out to people you've never met, figuring things out as you go.</li>
+          </ul>
+        </div>
+      </li>
+      <li class="m-faq-item">
+        <button class="m-faq-q" onclick="toggleMFaq(this)" aria-expanded="false">
+          <span>Does the fellowship include monthly payments?</span>
+          <span class="m-faq-icon">+</span>
+        </button>
+        <div class="m-faq-a"><p>This is not a job. The fellowship includes $1,500 and sponsor opportunities but does not pay a monthly stipend.</p></div>
+      </li>
+      <li class="m-faq-item">
+        <button class="m-faq-q" onclick="toggleMFaq(this)" aria-expanded="false">
+          <span>Deadlines &amp; timeline</span>
+          <span class="m-faq-icon">+</span>
+        </button>
+        <div class="m-faq-a">
+          <ul class="m-faq-sublist">
+            <li><strong>Deadline:</strong> May 31, 2026</li>
+            <li><strong>Duration:</strong> 6 months</li>
+            <li><strong>Spots:</strong> 12 globally</li>
+            <li><strong>Reviews:</strong> rolling basis</li>
+            <li><strong>Next step:</strong> personal conversation with the team</li>
+            <li><strong>Start:</strong> September 2026</li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </article>
+
+</div><!-- /m-about -->
+
+<!-- ─────────────────── ABOUT ANCHOR (mobile) ─────────────────── -->
+<a id="about-top" aria-hidden="true"></a>
+
+<!-- ─────────────────── PROGRAM ─────────────────── -->
+<section id="program" data-n="01 — Program">
+  <div class="section-inner">
+    <!-- Mobile /about header: single nav-like marker for the whole about scroll -->
+    <div class="m-about-header">
+      <span class="m-about-eyebrow">/ about</span>
+      <h2 class="m-about-title">The Program</h2>
+      <p class="m-about-lede">A six-month fellowship for twelve students from the world's best universities — budget, cohort, and full creative freedom to scout exceptional talent on your campus.</p>
+    </div>
+
+    <div class="section-title reveal">A 6 month fellowship</div>
+
+    <!-- Mobile-only mini-drawer wrapping just the diagram -->
+    <div class="mini-drawer">
+      <button class="mini-drawer-toggle" onclick="toggleMDrawer(this, 'diagramBody')" aria-expanded="false">
+        <span class="mini-drawer-label">View program flow</span>
+        <span class="mini-drawer-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="mini-drawer-body" id="diagramBody">
+
+    <div class="journey-wrap reveal">
+      <div class="journey-mobile">
+        <div class="jm-step jm-step--apply">
+          <div class="jm-label">Apply</div>
+          <div class="jm-sub">by May 31</div>
+        </div>
+        <div class="jm-arrow">↓</div>
+        <div class="jm-step">
+          <div class="jm-label">Week zero</div>
+          <div class="jm-sub">Meet the cohort</div>
+        </div>
+        <div class="jm-arrow">↓</div>
+        <div class="jm-scout-label">↓ Scout Talent ↓</div>
+        <div class="jm-step jm-step--scout-events">
+          <div class="jm-label">Host 2 events</div>
+          <div class="jm-sub">Your format · $1k</div>
+        </div>
+        <div class="jm-arrow">↓</div>
+        <div class="jm-step jm-step--scout-hack">
+          <div class="jm-label">Host 2 hackathons</div>
+          <div class="jm-sub">Fully funded</div>
+        </div>
+        <div class="jm-arrow">↓</div>
+        <div class="jm-step jm-step--final">
+          <div class="jm-label">Cohort trip</div>
+          <div class="jm-sub">3–5 days · your choice<br>$500 + what you raise</div>
+        </div>
+        <div class="jm-note">Above $1k: 25% team · 15% you · 60% HackNation</div>
+
+        <!-- NEW mobile diagram v2 — tappable cards -->
+        <div class="jm2-list">
+          <button class="jm2-step" data-box="apply" onclick="toggleJm2(this)" aria-expanded="false">
+            <div class="jm2-step-header">
+              <div class="jm2-step-main">
+                <span class="jm2-label">Apply</span>
+                <span class="jm2-sub">Rolling · by May 31</span>
+              </div>
+              <span class="jm2-icon">+</span>
+            </div>
+            <div class="jm2-detail"><div class="jm2-detail-inner"></div></div>
+          </button>
+          <div class="jm2-connector"></div>
+
+          <button class="jm2-step" data-box="weekzero" onclick="toggleJm2(this)" aria-expanded="false">
+            <div class="jm2-step-header">
+              <div class="jm2-step-main">
+                <span class="jm2-label">Week zero</span>
+                <span class="jm2-sub">Meet the cohort</span>
+              </div>
+              <span class="jm2-icon">+</span>
+            </div>
+            <div class="jm2-detail"><div class="jm2-detail-inner"></div></div>
+          </button>
+          <div class="jm2-connector"></div>
+
+          <div class="jm2-scout-group">
+            <div class="jm2-scout-banner">Scout Talent</div>
+            <button class="jm2-step" data-box="events" onclick="toggleJm2(this)" aria-expanded="false">
+              <div class="jm2-step-header">
+                <div class="jm2-step-main">
+                  <span class="jm2-label">Host 2 campus events</span>
+                  <span class="jm2-sub">Your format · $1k budget</span>
+                </div>
+                <span class="jm2-icon">+</span>
+              </div>
+              <div class="jm2-detail"><div class="jm2-detail-inner"></div></div>
+            </button>
+
+            <div class="jm2-sponsors-branch">
+              <button class="jm2-step" data-box="sponsors" onclick="toggleJm2(this)" aria-expanded="false">
+                <div class="jm2-step-header">
+                  <div class="jm2-step-main">
+                    <span class="jm2-label">Secure sponsorships</span>
+                    <span class="jm2-sub">Every $ saved → grows the trip</span>
+                  </div>
+                  <span class="jm2-icon">+</span>
+                </div>
+                <div class="jm2-detail"><div class="jm2-detail-inner"></div></div>
+              </button>
+            </div>
+
+            <div class="jm2-connector"></div>
+            <button class="jm2-step" data-box="hack" onclick="toggleJm2(this)" aria-expanded="false">
+              <div class="jm2-step-header">
+                <div class="jm2-step-main">
+                  <span class="jm2-label">Host 2 hackathons</span>
+                  <span class="jm2-sub">On campus · co-host ok</span>
+                </div>
+                <span class="jm2-icon">+</span>
+              </div>
+              <div class="jm2-detail"><div class="jm2-detail-inner"></div></div>
+            </button>
+          </div>
+
+          <div class="jm2-connector"></div>
+          <button class="jm2-step jm2-step--final" data-box="trip" onclick="toggleJm2(this)" aria-expanded="false">
+            <div class="jm2-step-header">
+              <div class="jm2-step-main">
+                <span class="jm2-label">Cohort trip ✦</span>
+                <span class="jm2-sub">3–5 days · your choice · $500 + what you raise</span>
+              </div>
+              <span class="jm2-icon">+</span>
+            </div>
+            <div class="jm2-detail"><div class="jm2-detail-inner"></div></div>
+          </button>
+        </div>
+      </div>
+      <svg width="100%" viewBox="0 0 960 440" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- solid filled arrowhead for main flow -->
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 1L9 5L0 9L2.5 5Z" fill="rgba(13,13,13,0.55)"/>
+          </marker>
+          <!-- dimmer arrow for secondary paths -->
+          <marker id="arr-dim" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 1L9 5L0 9L2.5 5Z" fill="rgba(13,13,13,0.2)"/>
+          </marker>
+        </defs>
+
+        <!-- ── SCOUT TALENT BANNER ── -->
+        <g class="j-anim j-d5">
+          <rect x="182" y="8" width="572" height="52" rx="10"
+            fill="rgba(236,72,153,0.10)" stroke="rgba(236,72,153,0.32)" stroke-width="1"/>
+          <text x="468" y="40" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="12"
+            letter-spacing="0.24em" fill="rgba(190,30,110,0.82)">↓  SCOUT TALENT THROUGHOUT  ↓</text>
+        </g>
+
+        <!-- Apply box -->
+        <a href="#apply" class="j-apply-link">
+          <g class="j-anim j-d0 j-box" data-box="apply">
+            <rect class="j-apply-rect j-rect" x="12" y="90" width="148" height="88" rx="8"
+              fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.28)" stroke-width="1.5"/>
+            <text x="86" y="126" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
+              fill="rgba(13,13,13,0.88)">Apply</text>
+            <text x="86" y="148" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="10"
+              fill="rgba(13,13,13,0.42)">Rolling · by May 31</text>
+          </g>
+        </a>
+
+        <!-- Arrow Apply → Week Zero -->
+        <line class="j-anim j-d0" x1="162" y1="134" x2="178" y2="134"
+          stroke="rgba(13,13,13,0.45)" stroke-width="1.5"
+          marker-end="url(#arr)"/>
+
+        <!-- Week Zero box -->
+        <g class="j-anim j-d1 j-box" data-box="weekzero">
+          <rect class="j-rect" x="182" y="90" width="162" height="88" rx="8"
+            fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.2)" stroke-width="1.5"/>
+          <text x="263" y="126" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
+            fill="rgba(13,13,13,0.88)">Week zero</text>
+          <text x="263" y="148" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10"
+            fill="rgba(13,13,13,0.42)">Meet the cohort</text>
+        </g>
+
+        <!-- Arrow Week Zero → 2 Events -->
+        <line class="j-anim j-d1" x1="346" y1="134" x2="362" y2="134"
+          stroke="rgba(13,13,13,0.45)" stroke-width="1.5"
+          marker-end="url(#arr)"/>
+
+        <!-- 2 Events box -->
+        <g class="j-anim j-d2 j-box" data-box="events">
+          <rect class="j-rect" x="366" y="90" width="168" height="88" rx="8"
+            fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.2)" stroke-width="1.5"/>
+          <text x="450" y="126" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
+            fill="rgba(13,13,13,0.88)">Host 2 events</text>
+          <text x="450" y="148" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10"
+            fill="rgba(13,13,13,0.42)">Your format · $1k budget</text>
+        </g>
+
+        <!-- Arrow 2 Events → 2 Hackathons -->
+        <line class="j-anim j-d2" x1="536" y1="134" x2="552" y2="134"
+          stroke="rgba(13,13,13,0.45)" stroke-width="1.5"
+          marker-end="url(#arr)"/>
+
+        <!-- 2 Hackathons box -->
+        <g class="j-anim j-d3 j-box" data-box="hack">
+          <rect class="j-rect" x="556" y="90" width="168" height="88" rx="8"
+            fill="rgba(13,13,13,0.03)" stroke="rgba(13,13,13,0.2)" stroke-width="1.5"/>
+          <text x="640" y="126" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
+            fill="rgba(13,13,13,0.88)">Host 2 hackathons</text>
+          <text x="640" y="148" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10"
+            fill="rgba(13,13,13,0.42)">On campus · co-host ok</text>
+        </g>
+
+        <!-- Arrow 2 Hackathons → Cohort Trip -->
+        <line class="j-anim j-d3" x1="726" y1="134" x2="742" y2="134"
+          stroke="rgba(13,13,13,0.45)" stroke-width="1.5"
+          marker-end="url(#arr)"/>
+
+        <!-- Cohort Trip box -->
+        <g class="j-anim j-cohort j-box" data-box="trip">
+          <rect class="j-rect" x="746" y="72" width="202" height="120" rx="10"
+            fill="rgba(13,13,13,0.04)" stroke="rgba(13,13,13,0.42)" stroke-width="1.75"/>
+          <text x="847" y="112" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Sans, sans-serif" font-size="16" font-weight="400"
+            fill="rgba(13,13,13,0.9)">Cohort trip</text>
+          <text x="847" y="134" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10"
+            fill="rgba(13,13,13,0.45)">3–5 days · your choice</text>
+          <text x="847" y="152" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="10"
+            fill="rgba(13,13,13,0.45)">$500 + what you raise</text>
+          <text x="847" y="170" text-anchor="middle" dominant-baseline="central"
+            font-family="DM Mono, monospace" font-size="9"
+            fill="rgba(13,13,13,0.28)">✦ final destination</text>
+        </g>
+
+        <!-- Sponsor branch (arrow from Host 2 Events) -->
+        <g class="j-anim j-d4">
+          <path d="M450 178 L450 290"
+            fill="none" stroke="rgba(13,13,13,0.18)" stroke-width="1"
+            stroke-dasharray="5 4" marker-end="url(#arr-dim)"/>
+          <g class="j-box" data-box="sponsors">
+            <rect class="j-rect" x="260" y="290" width="380" height="74" rx="8"
+              fill="rgba(13,13,13,0.02)" stroke="rgba(13,13,13,0.15)" stroke-width="1.5"/>
+            <text x="450" y="318" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Sans, sans-serif" font-size="14" font-weight="400"
+              fill="rgba(13,13,13,0.75)">Secure sponsorships</text>
+            <text x="450" y="340" text-anchor="middle" dominant-baseline="central"
+              font-family="DM Mono, monospace" font-size="10"
+              fill="rgba(13,13,13,0.38)">Every dollar saved → grows the trip fund</text>
+          </g>
+          <path d="M640 327 L847 327 L847 192"
+            fill="none" stroke="rgba(13,13,13,0.18)" stroke-width="1"
+            stroke-dasharray="5 4" marker-end="url(#arr-dim)"/>
+        </g>
+      </svg>
+    </div>
+      </div><!-- /mini-drawer-body -->
+    </div><!-- /mini-drawer -->
+
+  </div>
+  <div class="section-scroll">↓</div>
+</section>
+
+<!-- ─────────────────── WHO ─────────────────── -->
+<section id="who" data-n="02 — Who">
+  <div class="section-inner">
+    <div class="who-split">
+      <div class="who-col">
+        <div class="who-col-title reveal">Who this is for</div>
+        <div class="criteria-list">
+          <div class="criteria-item reveal"><span class="ci-key">Currently enrolled student:</span> you're currently enrolled in an undergrad, master's, or PhD graduating 2027 or later</div>
+          <div class="criteria-item reveal"><span class="ci-key">Intellectually curious:</span> you dig deeper than the surface, teach yourself new domains, and follow questions wherever they lead</div>
+          <div class="criteria-item reveal rd1"><span class="ci-key">Creatively ambitious:</span> you find unconventional paths forward and stay committed to seeing things through</div>
+          <div class="criteria-item reveal rd2"><span class="ci-key">Network builder:</span> you invest in genuine relationships with people you admire and learn from, across levels and backgrounds</div>
+          <div class="criteria-item reveal rd3"><span class="ci-key">Thoughtful judge of talent:</span> you notice potential others overlook and can articulate clearly why someone stands out</div>
+          <div class="criteria-item reveal"><span class="ci-key">Tech-impact oriented:</span> you think in systems, drawn to how startups and technology create outsized change</div>
+        </div>
+      </div>
+
+      <div class="who-divider"></div>
+      <div class="who-col who-col--not">
+        <div class="who-col-title">Who this is not for</div>
+        <div class="criteria-list">
+          <div class="criteria-item reveal"><span class="ci-key">You're not a student:</span> if you're not currently enrolled in a degree-seeking program you are unfortunately ineligible to apply for a HN12 fellowship. If you are interested in collaborating with, sponsoring or supporting HN12 please contact us through the form below!</div>
+          <div class="criteria-item reveal"><span class="ci-key">You want to be managed closely:</span> there's no playbook. You get a budget, a network, and full creative freedom. What you build with it is up to you.</div>
+          <div class="criteria-item reveal rd1"><span class="ci-key">You want a logo on your résumé:</span> we have incredible sponsors, but we're still making a name for ourselves. You can grow with us, but if you're here to check a box, this isn't the right fit.</div>
+          <div class="criteria-item reveal rd2"><span class="ci-key">You don't want to live outside your comfort zone:</span> you'll be in a lot of new rooms, reaching out to people you've never met, and figuring things out as you go.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-scroll">↓</div>
+</section>
+
+<!-- ─────────────────── HOW WE BACK YOU ─────────────────── -->
+<section id="included" data-n="03 — What's in it for you">
+  <div class="section-inner">
+    <div class="section-title reveal">What you can expect</div>
+
+    <div class="criteria-list">
+
+      <div class="criteria-item reveal">
+        <span class="ci-key">A world-class cohort:</span> you'll work alongside peers from the best schools in the world. This is the group you'll scout with, travel with, and possibly be friends with for life. <button class="expand-btn" onclick="toggleDrawer(this, 'drawer-cohort')" aria-expanded="false">See where we recruit from</button>
+        <div class="item-drawer" id="drawer-cohort">
+          <div class="item-drawer-inner">
+            <div class="drawer-tier">USA</div>
+            <div class="drawer-vals">Harvard · MIT · Stanford · Berkeley · Columbia · Princeton · Carnegie Mellon · Caltech · NYU · UCLA · Georgia Tech</div>
+            <div class="drawer-tier">UK</div>
+            <div class="drawer-vals">Oxford · Cambridge · Imperial College</div>
+            <div class="drawer-tier">Other</div>
+            <div class="drawer-vals">ETH Zurich · TU Munich · Technion · U Toronto</div>
+            <div class="drawer-note">Not on this list? We accept applications from any university — select "Not on this list" in the form below.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-item reveal rd1">
+        <span class="ci-key">A cohort trip:</span> $500 floor — with unlimited upside if you get sponsors to cover your campus events. You pick the destination. One weekend, twelve people, one city. <button class="expand-btn" onclick="toggleDrawer(this, 'drawer-trip')" aria-expanded="false">How the math works</button>
+        <div class="item-drawer" id="drawer-trip">
+          <div class="item-drawer-inner">
+            <div class="drawer-row"><span class="drawer-k">Base</span><span class="drawer-v">$500 covered by HN12</span></div>
+            <div class="drawer-row"><span class="drawer-k">Events budget</span><span class="drawer-v">$1,000 — if sponsors pay for your events, every saved dollar rolls into the collective trip fund</span></div>
+            <div class="drawer-row"><span class="drawer-k">Sponsorships</span><span class="drawer-v">Every dollar above $1k: 25% cohort · 15% you · 60% HN12</span></div>
+            <div class="drawer-row"><span class="drawer-k">Upside</span><span class="drawer-v">The more you hustle, the better the trip</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-item reveal rd2"><span class="ci-key">Real skill-building:</span> learn how to assess potential, recognize patterns, understand team dynamics, validate ideas, and build technical fluency across fields.</div>
+
+      <div class="criteria-item reveal rd3">
+        <span class="ci-key">Warm intros to the industry:</span> founders, accelerators, VCs, tech leaders and our wonderful sponsors. <button class="expand-btn" onclick="toggleDrawer(this, 'drawer-sponsors')" aria-expanded="false">See our sponsors</button>
+        <div class="item-drawer" id="drawer-sponsors">
+          <div class="item-drawer-inner">
+            <div class="drawer-vals">OpenAI · Databricks · Lovable · ElevenLabs · Mozilla</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="criteria-item reveal"><span class="ci-key">Full flexibility:</span> this fellowship is designed around your schedule. Your academics stay your priority, and we'll never expect you to attend anything that conflicts with school.</div>
+
+    </div>
+  </div>
+  <div class="section-scroll">↓</div>
+</section>
+
+<!-- ─────────────────── APPLY ─────────────────── -->
+<section id="apply" data-n="04 — Apply">
+  <div class="section-inner">
+    <div class="apply-grid">
+      <div class="apply-left reveal">
+        <h2 class="section-title">Apply until<br><em>May 31st.</em></h2>
+        <p class="batch-label">Batch 01 — Founding Cohort</p>
+        <p class="apply-timing">Six months · Starts September 2026</p>
+
+        <div class="apply-below" id="applyBelow">
+          <div class="apply-meta-row">
+            <span class="meta-k">Deadline</span>
+            <span class="meta-v">May 31, 2026</span>
+          </div>
+          <div class="apply-meta-row">
+            <span class="meta-k">Duration</span>
+            <span class="meta-v">6 months</span>
+          </div>
+          <div class="apply-meta-row">
+            <span class="meta-k">Spots</span>
+            <span class="meta-v">12 globally</span>
+          </div>
+          <div class="apply-meta-row">
+            <span class="meta-k">Reviews</span>
+            <span class="meta-v">Rolling basis</span>
+          </div>
+          <div class="apply-meta-row">
+            <span class="meta-k">Next step</span>
+            <span class="meta-v">Personal conversation with the team</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal rd1">
+        <form class="apply-form" id="appForm" onsubmit="return false;">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fname">First Name</label>
+              <input type="text" id="fname" autocomplete="given-name" placeholder="Ada">
+            </div>
+            <div class="form-group">
+              <label for="lname">Last Name</label>
+              <input type="text" id="lname" autocomplete="family-name" placeholder="Lovelace">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" autocomplete="email" placeholder="ada@university.edu">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="university">University</label>
+              <select id="university" onchange="handleUniversitySelect(this)">
+                <option value="" disabled selected>Select your university</option>
+                <optgroup label="USA">
+                  <option>Harvard</option>
+                  <option>MIT</option>
+                  <option>Stanford</option>
+                  <option>Berkeley</option>
+                  <option>Columbia</option>
+                  <option>Princeton</option>
+                  <option>Carnegie Mellon</option>
+                  <option>Caltech</option>
+                  <option>NYU</option>
+                  <option>UCLA</option>
+                  <option>Georgia Tech</option>
+                </optgroup>
+                <optgroup label="UK">
+                  <option>Oxford</option>
+                  <option>Cambridge</option>
+                  <option>Imperial College London</option>
+                </optgroup>
+                <optgroup label="Other">
+                  <option>ETH Zurich</option>
+                  <option>TU Munich</option>
+                  <option>Technion</option>
+                  <option>University of Toronto</option>
+                </optgroup>
+                <option value="other">Not on this list</option>
+              </select>
+              <input type="text" id="universityOther" placeholder="Your university" style="display:none; margin-top:0.6rem;">
+            </div>
+            <div class="form-group">
+              <label for="degree">Degree</label>
+              <select id="degree">
+                <option value="" disabled selected>Select</option>
+                <option>Bachelor's</option>
+                <option>Master's</option>
+                <option>PhD</option>
+                <option>MBA</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="gradyear">Grad Year</label>
+              <input type="text" id="gradyear" placeholder="2027">
+            </div>
+            <div class="form-group">
+              <label for="languages">Languages spoken</label>
+              <input type="text" id="languages" placeholder="e.g. English, German, Mandarin">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="linkedin">LinkedIn URL</label>
+            <input type="url" id="linkedin" placeholder="linkedin.com/in/yourname">
+          </div>
+
+          <div class="form-group">
+            <label>CV / Résumé (PDF)</label>
+            <label class="file-label" id="cvLabel" for="cvFile">
+              <span class="file-icon">↑ Upload</span>
+              <span id="cvFileName">No file chosen</span>
+            </label>
+            <input type="file" id="cvFile" accept=".pdf,.doc,.docx">
+          </div>
+
+          <div class="form-submit">
+            <button class="btn-submit" type="button" onclick="submitForm()">Submit Application</button>
+          </div>
+        </form>
+
+        <div class="form-success" id="formSuccess">
+          <div class="success-ring">✓</div>
+          <h3>Application received.</h3>
+          <p>We review applications on a rolling basis.<br>Expect to hear from us within two weeks.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────── FAQ ─────────────────── -->
+<div id="faq" class="team-drawer">
+  <div class="team-inner">
+    <button class="team-toggle" onclick="toggleDrawer(this, 'faqBody')" aria-expanded="false">
+      <span>FAQ</span>
+      <span class="team-icon" aria-hidden="true">+</span>
+    </button>
+    <div class="team-body" id="faqBody">
+      <div class="faq-body">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaqItem(this)" aria-expanded="false">
+            <span>My university is not listed, can I apply?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a"><p>Yes. We accept applications from other universities if you can make a strong case for why you and your campus are a good fit for the program.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaqItem(this)" aria-expanded="false">
+            <span>Who should <em>not</em> apply?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <ul class="faq-sublist">
+              <li><span class="faq-k">You're not a student:</span> if you're not currently enrolled in a degree-seeking program you're ineligible. If you're interested in collaborating with, sponsoring or supporting HN12, reach out via the form above.</li>
+              <li><span class="faq-k">You want to be managed closely:</span> there's no playbook. You get a budget, a network, and full creative freedom. What you build with it is up to you.</li>
+              <li><span class="faq-k">You want a logo on your résumé:</span> we have incredible sponsors, but we're still making a name for ourselves. If you're here to check a box, this isn't the right fit.</li>
+              <li><span class="faq-k">You don't want to live outside your comfort zone:</span> you'll be in a lot of new rooms, meeting and reaching out to people you've never met, figuring things out as you go.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaqItem(this)" aria-expanded="false">
+            <span>Does the fellowship include monthly payments?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a"><p>This is not a job. The fellowship includes $1,500 and sponsor opportunities but does not pay a monthly stipend.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaqItem(this)" aria-expanded="false">
+            <span>Deadlines &amp; timeline</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <ul class="faq-sublist">
+              <li><span class="faq-k">Deadline:</span> May 31, 2026</li>
+              <li><span class="faq-k">Duration:</span> 6 months</li>
+              <li><span class="faq-k">Spots:</span> 12 globally</li>
+              <li><span class="faq-k">Reviews:</span> rolling basis</li>
+              <li><span class="faq-k">Next step:</span> personal conversation with the team</li>
+              <li><span class="faq-k">Start:</span> September 2026</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── ABOUT ─────────────────── -->
+<div id="about" class="team-drawer">
+  <div class="team-inner">
+    <button class="team-toggle" onclick="toggleDrawer(this, 'aboutBody')" aria-expanded="false">
+      <span>About HN12</span>
+      <span class="team-icon" aria-hidden="true">+</span>
+    </button>
+    <div class="team-body" id="aboutBody">
+      <div class="about-body">
+        <p>HN<sup>12</sup> is a talent and venture scout fellowship run by HackNation — A global hackathon and a global venture incubator need global talent scouts. Hacknation's founders, Kai and Linn, aren't part of a big VC firm. They started Hacknation fresh out of MIT. HN12 is the worlds first student founded and student run talent & venture scout program.  </p>
+        <p>We're a collective of AI builders. While we try to optimize and automate everything, there is one exception: Relationships. HackNation is about people as much as it is about innovation.</p>
+        <p>HackNation is backed by OpenAI, Databricks, Lovable, ElevenLabs and Mozilla.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── TEAM ─────────────────── -->
+<div id="team" class="team-drawer">
+  <div class="team-inner">
+    <button class="team-toggle" onclick="toggleDrawer(this, 'teamBody')" aria-expanded="false">
+      <span>The Team</span>
+      <span class="team-icon" aria-hidden="true">+</span>
+    </button>
+    <div class="team-body" id="teamBody">
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="member-name">Linn Bieske</div>
+          <div class="member-title">Co-Founder, Hacknation</div>
+          <a href="https://www.linkedin.com/in/linn-bieske/" class="member-li" target="_blank" rel="noopener">LinkedIn ↗</a>
+        </div>
+        <div class="team-member">
+          <div class="member-name">Kai Wiederhold</div>
+          <div class="member-title">Co-Founder & CEO, HackNation</div>
+          <a href="#" class="member-li">LinkedIn ↗</a>
+        </div>
+        <div class="team-member">
+          <div class="member-name">Christian Cierny</div>
+          <div class="member-title">Head of Recruitment, HackNation</div>
+          <a href="www.linkedin.com/in/christian-cierny-579940378" class="member-li">LinkedIn ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── FOOTER ─────────────────── -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-left">
+      <span class="footer-line">HN<sup>12</sup> is a program by HackNation.</span>
+      <span class="footer-line">Backed by OpenAI · Databricks · Lovable · ElevenLabs · Mozilla</span>
+    </div>
+    <div class="footer-addr">
+      Hack-Nation UG<br>
+      Tal 44 · 80339 München
+    </div>
+  </div>
+  <div class="footer-copy">© 2026 HackNation</div>
+</footer>
+
+<script>
+// ── MOBILE BOOT SPLASH ──
+(function() {
+  if (!window.matchMedia('(max-width: 820px)').matches) return;
+  document.body.classList.add('booting');
+  const splash = document.getElementById('bootSplash');
+  if (!splash) return;
+  setTimeout(() => {
+    splash.classList.add('boot-done');
+    document.body.classList.remove('booting');
+    setTimeout(() => splash.classList.add('boot-gone'), 500);
+  }, 1500);
+})();
+
+// ── MOBILE SECTION DRAWERS (Program / Who / Included) ──
+function toggleMDrawer(btn, bodyId) {
+  const body = document.getElementById(bodyId);
+  if (!body) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  btn.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+// ── MOBILE DIAGRAM CARDS (tap to expand) ──
+const JM2_DETAILS = {
+  apply:    'Applications reviewed on a rolling basis.\nDeadline: May 31, 2026.\nAll promising candidates get a personal call.',
+  weekzero: 'Virtual kickoff session.\nMeet your 11 cohort members.\nOnboarding, goal-setting & first scout briefing.',
+  events:   'Host 2 events at your university.\n$1,000 budget — any format you choose.\nGoal: surface exceptional talent on your campus.',
+  hack:     'Host 2 hackathons on your campus — or team up with a nearby scout to co-host.\nFully funded by HN12.\nThis is where you bring your scouted talent.',
+  trip:     '3–5 days with your full cohort.\n$500 base covered by HN12.\nUnlimited upside from sponsorships you close.',
+  sponsors: 'Pitch sponsors to cover your campus events.\nEvery dollar saved rolls into the trip fund.\nAbove $1k: 25% cohort · 15% you · 60% HN12.',
+};
+// populate detail text once
+document.querySelectorAll('.jm2-step').forEach(el => {
+  const key = el.dataset.box;
+  const inner = el.querySelector('.jm2-detail-inner');
+  if (key && inner && JM2_DETAILS[key]) inner.textContent = JM2_DETAILS[key];
+});
+function toggleJm2(btn) {
+  const isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+// ── MOBILE FAQ TOGGLE ──
+function toggleMFaq(btn) {
+  const isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open');
+  const answer = btn.nextElementSibling;
+  if (answer) answer.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+// ── MOBILE DIAGRAM TOGGLE ──
+function toggleMDiagram(btn) {
+  const isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open');
+  const body = btn.nextElementSibling;
+  if (body) body.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+// ── DESKTOP FAQ TOGGLE (inside the collapsible drawer) ──
+function toggleFaqItem(btn) {
+  const isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open');
+  const a = btn.nextElementSibling;
+  if (a) a.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+// ── MOBILE UNIVERSITY SELECT ──
+function handleMUniversitySelect(sel) {
+  const other = document.getElementById('m-universityOther');
+  if (!other) return;
+  if (sel.value === 'other') {
+    other.style.display = 'block';
+    other.required = true;
+  } else {
+    other.style.display = 'none';
+    other.required = false;
+    other.value = '';
+  }
+}
+
+// ── MOBILE FILE UPLOAD LABEL ──
+(function () {
+  const input = document.getElementById('m-cvFile');
+  const label = document.getElementById('mCvLabel');
+  const name  = document.getElementById('mCvFileName');
+  if (!input || !label || !name) return;
+  input.addEventListener('change', function () {
+    if (this.files && this.files[0]) {
+      name.textContent = this.files[0].name;
+      label.classList.add('has-file');
+    } else {
+      name.textContent = 'No file chosen';
+      label.classList.remove('has-file');
+    }
+  });
+})();
+
+// ── MOBILE FORM SUBMIT ──
+function submitMForm() {
+  const fname = document.getElementById('m-fname');
+  const email = document.getElementById('m-email');
+  const uni   = document.getElementById('m-university');
+  [fname, email, uni].forEach(el => { if (el) { el.classList.remove('err'); el.style.animation = ''; } });
+  let valid = true;
+  [fname, email, uni].forEach(el => {
+    if (el && !el.value.trim()) {
+      el.classList.add('err');
+      void el.offsetWidth;
+      el.style.animation = 'shake 0.3s ease';
+      valid = false;
+    }
+  });
+  if (!valid) return;
+  document.getElementById('mAppForm').style.display = 'none';
+  document.getElementById('mFormSuccess').classList.add('visible');
+}
+
+// ── CURSOR ──
+if (window.matchMedia('(hover: hover)').matches) {
+  document.body.classList.add('has-cursor');
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button, .uni-tag, .file-label, select, .sponsor-item').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
+  });
+}
+
+// ── NAV LIGHT/DARK SWITCH ──
+(function() {
+  const nav = document.querySelector('nav');
+  const hero = document.getElementById('hero');
+  function updateNav() {
+    const heroBottom = hero.offsetHeight * 0.55;
+    if (window.scrollY > heroBottom) {
+      nav.classList.add('nav-light');
+      document.body.classList.remove('hero-active');
+    } else {
+      nav.classList.remove('nav-light');
+      document.body.classList.add('hero-active');
+    }
+  }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+})();
+
+// ── SCROLL REVEAL ──
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// Journey SVG visibility trigger
+const journeyObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      journeyObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.journey-wrap').forEach(el => journeyObs.observe(el));
+
+// ── HERO CANVAS ANIMATION ──
+(function () {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  if (!window.matchMedia('(hover: hover) and (min-width: 820px)').matches) {
+    canvas.style.display = 'none';
+    return;
+  }
+  const ctx = canvas.getContext('2d');
+  let W, H, cx, cy, dpr;
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cx = W / 2; cy = H / 2;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); reset(); });
+
+  let startTime = null, particles = [], nodes = [], edges = [], trailPoints = [];
+  let star = { x: -100, y: 0, active: true, hit: false, hitTime: 0 };
+
+  const UNIVERSITIES = [
+    'Harvard','MIT','Stanford','Oxford','Cambridge',
+    'Berkeley','Columbia','Princeton','Imperial','Carnegie Mellon',
+    'ETH Zurich','TUM','Caltech','NYU','UCLA','EPFL','Technion','Georgia Tech','U Toronto'
+  ];
+
+  function shuffled(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function generateNodes() {
+    nodes = []; edges = [];
+    const names  = shuffled(UNIVERSITIES).slice(0, 12);
+    const safeW  = Math.min(W * 0.26, 300);
+    const safeH  = Math.min(H * 0.36, 280);
+    const edgeMargin = Math.max(90, Math.min(W, H) * 0.1); // keep away from screen edges
+    const topMargin  = 110; // extra clearance for nav bar
+    const minGap = Math.min(W, H) * 0.16;
+    for (let i = 0; i < 12; i++) {
+      let tx, ty, attempts = 0;
+      do {
+        tx = edgeMargin + Math.random() * (W - edgeMargin * 2);
+        ty = topMargin  + Math.random() * (H - topMargin - edgeMargin);
+        attempts++;
+        if (Math.abs(tx - cx) < safeW && Math.abs(ty - cy) < safeH) continue;
+        const tooClose = nodes.some(n => {
+          const dx = n.tx - tx, dy = n.ty - ty;
+          return Math.sqrt(dx*dx + dy*dy) < minGap;
+        });
+        if (!tooClose) break;
+      } while (attempts < 80);
+      nodes.push({ x: cx, y: cy, tx, ty, label: names[i], r: 1.8 + Math.random() * 2, opacity: 0, delay: i * 0.04, arrived: false });
+    }
+    for (let i = 0; i < nodes.length; i++)
+      for (let j = i + 1; j < nodes.length; j++)
+        edges.push({ a: i, b: j, opacity: 0 });
+  }
+
+  function spawnBurst() {
+    particles = [];
+    for (let i = 0; i < 36; i++) {
+      const a = Math.random() * Math.PI * 2, s = 1 + Math.random() * 3.5;
+      particles.push({ x: cx, y: cy, vx: Math.cos(a)*s, vy: Math.sin(a)*s, life: 1, decay: 0.009 + Math.random() * 0.014, r: 0.5 + Math.random() * 1.5 });
+    }
+  }
+
+  function reset() {
+    startTime = null;
+    star = { x: -100, y: 0, active: true, hit: false, hitTime: 0 };
+    trailPoints = []; particles = [];
+    generateNodes();
+  }
+  generateNodes();
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+  function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
+
+  function draw(t) {
+    if (!startTime) startTime = t;
+    const elapsed = (t - startTime) / 1000;
+    ctx.clearRect(0, 0, W, H);
+
+    const starDur = 1.2;
+    if (star.active && elapsed < starDur) {
+      const p = easeOutQuint(elapsed / starDur);
+      star.x = lerp(-80, cx, p); star.y = cy;
+      trailPoints.push({ x: star.x, y: star.y, birth: elapsed });
+      for (const tp of trailPoints) {
+        const age = elapsed - tp.birth, fade = Math.max(0, 1 - age / 0.55);
+        if (fade <= 0) continue;
+        ctx.beginPath(); ctx.arc(tp.x, tp.y, fade * 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(245,245,243,${fade * 0.55})`; ctx.fill();
+      }
+      const g = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, 14);
+      g.addColorStop(0, 'rgba(245,245,243,0.85)'); g.addColorStop(0.3, 'rgba(245,245,243,0.25)'); g.addColorStop(1, 'rgba(245,245,243,0)');
+      ctx.beginPath(); ctx.arc(star.x, star.y, 14, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+      ctx.beginPath(); ctx.arc(star.x, star.y, 2.5, 0, Math.PI * 2); ctx.fillStyle = '#f5f5f3'; ctx.fill();
+    }
+
+    if (elapsed >= starDur && !star.hit) { star.hit = true; star.hitTime = elapsed; star.active = false; spawnBurst(); }
+
+    if (star.hit) {
+      const burstAge = elapsed - star.hitTime;
+      for (const tp of trailPoints) {
+        const fade = Math.max(0, 1 - burstAge / 0.5);
+        if (fade <= 0) continue;
+        ctx.beginPath(); ctx.arc(tp.x, tp.y, 1, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(245,245,243,${fade * 0.25})`; ctx.fill();
+      }
+      for (const p of particles) {
+        p.x += p.vx; p.y += p.vy; p.vx *= 0.97; p.vy *= 0.97; p.life -= p.decay;
+        if (p.life > 0) { ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2); ctx.fillStyle = `rgba(245,245,243,${p.life * 0.45})`; ctx.fill(); }
+      }
+      const scatterStart = star.hitTime + 0.1;
+      for (const n of nodes) {
+        const ne = elapsed - scatterStart - n.delay;
+        if (ne < 0) continue;
+        const prog = Math.min(1, ne / 1.1), eased = easeOutCubic(prog);
+        n.x = lerp(cx, n.tx, eased); n.y = lerp(cy, n.ty, eased); n.opacity = Math.min(1, ne / 0.4);
+        const gn = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5);
+        gn.addColorStop(0, `rgba(245,245,243,${n.opacity * 0.12})`); gn.addColorStop(1, 'rgba(245,245,243,0)');
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI * 2); ctx.fillStyle = gn; ctx.fill();
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fillStyle = `rgba(245,245,243,${n.opacity * 0.75})`; ctx.fill();
+        const ldx = n.x - cx, ldy = n.y - cy, llen = Math.sqrt(ldx*ldx + ldy*ldy) || 1;
+        const lox = (ldx/llen)*(n.r+9), loy = (ldy/llen)*(n.r+9);
+        const labelText = n.label.toUpperCase();
+        ctx.font = '400 9px "DM Mono", monospace'; ctx.letterSpacing = '0.08em';
+        const alignRight = ldx < 0, alignBottom = ldy < 0;
+        ctx.textAlign = alignRight ? 'right' : 'left';
+        ctx.textBaseline = alignBottom ? 'bottom' : 'top';
+        const tw = ctx.measureText(labelText).width, th = 11, pad = 6;
+        let lx = n.x + lox, ly = n.y + loy;
+        if (alignRight) { lx = Math.max(lx, tw+pad); lx = Math.min(lx, W-pad); }
+        else { lx = Math.max(lx, pad); lx = Math.min(lx, W-tw-pad); }
+        if (alignBottom) { ly = Math.max(ly, th+pad); ly = Math.min(ly, H-pad); }
+        else { ly = Math.max(ly, pad); ly = Math.min(ly, H-th-pad); }
+        ctx.fillStyle = `rgba(245,245,243,${n.opacity * 0.38})`; ctx.fillText(labelText, lx, ly);
+      }
+      const edgeStart = star.hitTime + 0.8;
+      edges.forEach((e, i) => {
+        const ee = elapsed - edgeStart - i * 0.025;
+        if (ee < 0) return;
+        const prog = Math.min(1, ee / 1.4);
+        e.opacity = easeOutCubic(prog) * 0.09;
+        const a = nodes[e.a], b = nodes[e.b];
+        ctx.beginPath(); ctx.moveTo(a.x, a.y);
+        ctx.lineTo(lerp(a.x, b.x, easeOutCubic(prog)), lerp(a.y, b.y, easeOutCubic(prog)));
+        ctx.strokeStyle = `rgba(245,245,243,${e.opacity})`; ctx.lineWidth = 1; ctx.stroke();
+      });
+      if (elapsed > star.hitTime + 3.5) {
+        const breathe = Math.sin(elapsed * 0.7) * 0.018;
+        for (const n of nodes) {
+          if (n.opacity <= 0) continue;
+          ctx.beginPath(); ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(245,245,243,${0.025 + Math.max(0, breathe)})`; ctx.fill();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+// ── DIAGRAM TOOLTIPS ──
+(function() {
+  const tip = document.getElementById('diagramTip');
+  const tipTitle = tip.querySelector('.dtip-title');
+  const tipBody  = tip.querySelector('.dtip-body');
+  const details = {
+    apply:    { title: 'Apply',            body: 'Applications are reviewed on a rolling basis.\nDeadline: May 31, 2026.\nAll promising candidates get a personal call.' },
+    weekzero: { title: 'Week Zero',        body: 'Virtual kickoff session.\nMeet your 11 cohort members.\nOnboarding, goal-setting & first scout briefing.' },
+    events:   { title: '2 Campus Events',  body: 'Host 2 events at your university.\n$1,000 budget — any format you choose.\nGoal: surface exceptional talent on your campus.' },
+    hack:     { title: '2 Hackathons',     body: 'Host 2 hackathons on your campus — or team up with a nearby scout to co-host.\nFully funded by HN12.\nThis is where you bring your scouted talent.' },
+    trip:     { title: 'Cohort Trip',      body: '3–5 days with your full cohort.\n$500 base covered by HN12.\nUnlimited upside from sponsorships you close.' },
+    sponsors: { title: 'Sponsorships',     body: 'Pitch sponsors to cover your campus events.\nEvery dollar saved rolls into the trip fund.\nAbove $1k: 25% cohort · 15% you · 60% HN12.' },
+  };
+  document.querySelectorAll('.j-box').forEach(el => {
+    el.addEventListener('mouseenter', e => {
+      const key = el.dataset.box;
+      if (!key || !details[key]) return;
+      tipTitle.textContent = details[key].title;
+      tipBody.textContent  = details[key].body;
+      tip.classList.add('visible');
+    });
+    el.addEventListener('mousemove', e => {
+      const pad = 14;
+      let x = e.clientX + pad, y = e.clientY + pad;
+      if (x + 220 > window.innerWidth)  x = e.clientX - 220 - pad;
+      if (y + 160 > window.innerHeight) y = e.clientY - 160 - pad;
+      tip.style.left = x + 'px';
+      tip.style.top  = y + 'px';
+    });
+    el.addEventListener('mouseleave', () => tip.classList.remove('visible'));
+  });
+})();
+
+// ── DRAWER TOGGLE ──
+function toggleDrawer(btn, bodyId) {
+  const body = document.getElementById(bodyId);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  btn.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+// legacy alias
+function toggleTeam(btn) { toggleDrawer(btn, 'teamBody'); }
+
+// ── UNIVERSITY SELECT ──
+function handleUniversitySelect(sel) {
+  const other = document.getElementById('universityOther');
+  if (sel.value === 'other') {
+    other.style.display = 'block';
+    other.required = true;
+  } else {
+    other.style.display = 'none';
+    other.required = false;
+    other.value = '';
+  }
+}
+
+// ── FILE UPLOAD LABELS ──
+function bindFile(inputId, labelId, nameId) {
+  const input = document.getElementById(inputId);
+  const label = document.getElementById(labelId);
+  const name  = document.getElementById(nameId);
+  if (!input || !label || !name) return;
+  input.addEventListener('change', function () {
+    if (this.files && this.files[0]) {
+      name.textContent = this.files[0].name;
+      label.classList.add('has-file');
+    } else {
+      name.textContent = 'No file chosen';
+      label.classList.remove('has-file');
+    }
+  });
+}
+bindFile('cvFile', 'cvLabel', 'cvFileName');
+
+
+
+// ── FORM SUBMISSION ──
+function submitForm() {
+  const fname = document.getElementById('fname');
+  const email = document.getElementById('email');
+  const uni   = document.getElementById('university');
+  [fname, email, uni].forEach(el => { el.classList.remove('err'); el.style.animation = ''; });
+  let valid = true;
+  [fname, email, uni].forEach(el => {
+    if (!el.value.trim()) {
+      el.classList.add('err');
+      void el.offsetWidth;
+      el.style.animation = 'shake 0.3s ease';
+      valid = false;
+    }
+  });
+  if (!valid) return;
+  document.getElementById('appForm').style.display    = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+}
+</script>
+</body>
+</html>
