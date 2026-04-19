@@ -81,12 +81,19 @@ sup {
   border-left: 1px solid rgba(245,245,243,0.18);
   padding-left: 1.25rem;
 }
-.hn-name {
+.ss-label {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5rem;
+  font-size: 0.42rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.55;
+  opacity: 0.45;
+}
+.hn-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.85;
 }
 nav.nav-light #hnTag {
   color: var(--black);
@@ -2639,7 +2646,7 @@ footer {
         <div class="team-member">
           <div class="member-name">Christian Cierny</div>
           <div class="member-title">Head of Recruitment, HackNation</div>
-          <a href="www.linkedin.com/in/christian-cierny-579940378" class="member-li">LinkedIn ↗</a>
+          <a href="https://www.linkedin.com/in/christian-cierny-579940378" class="member-li" target="_blank" rel="noopener">LinkedIn ↗</a>
         </div>
       </div>
     </div>
@@ -3087,6 +3094,44 @@ function bindFile(inputId, labelId, nameId) {
 bindFile('cvFile', 'cvLabel', 'cvFileName');
 
 
+
+// ── SMART ANCHOR NAVIGATION ──
+// On mobile the desktop sections (#apply, #program, etc.) are display:none.
+// Redirect those anchor clicks to the correct mobile targets.
+(function () {
+  const MOBILE_MAP = {
+    '#apply':    '#m-apply',
+    '#program':  '#m-about',
+    '#who':      '#m-about',
+    '#included': '#m-about',
+    '#faq':      '#m-about',
+  };
+
+  function isMobile() {
+    return window.matchMedia('(max-width: 820px)').matches;
+  }
+
+  document.addEventListener('click', function (e) {
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href || !href.startsWith('#')) return;
+
+    if (isMobile() && MOBILE_MAP[href]) {
+      e.preventDefault();
+      const target = document.querySelector(MOBILE_MAP[href]);
+      if (target) {
+        const navH = document.querySelector('nav') ? document.querySelector('nav').offsetHeight : 0;
+        const top  = target.getBoundingClientRect().top + window.scrollY - navH - 12;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
+      return;
+    }
+
+    // Desktop: if target is a hidden element (e.g. display:none), do nothing extra.
+    // Otherwise let the browser handle normal anchor scroll.
+  });
+})();
 
 // ── FORM SUBMISSION ──
 function submitForm() {
