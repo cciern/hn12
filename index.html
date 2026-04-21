@@ -56,6 +56,10 @@ body.has-cursor.hero-active #cursor.grow {
   background: rgba(245,245,243,0.06);
   border: 1px solid rgba(245,245,243,0.28);
 }
+@media (max-width: 768px) {
+  body.has-cursor { cursor: auto; }
+  body.has-cursor #cursor { display: none !important; }
+}
 
 /* ── GLOBAL SUP ── */
 sup {
