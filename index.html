@@ -524,7 +524,7 @@ h2 em { font-style: italic; }
 }
 .included-item:first-child { border-top: 1px solid var(--border); }
 .included-item::before {
-  content: '—';
+  content: '-';
   position: absolute; left: 0; top: 1.55rem;
   font-family: 'DM Mono', monospace;
   font-size: 0.56rem;
@@ -743,8 +743,8 @@ h2 em { font-style: italic; }
 /* ── APPLY ── */
 #apply { border-top: 1px solid var(--border); }
 
-.apply-header { margin-bottom: 2rem; }
-.apply-header .section-title { margin-bottom: 1.25rem; }
+.apply-header { margin-bottom: 1.25rem; }
+.apply-header .section-title { margin-bottom: 0.9rem; }
 
 .apply-dates {
   display: grid;
@@ -753,7 +753,7 @@ h2 em { font-style: italic; }
   margin-bottom: 0;
 }
 .apply-date-item {
-  padding: 1.1rem 1.4rem;
+  padding: 0.75rem 1.1rem;
   border: 1px solid var(--border);
 }
 .apply-date-item--req {
@@ -762,7 +762,7 @@ h2 em { font-style: italic; }
 }
 .adi-date {
   font-family: 'DM Sans', sans-serif;
-  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
   font-weight: 200;
   letter-spacing: -0.02em;
   color: var(--black);
@@ -779,10 +779,11 @@ h2 em { font-style: italic; }
 }
 
 /* form */
-#apply { padding-top: 5rem; padding-bottom: 5rem; }
-.apply-form { display: flex; flex-direction: column; gap: 1.1rem; }
+#apply { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+.apply-form { display: flex; flex-direction: column; gap: 0.65rem; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.form-group { display: flex; flex-direction: column; gap: 0.45rem; }
+.form-row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.3rem; }
 
 label {
   font-family: 'DM Mono', monospace;
@@ -796,7 +797,7 @@ input, select, textarea {
   color: var(--black);
   font-family: 'DM Sans', sans-serif;
   font-size: 0.93rem; font-weight: 300;
-  padding: 0.7rem 0;
+  padding: 0.45rem 0;
   outline: none;
   transition: border-color 0.2s;
   width: 100%;
@@ -846,6 +847,50 @@ input[type="file"] { display: none; }
   line-height: 1.75;
 }
 
+/* video upload feature block */
+.video-upload-feature {
+  border: 1px solid rgba(13,13,13,0.18);
+  padding: 1.5rem 1.75rem;
+  text-align: center;
+  margin: 0.75rem 0 0.25rem;
+  background: rgba(13,13,13,0.025);
+}
+.video-upload-feature .file-note {
+  font-size: 0.92rem;
+  color: rgba(13,13,13,0.75);
+  max-width: 480px;
+  margin: 0 auto 1rem;
+}
+.video-upload-feature .vuf-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  display: block;
+  margin-bottom: 0.9rem;
+  color: var(--black);
+}
+.video-upload-feature .file-label {
+  justify-content: center;
+  border: 1px solid rgba(13,13,13,0.22);
+  border-bottom: 1px solid rgba(13,13,13,0.22);
+  padding: 1rem 1.75rem;
+  display: inline-flex;
+  width: auto;
+  min-width: 220px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.video-upload-feature .file-label:hover {
+  border-color: rgba(13,13,13,0.55);
+  background: rgba(13,13,13,0.04);
+}
+.video-upload-feature .file-icon {
+  font-size: 0.62rem;
+}
+.video-upload-feature #videoFileName {
+  font-size: 0.88rem;
+}
+
 /* submit */
 .form-submit { margin-top: 0.5rem; }
 .btn-submit {
@@ -861,9 +906,9 @@ input[type="file"] { display: none; }
 
 /* below form */
 .apply-below {
-  margin-top: 2.5rem;
+  margin-top: 1.5rem;
   display: flex; flex-direction: column; gap: 0.6rem;
-  padding-top: 2.5rem;
+  padding-top: 1.5rem;
   border-top: 1px solid var(--border);
 }
 .apply-meta-row {
@@ -883,6 +928,33 @@ input[type="file"] { display: none; }
   margin-top: 1rem;
   font-size: 0.82rem; color: rgba(13,13,13,0.38);
   line-height: 1.7;
+}
+
+/* who flexibility note */
+.who-flexibility {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(13,13,13,0.08);
+  font-size: 0.88rem;
+  font-weight: 300;
+  color: rgba(13,13,13,0.5);
+  line-height: 1.7;
+}
+.who-flexibility .ci-key {
+  color: rgba(13,13,13,0.6);
+}
+
+/* contact form drawer */
+#contactBody.open { max-height: 560px; }
+.contact-form {
+  display: flex; flex-direction: column; gap: 0.65rem;
+  padding: 1.75rem 0 3rem;
+  max-width: 640px;
+}
+.contact-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.contact-success {
+  display: none;
+  padding: 2rem 0 3rem;
 }
 
 /* success */
@@ -1017,7 +1089,7 @@ footer {
   margin: 0 auto;
   padding: 0 3rem;
 }
-#team, #about { border-top: 1px solid var(--border); }
+#team, #about, #contact { border-top: 1px solid var(--border); }
 .team-toggle {
   width: 100%;
   display: flex; align-items: center; justify-content: space-between;
@@ -1464,7 +1536,8 @@ footer {
     color: rgba(13,13,13,0.5);
   }
   .m-form input,
-  .m-form select {
+  .m-form select,
+  .m-form textarea {
     background: transparent;
     border: none;
     border-bottom: 1px solid rgba(13,13,13,0.15);
@@ -1478,11 +1551,15 @@ footer {
     width: 100%;
     appearance: none; -webkit-appearance: none;
   }
-  .m-form input::placeholder { color: rgba(13,13,13,0.28); }
+  .m-form input::placeholder,
+  .m-form textarea::placeholder { color: rgba(13,13,13,0.28); }
   .m-form input:focus,
-  .m-form select:focus { border-bottom-color: rgba(13,13,13,0.55); }
+  .m-form select:focus,
+  .m-form textarea:focus { border-bottom-color: rgba(13,13,13,0.55); }
   .m-form input.err,
-  .m-form select.err { border-bottom-color: rgba(180,40,40,0.7); }
+  .m-form select.err,
+  .m-form textarea.err { border-bottom-color: rgba(180,40,40,0.7); }
+  .m-form textarea { resize: none; min-height: 80px; }
   .m-form select {
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
@@ -1715,7 +1792,7 @@ footer {
   /* apply layout */
   .apply-header { margin-bottom: 2rem; }
   .apply-dates { grid-template-columns: 1fr; gap: 0.75rem; }
-  .form-row { grid-template-columns: 1fr; gap: 1.35rem; }
+  .form-row, .form-row-3 { grid-template-columns: 1fr; gap: 1.35rem; }
   .apply-meta-row {
     flex-direction: column;
     gap: 0.25rem;
@@ -1735,8 +1812,10 @@ footer {
     letter-spacing: 0.08em;
   }
 
-  /* team/about drawers */
-  #team, #about { padding: 0 1.25rem; }
+  /* team/about/contact drawers */
+  #team, #about, #contact { padding: 0 1.25rem; }
+  #contactBody.open { max-height: 600px; }
+  .contact-form-row { grid-template-columns: 1fr; gap: 1.35rem; }
   .team-toggle {
     padding: 1.5rem 0;
     font-size: 0.6rem;
@@ -1799,10 +1878,10 @@ footer {
   <div class="nav-row">
     <div class="nav-left">
       <a href="#" class="nav-brand">HN<sup>12</sup></a>
-      <div id="hnTag">
+      <a href="https://hack-nation.ai" id="hnTag" target="_blank" rel="noopener" style="text-decoration:none;">
         <div class="ss-label">Powered by</div>
         <div class="hn-name">HackNation</div>
-      </div>
+      </a>
     </div>
     <div class="nav-ticker" aria-hidden="true">
       <div class="nav-ticker-track">
@@ -1870,12 +1949,12 @@ footer {
     <div class="m-card-eyebrow">/ program overview</div>
     <p class="m-card-lede">A six-month scout program for twelve students from the world's best universities. We give you a kickoff weekend, a cohort, and a budget. You find exceptional people on your campus and bring them into our community: raw talent for hackathons, and ideas, teams, and ventures for the HackNation accelerator.</p>
     <ul class="m-steps">
-      <li><strong>Apply</strong>: rolling basis, early decision June 6, 2026. Promising candidates get a personal interview. Cohort selected mid-July.</li>
-      <li><strong>Kickoff weekend in Latin America</strong>: August 8–9, 2026. Flights and accommodation covered. Location announced closer to the date.</li>
-      <li><strong>Weekly mentorship calls</strong>: recurring sessions with professors, VCs, and tech leaders. Scouts can suggest speakers and host sessions.</li>
+      <li><strong>Apply</strong>: rolling basis, early decision June 15, 2026. Promising candidates get a personal interview. Cohort selected mid-July.</li>
+      <li><strong>Kickoff weekend in Latin America</strong>: August 8-9, 2026. Flights and accommodation covered. Location announced closer to the date.</li>
+      <li><strong>Weekly mentorship calls</strong>: recurring sessions with AI leaders, VCs, and professors. Scouts can suggest speakers and host sessions.</li>
       <li><strong>Host 2 campus events</strong>: any format, scout's choice. Goal: surface exceptional talent. Sponsorship revenue partially shared.</li>
       <li><strong>Host 1 hackathon</strong>: on your campus. You handle venue and marketing; we handle the rest centrally.</li>
-      <li><strong>Scout Finale in SF</strong>: championship-style closing event in November. Each scout brings 2 people from their school (36 scouts total). Major prize pool (sponsors TBA).</li>
+      <li><strong>Scout Finale in SF</strong>: championship-style closing event in November. Each scout brings the best people from their school. Major prize pool (sponsors TBA).</li>
     </ul>
 
     <!-- collapsible visual flow diagram -->
@@ -1910,7 +1989,7 @@ footer {
               fill="rgba(13,13,13,0.9)">Kickoff weekend</text>
             <text x="163" y="110" text-anchor="middle" dominant-baseline="central"
               font-family="DM Mono, monospace" font-size="10"
-              fill="rgba(13,13,13,0.48)">Aug 8–9 · Latin America</text>
+              fill="rgba(13,13,13,0.48)">Aug 8-9 · Latin America</text>
             <text x="163" y="128" text-anchor="middle" dominant-baseline="central"
               font-family="DM Mono, monospace" font-size="9"
               fill="rgba(13,13,13,0.3)">✦ flagship event</text>
@@ -1926,7 +2005,7 @@ footer {
               fill="rgba(13,13,13,0.9)">Weekly mentorship</text>
             <text x="334" y="113" text-anchor="middle" dominant-baseline="central"
               font-family="DM Mono, monospace" font-size="10"
-              fill="rgba(13,13,13,0.45)">Profs · VCs · leaders</text>
+              fill="rgba(13,13,13,0.45)">AI leaders · VCs · Profs</text>
           </g>
           <line x1="410" y1="103" x2="428" y2="103" stroke="rgba(13,13,13,0.45)" stroke-width="1.5" marker-end="url(#m-arr)"/>
 
@@ -1968,7 +2047,7 @@ footer {
               fill="rgba(13,13,13,0.48)">Championship · SF · November</text>
             <text x="887" y="121" text-anchor="middle" dominant-baseline="central"
               font-family="DM Mono, monospace" font-size="10"
-              fill="rgba(13,13,13,0.42)">36 scouts · speed hackathon</text>
+              fill="rgba(13,13,13,0.42)">best from each school</text>
             <text x="887" y="139" text-anchor="middle" dominant-baseline="central"
               font-family="DM Mono, monospace" font-size="9"
               fill="rgba(13,13,13,0.3)">✦ flagship event</text>
@@ -1982,7 +2061,7 @@ footer {
   <article class="m-card">
     <div class="m-card-eyebrow">/ who this is for</div>
     <ul class="m-criteria">
-      <li><strong>Currently enrolled student</strong>: currently enrolled and graduating 2027 or later (undergrads preferred, exceptional master's and PhD candidates considered case-by-case).</li>
+      <li><strong>Currently enrolled student</strong>: currently enrolled and graduating 2027 or later. This program is built around undergraduate student life, though we genuinely welcome exceptional master's and PhD candidates who feel the scout role fits them.</li>
       <li><strong>Community and network builder</strong>: you invest in genuine relationships and build things that bring people together - you've started clubs, run events, and helped others connect.</li>
       <li><strong>Thoughtful judge of talent</strong>: you notice potential others overlook and can articulate clearly why someone stands out.</li>
       <li><strong>Storyteller</strong>: you understand how to position a story and are comfortable being the public face of what you build.</li>
@@ -1995,10 +2074,9 @@ footer {
     <div class="m-card-eyebrow">/ what you can expect</div>
     <ul class="m-criteria">
       <li><strong>A world-class cohort</strong>: peers from the best schools in the world. The group you'll scout with, travel with, and possibly be friends with for life.</li>
-      <li><strong>A personalized program</strong>: with only 12 scouts globally, every participant gets regular 1:1 check-ins, individual goal-setting at the start, and customized support throughout. You're not a number in a cohort of 200.</li>
+      <li><strong>A personalized program</strong>: with only 12 scouts globally, every participant gets regular 1:1 check-ins, individual goal-setting at the start, and customized mentorship and support throughout.</li>
       <li><strong>Real skill-building</strong>: learn how to assess potential, recognize patterns, understand team dynamics, validate ideas, and build fluency across fields (engineering, entrepreneurship, and beyond).</li>
       <li><strong>Warm intros to the industry</strong>: founders, accelerators, VCs, tech leaders and our sponsors (OpenAI, Databricks, Lovable, ElevenLabs, Mozilla).</li>
-      <li><strong>Full flexibility</strong>: the scout program is designed around your schedule. Your academics stay your priority.</li>
     </ul>
   </article>
 
@@ -2009,11 +2087,11 @@ footer {
 
     <div class="apply-dates" style="margin-bottom:1.75rem;">
       <div class="apply-date-item">
-        <div class="adi-date">June 6</div>
+        <div class="adi-date">June 15</div>
         <div class="adi-label">Apply by this date for early decision</div>
       </div>
       <div class="apply-date-item apply-date-item--req">
-        <div class="adi-date">Aug 8–9</div>
+        <div class="adi-date">Aug 8-9</div>
         <div class="adi-label">Kickoff Weekend &middot; only apply if you can attend</div>
       </div>
     </div>
@@ -2032,6 +2110,10 @@ footer {
       <div class="m-form-group">
         <label for="m-email">Email</label>
         <input type="email" id="m-email" autocomplete="email" placeholder="ada@university.edu">
+      </div>
+      <div class="m-form-group">
+        <label for="m-phone">Phone (with country code)</label>
+        <input type="tel" id="m-phone" autocomplete="tel" placeholder="+1 555 123 4567">
       </div>
       <div class="m-form-group">
         <label for="m-university">University</label>
@@ -2067,10 +2149,10 @@ footer {
         <input type="url" id="m-linkedin" placeholder="linkedin.com/in/yourname">
       </div>
       <div class="m-form-group">
-        <p class="file-note" style="margin-bottom:0.65rem;">We want to hire people, not resumes. Please upload a 30-60 sec video telling us about yourself, why you want to be part of the program, and how you would shape HN12.</p>
-        <label>Video (30-60 sec)</label>
+        <p class="file-note" style="margin-bottom:0.65rem;">A video says more than a resume. Please upload a 30-60 second video about yourself, why you want to be a scout, and how you'd shape HN12 at your campus.</p>
+        <label>Video (30-60 sec &middot; max 50 MB)</label>
         <label class="m-file-label" id="mVideoLabel" for="m-videoFile">
-          <span class="m-file-icon">↑ Upload</span>
+          <span class="m-file-icon">↑ Upload video</span>
           <span id="mVideoFileName">No file chosen</span>
         </label>
         <input type="file" id="m-videoFile" accept="video/*,.mp4,.mov,.avi,.webm">
@@ -2104,11 +2186,9 @@ footer {
         </button>
         <div class="m-faq-a">
           <ul class="m-faq-sublist">
-            <li><strong>You're not a student</strong>: if you're not currently enrolled in a degree-seeking program you're ineligible. If you're interested in collaborating with, sponsoring or supporting HN12, reach out via the form above.</li>
-
-            <li><strong>You want to be managed closely</strong>: there's no playbook. You get a budget, a network, and full creative freedom. What you build with it is up to you.</li>
-            <li><strong>You want a logo on your résumé</strong>: we have incredible sponsors, but we're still making a name for ourselves. If you're here to check a box, this isn't the right fit.</li>
-            <li><strong>You don't want to live outside your comfort zone</strong>: you'll be in a lot of new rooms, meeting and reaching out to people you've never met, figuring things out as you go.</li>
+            <li><strong>You're not a student</strong>: if you're not currently enrolled in a degree-seeking program you are unfortunately ineligible. If you are interested in collaborating with, sponsoring or supporting HN12, please use the contact form on the website.</li>
+            <li><strong>You want to be managed closely</strong>: there's no playbook. This program is designed to creatively enable you.</li>
+            <li><strong>You don't want to live outside your comfort zone</strong>: you'll be in a lot of new rooms, reaching out to people you've never met, and figuring things out as you go.</li>
           </ul>
         </div>
       </li>
@@ -2126,10 +2206,10 @@ footer {
         </button>
         <div class="m-faq-a">
           <ul class="m-faq-sublist">
-            <li><strong>Early decision:</strong> June 6, 2026</li>
-            <li><strong>Kickoff Weekend:</strong> August 8–9, 2026 · Latin America</li>
-            <li><strong>Scouting:</strong> August – December 2026</li>
-            <li><strong>Hackathon:</strong> October 3–4, 2026</li>
+            <li><strong>Early decision:</strong> June 15, 2026</li>
+            <li><strong>Kickoff Weekend:</strong> August 8-9, 2026 · Latin America</li>
+            <li><strong>Scouting:</strong> August - December 2026</li>
+            <li><strong>Hackathon:</strong> October 3-4, 2026</li>
             <li><strong>Scout Championship:</strong> TBD, November 2026 · San Francisco</li>
             <li><strong>Spots:</strong> 12 globally</li>
           </ul>
@@ -2147,16 +2227,46 @@ footer {
           <span>I'm a master's or PhD student - can I still apply?</span>
           <span class="m-faq-icon">+</span>
         </button>
-        <div class="m-faq-a"><p>We prefer undergrads but will also consider exceptional master's and PhD candidates case-by-case. Make a strong case in your application.</p></div>
+        <div class="m-faq-a"><p>This program is built around undergraduate student life, but we genuinely welcome exceptional master's and PhD candidates who feel the scout role is a great fit for them. Make a strong case in your application.</p></div>
       </li>
       <li class="m-faq-item">
         <button class="m-faq-q" onclick="toggleMFaq(this)" aria-expanded="false">
           <span>What does the Scout Finale look like?</span>
           <span class="m-faq-icon">+</span>
         </button>
-        <div class="m-faq-a"><p>A championship-style closing event in San Francisco in November 2026. Each of the 12 scouts brings 2 additional people from their school (36 scouts total) to compete in a speed hackathon. There's a major prize pool; sponsors will be announced closer to the date.</p></div>
+        <div class="m-faq-a"><p>A championship-style closing event in San Francisco in November 2026. Each scout brings the best people from their school to compete in a speed hackathon. There's a major prize pool; sponsors will be announced closer to the date.</p></div>
       </li>
     </ul>
+  </article>
+
+  <!-- /contact -->
+  <article class="m-card" id="m-contact">
+    <div class="m-card-eyebrow">/ contact</div>
+    <h2 class="m-card-title">Get in touch</h2>
+    <form class="m-form" id="mContactForm" onsubmit="return false;">
+      <div class="m-form-group">
+        <label for="mc-name">Name</label>
+        <input type="text" id="mc-name" placeholder="Ada Lovelace">
+      </div>
+      <div class="m-form-group">
+        <label for="mc-email">Email</label>
+        <input type="email" id="mc-email" placeholder="ada@university.edu">
+      </div>
+      <div class="m-form-group">
+        <label for="mc-subject">Subject</label>
+        <input type="text" id="mc-subject" placeholder="e.g. Sponsorship, collaboration">
+      </div>
+      <div class="m-form-group">
+        <label for="mc-message">Message</label>
+        <textarea id="mc-message" rows="4" placeholder="Tell us what's on your mind..."></textarea>
+      </div>
+      <button class="m-submit" type="button" onclick="submitMContactForm()">Send Message</button>
+    </form>
+    <div style="display:none;padding:2rem 0;" id="mContactSuccess">
+      <div class="success-ring">✓</div>
+      <h3>Message received.</h3>
+      <p>We'll get back to you shortly.</p>
+    </div>
   </article>
 
 </div><!-- /m-about -->
@@ -2177,11 +2287,7 @@ footer {
     <div class="section-title reveal">The Program</div>
 
     <div class="program-intro reveal">
-      <p>You know your campus better than we ever will. Over 6 months, we give you
-      a kickoff weekend in Latin America, eleven peers from the world's best
-      universities, and a budget. You find exceptional people and bring them into
-      our community: raw talent for hackathons, and ideas, teams, and ventures
-      for the HackNation accelerator. The program ends with a scout championship in San Francisco.</p>
+      <p>You know your campus better than we ever will, so you're the one doing the scouting. Over six months, we give you a kickoff weekend in Latin America with eleven peers from the world's top universities, a dedicated budget, and ongoing mentorship from AI leaders, VCs, and professors. Your job: find exceptional people and bring them into the HackNation community - raw talent for hackathons, and ideas, teams, and founders for the HackNation accelerator. The program closes with a scout championship in San Francisco in November.</p>
     </div>
 
     <!-- Mobile-only mini-drawer wrapping just the diagram -->
@@ -2196,18 +2302,18 @@ footer {
       <div class="journey-mobile">
         <div class="jm-step jm-step--apply">
           <div class="jm-label">Apply</div>
-          <div class="jm-sub">early decision Jun 6</div>
+          <div class="jm-sub">early decision Jun 15</div>
         </div>
         <div class="jm-arrow">↓</div>
         <div class="jm-step">
           <div class="jm-label">Kickoff weekend</div>
-          <div class="jm-sub">Aug 8–9 · Latin America</div>
+          <div class="jm-sub">Aug 8-9 · Latin America</div>
         </div>
         <div class="jm-arrow">↓</div>
         <div class="jm-scout-label">↓ Scout Talent ↓</div>
         <div class="jm-step">
           <div class="jm-label">Weekly mentorship</div>
-          <div class="jm-sub">Profs · VCs · tech leaders</div>
+          <div class="jm-sub">AI leaders · VCs · Profs</div>
         </div>
         <div class="jm-arrow">↓</div>
         <div class="jm-step jm-step--scout-events">
@@ -2222,7 +2328,7 @@ footer {
         <div class="jm-arrow">↓</div>
         <div class="jm-step jm-step--final">
           <div class="jm-label">Scout Finale ✦</div>
-          <div class="jm-sub">Championship · SF · November<br>36 scouts</div>
+          <div class="jm-sub">Championship · SF · November</div>
         </div>
 
         <!-- NEW mobile diagram v2 — tappable cards -->
@@ -2231,7 +2337,7 @@ footer {
             <div class="jm2-step-header">
               <div class="jm2-step-main">
                 <span class="jm2-label">Apply</span>
-                <span class="jm2-sub">Rolling · early decision Jun 6</span>
+                <span class="jm2-sub">Rolling · early decision Jun 15</span>
               </div>
               <span class="jm2-icon">+</span>
             </div>
@@ -2243,7 +2349,7 @@ footer {
             <div class="jm2-step-header">
               <div class="jm2-step-main">
                 <span class="jm2-label">Kickoff weekend</span>
-                <span class="jm2-sub">Aug 8–9 · Latin America · flights &amp; accommodation covered</span>
+                <span class="jm2-sub">Aug 8-9 · Latin America · flights &amp; accommodation covered</span>
               </div>
               <span class="jm2-icon">+</span>
             </div>
@@ -2257,7 +2363,7 @@ footer {
               <div class="jm2-step-header">
                 <div class="jm2-step-main">
                   <span class="jm2-label">Weekly mentorship</span>
-                  <span class="jm2-sub">Profs · VCs · tech leaders</span>
+                  <span class="jm2-sub">AI leaders · VCs · Profs</span>
                 </div>
                 <span class="jm2-icon">+</span>
               </div>
@@ -2294,7 +2400,7 @@ footer {
             <div class="jm2-step-header">
               <div class="jm2-step-main">
                 <span class="jm2-label">Scout Finale ✦</span>
-                <span class="jm2-sub">Championship · SF · November · 36 scouts</span>
+                <span class="jm2-sub">Championship · SF · November</span>
               </div>
               <span class="jm2-icon">+</span>
             </div>
@@ -2328,7 +2434,7 @@ footer {
             fill="rgba(13,13,13,0.9)">Kickoff Weekend</text>
           <text x="319" y="138" text-anchor="middle" dominant-baseline="central"
             font-family="DM Sans, sans-serif" font-size="15" font-weight="400"
-            fill="rgba(13,13,13,0.75)">Aug 8–9, 2026</text>
+            fill="rgba(13,13,13,0.75)">Aug 8-9, 2026</text>
           <text x="319" y="162" text-anchor="middle" dominant-baseline="central"
             font-family="DM Mono, monospace" font-size="11"
             fill="rgba(13,13,13,0.48)">Latin America</text>
@@ -2350,7 +2456,7 @@ footer {
             fill="rgba(13,13,13,0.88)">Weekly mentorship</text>
           <text x="573" y="160" text-anchor="middle" dominant-baseline="central"
             font-family="DM Mono, monospace" font-size="11"
-            fill="rgba(13,13,13,0.42)">Profs · VCs · leaders</text>
+            fill="rgba(13,13,13,0.42)">AI leaders · VCs · Profs</text>
         </g>
 
         <!-- Arrow Mentorship to Events -->
@@ -2382,7 +2488,7 @@ footer {
             fill="rgba(13,13,13,0.88)">1 hackathon</text>
           <text x="945" y="155" text-anchor="middle" dominant-baseline="central"
             font-family="DM Mono, monospace" font-size="11"
-            fill="rgba(13,13,13,0.42)">Oct 3–4 · on campus</text>
+            fill="rgba(13,13,13,0.42)">Oct 3-4 · on campus</text>
         </g>
 
         <!-- Arrow Hackathon to Scout Finale -->
@@ -2404,7 +2510,7 @@ footer {
             fill="rgba(13,13,13,0.42)">Championship · San Francisco</text>
           <text x="1192" y="172" text-anchor="middle" dominant-baseline="central"
             font-family="DM Mono, monospace" font-size="11"
-            fill="rgba(13,13,13,0.38)">36 scouts · speed hackathon</text>
+            fill="rgba(13,13,13,0.38)">best from each school</text>
           <text x="1192" y="192" text-anchor="middle" dominant-baseline="central"
             font-family="DM Mono, monospace" font-size="9"
             fill="rgba(13,13,13,0.28)">✦ flagship event</text>
@@ -2423,14 +2529,14 @@ footer {
             fill="rgba(13,13,13,0.32)">Kickoff</text>
           <text x="319" y="294" text-anchor="middle"
             font-family="DM Mono, monospace" font-size="10"
-            fill="rgba(13,13,13,0.52)">Aug 8–9</text>
+            fill="rgba(13,13,13,0.52)">Aug 8-9</text>
           <!-- Scouting span label -->
           <text x="755" y="278" text-anchor="middle"
             font-family="DM Mono, monospace" font-size="9" letter-spacing="0.06em"
             fill="rgba(13,13,13,0.32)">Scouting</text>
           <text x="755" y="294" text-anchor="middle"
             font-family="DM Mono, monospace" font-size="10"
-            fill="rgba(13,13,13,0.52)">Aug – Dec</text>
+            fill="rgba(13,13,13,0.52)">Aug - Dec</text>
           <!-- Hackathon: Oct 3-4 -->
           <line x1="945" y1="253" x2="945" y2="263"
             stroke="rgba(13,13,13,0.2)" stroke-width="1"/>
@@ -2439,7 +2545,7 @@ footer {
             fill="rgba(13,13,13,0.32)">Hackathon</text>
           <text x="945" y="294" text-anchor="middle"
             font-family="DM Mono, monospace" font-size="10"
-            fill="rgba(13,13,13,0.52)">Oct 3–4</text>
+            fill="rgba(13,13,13,0.52)">Oct 3-4</text>
           <!-- Scout Finale: TBD Nov -->
           <line x1="1192" y1="253" x2="1192" y2="263"
             stroke="rgba(13,13,13,0.2)" stroke-width="1"/>
@@ -2466,7 +2572,7 @@ footer {
       <div class="who-col">
         <div class="who-col-title reveal">Who this is for</div>
         <div class="criteria-list">
-          <div class="criteria-item reveal"><span class="ci-key">Currently enrolled student:</span> you're currently enrolled and graduating 2027 or later (undergrads preferred, exceptional master's and PhD candidates considered case-by-case)</div>
+          <div class="criteria-item reveal"><span class="ci-key">Currently enrolled student:</span> you're currently enrolled and graduating 2027 or later. This program is built around undergraduate student life, though we genuinely welcome exceptional master's and PhD candidates who feel the scout role fits them.</div>
           <div class="criteria-item reveal"><span class="ci-key">Community and network builder:</span> you invest in genuine relationships and build things that bring people together - you've started clubs, run events, and helped others connect</div>
           <div class="criteria-item reveal rd1"><span class="ci-key">Thoughtful judge of talent:</span> you notice potential others overlook and can articulate clearly why someone stands out</div>
           <div class="criteria-item reveal rd2"><span class="ci-key">Storyteller:</span> you understand how to position a story and are comfortable being the public face of what you build</div>
@@ -2479,9 +2585,8 @@ footer {
         <div class="who-col-title">Who this is not for</div>
         <div class="criteria-list">
           <div class="criteria-item reveal"><span class="ci-key">You're not a student:</span> if you're not currently enrolled in a degree-seeking program you are unfortunately ineligible to apply for the HN12 scout program. If you are interested in collaborating with, sponsoring or supporting HN12 please contact us through the form below!</div>
-          <div class="criteria-item reveal"><span class="ci-key">You want to be managed closely:</span> there's no playbook. You get a budget, a network, and full creative freedom. What you build with it is up to you.</div>
-          <div class="criteria-item reveal rd1"><span class="ci-key">You want a logo on your résumé:</span> we have incredible sponsors, but we're still making a name for ourselves. You can grow with us, but if you're here to check a box, this isn't the right fit.</div>
-          <div class="criteria-item reveal rd2"><span class="ci-key">You don't want to live outside your comfort zone:</span> you'll be in a lot of new rooms, reaching out to people you've never met, and figuring things out as you go.</div>
+          <div class="criteria-item reveal"><span class="ci-key">You want to be managed closely:</span> there's no playbook. This program is designed to creatively enable you.</div>
+          <div class="criteria-item reveal rd1"><span class="ci-key">You don't want to live outside your comfort zone:</span> you'll be in a lot of new rooms, reaching out to people you've never met, and figuring things out as you go.</div>
         </div>
       </div>
     </div>
@@ -2511,7 +2616,7 @@ footer {
       </div>
 
       <div class="criteria-item reveal rd1">
-        <span class="ci-key">A personalized program:</span> with only 12 scouts globally, every participant gets regular 1:1 check-ins, individual goal-setting at the start, and customized support throughout. You're not a number in a cohort of 200.
+        <span class="ci-key">A personalized program:</span> with only 12 scouts globally, every participant gets regular 1:1 check-ins, individual goal-setting at the start, and customized mentorship and support throughout.
       </div>
 
       <div class="criteria-item reveal rd2"><span class="ci-key">Real skill-building:</span> learn how to assess potential, recognize patterns, understand team dynamics, validate ideas, and build fluency across fields (engineering, entrepreneurship, and beyond).</div>
@@ -2525,7 +2630,6 @@ footer {
         </div>
       </div>
 
-      <div class="criteria-item reveal"><span class="ci-key">Full flexibility:</span> the scout program is designed around your schedule. Your academics stay your priority, and we'll never expect you to attend anything that conflicts with school.</div>
 
     </div>
   </div>
@@ -2540,11 +2644,11 @@ footer {
       <div class="section-title">Request a spot</div>
       <div class="apply-dates">
         <div class="apply-date-item">
-          <div class="adi-date">June 6</div>
+          <div class="adi-date">June 15</div>
           <div class="adi-label">Apply by this date for early decision</div>
         </div>
         <div class="apply-date-item apply-date-item--req">
-          <div class="adi-date">Aug 8–9</div>
+          <div class="adi-date">Aug 8-9</div>
           <div class="adi-label">Kickoff Weekend &middot; only apply if you can attend</div>
         </div>
       </div>
@@ -2564,12 +2668,18 @@ footer {
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" autocomplete="email" placeholder="ada@university.edu">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" autocomplete="email" placeholder="ada@university.edu">
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone (with country code)</label>
+              <input type="tel" id="phone" autocomplete="tel" placeholder="+1 555 123 4567">
+            </div>
           </div>
 
-          <div class="form-row">
+          <div class="form-row-3">
             <div class="form-group">
               <label for="university">University</label>
               <select id="university" onchange="handleUniversitySelect(this)">
@@ -2606,12 +2716,16 @@ footer {
                 <option>MBA</option>
               </select>
             </div>
+            <div class="form-group">
+              <label for="gradyear">Grad Year</label>
+              <input type="text" id="gradyear" placeholder="2027">
+            </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="gradyear">Grad Year</label>
-              <input type="text" id="gradyear" placeholder="2027">
+              <label for="linkedin">LinkedIn URL</label>
+              <input type="url" id="linkedin" placeholder="linkedin.com/in/yourname">
             </div>
             <div class="form-group">
               <label for="languages">Languages spoken</label>
@@ -2619,16 +2733,11 @@ footer {
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="linkedin">LinkedIn URL</label>
-            <input type="url" id="linkedin" placeholder="linkedin.com/in/yourname">
-          </div>
-
-          <div class="form-group">
-            <p class="file-note" style="margin-bottom:0.75rem;">We want to hire people, not resumes. Please upload a 30-60 sec video telling us about yourself, why you want to be part of the program, and how you would shape HN12.</p>
-            <label>Video (30-60 sec)</label>
+          <div class="video-upload-feature">
+            <p class="file-note">A video says more than a resume. Please upload a 30-60 second video about yourself, why you want to be a scout, and how you'd shape HN12 at your campus.</p>
+            <span class="vuf-label">Video (30-60 sec &middot; max 50 MB)</span>
             <label class="file-label" id="videoLabel" for="videoFile">
-              <span class="file-icon">↑ Upload</span>
+              <span class="file-icon">↑ Upload video</span>
               <span id="videoFileName">No file chosen</span>
             </label>
             <input type="file" id="videoFile" accept="video/*,.mp4,.mov,.avi,.webm">
@@ -2671,10 +2780,9 @@ footer {
           </button>
           <div class="faq-a">
             <ul class="faq-sublist">
-              <li><span class="faq-k">You're not a student:</span> if you're not currently enrolled in a degree-seeking program you're ineligible. If you're interested in collaborating with, sponsoring or supporting HN12, reach out via the form above.</li>
-              <li><span class="faq-k">You want to be managed closely:</span> there's no playbook. You get a budget, a network, and full creative freedom. What you build with it is up to you.</li>
-              <li><span class="faq-k">You want a logo on your résumé:</span> we have incredible sponsors, but we're still making a name for ourselves. If you're here to check a box, this isn't the right fit.</li>
-              <li><span class="faq-k">You don't want to live outside your comfort zone:</span> you'll be in a lot of new rooms, meeting and reaching out to people you've never met, figuring things out as you go.</li>
+              <li><span class="faq-k">You're not a student:</span> if you're not currently enrolled in a degree-seeking program you are unfortunately ineligible. If you are interested in collaborating with, sponsoring or supporting HN12, please use the contact form on the website.</li>
+              <li><span class="faq-k">You want to be managed closely:</span> there's no playbook. This program is designed to creatively enable you.</li>
+              <li><span class="faq-k">You don't want to live outside your comfort zone:</span> you'll be in a lot of new rooms, reaching out to people you've never met, and figuring things out as you go.</li>
             </ul>
           </div>
         </div>
@@ -2692,8 +2800,8 @@ footer {
           </button>
           <div class="faq-a">
             <ul class="faq-sublist">
-              <li><span class="faq-k">Early decision:</span> June 6, 2026</li>
-              <li><span class="faq-k">Kickoff:</span> August 8–9, 2026 · Latin America</li>
+              <li><span class="faq-k">Early decision:</span> June 15, 2026</li>
+              <li><span class="faq-k">Kickoff:</span> August 8-9, 2026 · Latin America</li>
               <li><span class="faq-k">Scouting start:</span> September 2026</li>
               <li><span class="faq-k">Scout Finale:</span> November 2026 · San Francisco</li>
               <li><span class="faq-k">Duration:</span> 6 months</li>
@@ -2713,14 +2821,14 @@ footer {
             <span>I'm a master's or PhD student - can I still apply?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a"><p>We prefer undergrads but will also consider exceptional master's and PhD candidates case-by-case. Make a strong case in your application.</p></div>
+          <div class="faq-a"><p>This program is built around undergraduate student life, but we genuinely welcome exceptional master's and PhD candidates who feel the scout role is a great fit for them. Make a strong case in your application.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaqItem(this)" aria-expanded="false">
             <span>What does the Scout Finale look like?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a"><p>A championship-style closing event in San Francisco in November 2026. Each of the 12 scouts brings 2 additional people from their school (36 scouts total) to compete in a speed hackathon. There's a major prize pool; sponsors will be announced closer to the date.</p></div>
+          <div class="faq-a"><p>A championship-style closing event in San Francisco in November 2026. Each scout brings the best people from their school to compete in a speed hackathon. There's a major prize pool; sponsors will be announced closer to the date.</p></div>
         </div>
       </div>
     </div>
@@ -2736,7 +2844,7 @@ footer {
     </button>
     <div class="team-body" id="aboutBody">
       <div class="about-body">
-        <p>HackNation runs one of the world's largest global hackathons, built out of MIT by students and run bottom-up. It also encompasses a venture accelerator. A global platform at this scale needs global scouts: HN<sup>12</sup> is the first student-founded, student-run global talent and venture scout program.</p>
+        <p><a href="https://hack-nation.ai" target="_blank" rel="noopener">HackNation</a> runs one of the world's largest global hackathons, built out of MIT by students and run bottom-up. It also encompasses a venture accelerator. A global platform at this scale needs global scouts: HN<sup>12</sup> is the first student-founded, student-run global talent and venture scout program.</p>
 
         <p>Connecting the best schools on the planet, we aim to build an opportunity engine for responsible AI research and use.</p>
       </div>
@@ -2773,6 +2881,46 @@ footer {
   </div>
 </div>
 
+<!-- ─────────────────── CONTACT ─────────────────── -->
+<div id="contact" class="team-drawer">
+  <div class="team-inner">
+    <button class="team-toggle" onclick="toggleDrawer(this, 'contactBody')" aria-expanded="false">
+      <span>Contact Us</span>
+      <span class="team-icon" aria-hidden="true">+</span>
+    </button>
+    <div class="team-body" id="contactBody">
+      <form class="contact-form" id="contactForm" onsubmit="return false;">
+        <div class="contact-form-row">
+          <div class="form-group">
+            <label for="c-name">Name</label>
+            <input type="text" id="c-name" placeholder="Ada Lovelace">
+          </div>
+          <div class="form-group">
+            <label for="c-email">Email</label>
+            <input type="email" id="c-email" placeholder="ada@university.edu">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="c-subject">Subject</label>
+          <input type="text" id="c-subject" placeholder="e.g. Sponsorship, collaboration, general question">
+        </div>
+        <div class="form-group">
+          <label for="c-message">Message</label>
+          <textarea id="c-message" rows="4" placeholder="Tell us what's on your mind..."></textarea>
+        </div>
+        <div class="form-submit">
+          <button class="btn-submit" type="button" onclick="submitContactForm()">Send Message</button>
+        </div>
+      </form>
+      <div class="contact-success" id="contactSuccess">
+        <div class="success-ring">✓</div>
+        <h3>Message received.</h3>
+        <p>We'll get back to you shortly.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ─────────────────── FOOTER ─────────────────── -->
 <footer>
   <div class="footer-top">
@@ -2797,8 +2945,10 @@ footer {
   if (!splash) return;
   setTimeout(() => {
     splash.classList.add('boot-done');
-    document.body.classList.remove('booting');
-    setTimeout(() => splash.classList.add('boot-gone'), 500);
+    setTimeout(() => {
+      document.body.classList.remove('booting');
+      splash.classList.add('boot-gone');
+    }, 480);
   }, 1500);
 })();
 
@@ -2814,12 +2964,12 @@ function toggleMDrawer(btn, bodyId) {
 
 // ── MOBILE DIAGRAM CARDS (tap to expand) ──
 const JM2_DETAILS = {
-  apply:      'Applications reviewed on a rolling basis.\nEarly decision: June 6, 2026.\nAll promising candidates get a personal call.',
-  kickoff:    'Kickoff weekend in Latin America.\nAugust 8–9, 2026.\nFlights and accommodation covered.\nMeet your 11 cohort members in person.\nExact location announced closer to the date.',
-  mentorship: 'Weekly calls with professors, VCs, and tech leaders.\nSmall, interactive sessions.\nScouts can suggest speakers and host sessions themselves.',
+  apply:      'Applications reviewed on a rolling basis.\nEarly decision: June 15, 2026.\nAll promising candidates get a personal call.',
+  kickoff:    'Kickoff weekend in Latin America.\nAugust 8-9, 2026.\nFlights and accommodation covered.\nMeet your 11 cohort members in person.\nExact location announced closer to the date.',
+  mentorship: 'Weekly calls with AI leaders, VCs, and professors.\nSmall, interactive sessions.\nScouts can suggest speakers and host sessions themselves.',
   events:     'Host 2 events at your university.\nAny format you choose.\nGoal: surface exceptional talent on your campus.',
   hack:       'Host 1 hackathon on your campus.\nYou handle venue and on-campus marketing.\nThe rest is run centrally.',
-  finale:     'Scout Finale in SF, November 2026.\nBring 2 additional people from your school to compete.\n36 scouts, speed hackathon, major prize pool.',
+  finale:     'Scout Finale in SF, November 2026.\nBring the best people from your school to compete.\nSpeed hackathon, major prize pool.',
 };
 // populate detail text once
 document.querySelectorAll('.jm2-step').forEach(el => {
@@ -3144,14 +3294,14 @@ document.querySelectorAll('.journey-wrap').forEach(el => journeyObs.observe(el))
   const tipTitle = tip.querySelector('.dtip-title');
   const tipBody  = tip.querySelector('.dtip-body');
   const details = {
-    apply:      { title: 'Apply',                body: 'Applications reviewed on a rolling basis.\nEarly decision: June 6, 2026.\nAll promising candidates get a personal call.' },
-    kickoff:    { title: 'Kickoff Weekend',      body: 'August 8–9, 2026 · Latin America.\nFlights and accommodation covered.\nMeet your 11 cohort members in person.\nLocation announced closer to the date.' },
+    apply:      { title: 'Apply',                body: 'Applications reviewed on a rolling basis.\nEarly decision: June 15, 2026.\nAll promising candidates get a personal call.' },
+    kickoff:    { title: 'Kickoff Weekend',      body: 'August 8-9, 2026 · Latin America.\nFlights and accommodation covered.\nMeet your 11 cohort members in person.\nLocation announced closer to the date.' },
     scout:      { title: 'Two Recruiting Pipelines',
-                  body: '① Raw talent for hackathons — identify outstanding builders and operators on your campus and bring them into the HackNation community.\n\n② Ventures for the accelerator — surface early and mid-stage ideas, teams, and founders for the HackNation Venture Accelerator program.' },
-    mentorship: { title: 'Weekly Mentorship',    body: 'Recurring calls with professors, VCs, and tech leaders.\nSmall, interactive sessions.\nScouts can suggest speakers and host sessions.' },
+                  body: '① Raw talent for hackathons: identify outstanding builders and operators on your campus and bring them into the HackNation community.\n\n② Ventures for the accelerator: surface early and mid-stage ideas, teams, and founders for the HackNation Venture Accelerator program.' },
+    mentorship: { title: 'Weekly Mentorship',    body: 'Recurring calls with AI leaders, VCs, and professors.\nSmall, interactive sessions.\nScouts can suggest speakers and host sessions.' },
     events:     { title: '2 Campus Events',      body: 'Host 2 events at your university.\nAny format, scout\'s choice.\nGoal: surface exceptional talent on your campus.\nSponsorship revenue partially shared with you.' },
     hack:       { title: '1 Hackathon',          body: 'Host 1 hackathon on your campus.\nYou handle venue and on-campus marketing.\nThe rest is run centrally by HN12.' },
-    finale:     { title: 'Scout Finale',         body: 'Championship-style closing event · SF · TBD November 2026.\nEach scout brings 2 people from their school (36 total).\nSpeed hackathon · major prize pool.' },
+    finale:     { title: 'Scout Finale',         body: 'Championship-style closing event · SF · TBD November 2026.\nEach scout brings the best people from their school.\nSpeed hackathon · major prize pool.' },
   };
   document.querySelectorAll('.j-box').forEach(el => {
     el.addEventListener('mouseenter', e => {
@@ -3273,6 +3423,48 @@ function submitForm() {
   if (!valid) return;
   document.getElementById('appForm').style.display    = 'none';
   document.getElementById('formSuccess').style.display = 'block';
+}
+
+// ── MOBILE CONTACT FORM SUBMISSION ──
+function submitMContactForm() {
+  const name    = document.getElementById('mc-name');
+  const email   = document.getElementById('mc-email');
+  const subject = document.getElementById('mc-subject');
+  const message = document.getElementById('mc-message');
+  [name, email, subject, message].forEach(el => { if (el) { el.classList.remove('err'); el.style.animation = ''; } });
+  let valid = true;
+  [name, email, subject, message].forEach(el => {
+    if (el && !el.value.trim()) {
+      el.classList.add('err');
+      void el.offsetWidth;
+      el.style.animation = 'shake 0.3s ease';
+      valid = false;
+    }
+  });
+  if (!valid) return;
+  document.getElementById('mContactForm').style.display    = 'none';
+  document.getElementById('mContactSuccess').style.display = 'block';
+}
+
+// ── CONTACT FORM SUBMISSION ──
+function submitContactForm() {
+  const name    = document.getElementById('c-name');
+  const email   = document.getElementById('c-email');
+  const subject = document.getElementById('c-subject');
+  const message = document.getElementById('c-message');
+  [name, email, subject, message].forEach(el => { el.classList.remove('err'); el.style.animation = ''; });
+  let valid = true;
+  [name, email, subject, message].forEach(el => {
+    if (!el.value.trim()) {
+      el.classList.add('err');
+      void el.offsetWidth;
+      el.style.animation = 'shake 0.3s ease';
+      valid = false;
+    }
+  });
+  if (!valid) return;
+  document.getElementById('contactForm').style.display    = 'none';
+  document.getElementById('contactSuccess').style.display = 'block';
 }
 </script>
 </body>
