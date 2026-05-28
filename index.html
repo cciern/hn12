@@ -10,7 +10,7 @@
 
 /* ── RESET ── */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; font-size: 16px; }
+html { scroll-behavior: smooth; font-size: 18px; }
 
 :root {
   --black: #0d0d0d;
@@ -743,8 +743,8 @@ h2 em { font-style: italic; }
 /* ── APPLY ── */
 #apply { border-top: 1px solid var(--border); }
 
-.apply-header { margin-bottom: 1.25rem; }
-.apply-header .section-title { margin-bottom: 0.9rem; }
+.apply-header { margin-bottom: 0.75rem; }
+.apply-header .section-title { margin-bottom: 0.5rem; }
 
 .apply-dates {
   display: grid;
@@ -753,7 +753,7 @@ h2 em { font-style: italic; }
   margin-bottom: 0;
 }
 .apply-date-item {
-  padding: 0.75rem 1.1rem;
+  padding: 0.5rem 0.9rem;
   border: 1px solid var(--border);
 }
 .apply-date-item--req {
@@ -762,11 +762,11 @@ h2 em { font-style: italic; }
 }
 .adi-date {
   font-family: 'DM Sans', sans-serif;
-  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
   font-weight: 200;
   letter-spacing: -0.02em;
   color: var(--black);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   line-height: 1;
 }
 .adi-label {
@@ -779,10 +779,11 @@ h2 em { font-style: italic; }
 }
 
 /* form */
-#apply { padding-top: 3.5rem; padding-bottom: 3.5rem; }
-.apply-form { display: flex; flex-direction: column; gap: 0.65rem; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.form-row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; }
+#apply { padding-top: 2rem; padding-bottom: 2rem; }
+.apply-form { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+.form-row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.85rem; }
+.form-row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.85rem; }
 .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
 
 label {
@@ -797,7 +798,7 @@ input, select, textarea {
   color: var(--black);
   font-family: 'DM Sans', sans-serif;
   font-size: 0.93rem; font-weight: 300;
-  padding: 0.45rem 0;
+  padding: 0.3rem 0;
   outline: none;
   transition: border-color 0.2s;
   width: 100%;
@@ -816,7 +817,7 @@ select {
 }
 select option { background: var(--white); color: var(--black); }
 
-textarea { resize: none; min-height: 88px; }
+textarea { resize: none; min-height: 58px; }
 
 /* file upload */
 .file-label {
@@ -847,52 +848,33 @@ input[type="file"] { display: none; }
   line-height: 1.75;
 }
 
-/* video upload feature block */
+/* upload blocks — compact inline style */
 .video-upload-feature {
-  border: 1px solid rgba(13,13,13,0.18);
-  padding: 1.5rem 1.75rem;
-  text-align: center;
-  margin: 0.75rem 0 0.25rem;
-  background: rgba(13,13,13,0.025);
-}
-.video-upload-feature .file-note {
-  font-size: 0.92rem;
-  color: rgba(13,13,13,0.75);
-  max-width: 480px;
-  margin: 0 auto 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0;
 }
 .video-upload-feature .vuf-label {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.54rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray);
   display: block;
-  margin-bottom: 0.9rem;
-  color: var(--black);
 }
 .video-upload-feature .file-label {
-  justify-content: center;
-  border: 1px solid rgba(13,13,13,0.22);
-  border-bottom: 1px solid rgba(13,13,13,0.22);
-  padding: 1rem 1.75rem;
-  display: inline-flex;
-  width: auto;
-  min-width: 220px;
-  transition: border-color 0.2s, background 0.2s;
+  justify-content: flex-start;
 }
-.video-upload-feature .file-label:hover {
-  border-color: rgba(13,13,13,0.55);
-  background: rgba(13,13,13,0.04);
-}
-.video-upload-feature .file-icon {
-  font-size: 0.62rem;
-}
-.video-upload-feature #videoFileName {
-  font-size: 0.88rem;
+/* two upload blocks sit side by side */
+.upload-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
 }
 
 /* submit */
-.form-submit { margin-top: 0.5rem; }
+.form-submit { margin-top: 0.25rem; }
 .btn-submit {
   background: var(--black); color: var(--white);
   font-family: 'DM Mono', monospace;
@@ -1229,7 +1211,7 @@ footer {
 }
 
 /* ── MOBILE BOOT SPLASH ── */
-#bootSplash { display: none; }
+#bootSplash { display: none !important; }
 
 /* mobile-only elements hidden on desktop */
 .m-about { display: none; }
@@ -1241,37 +1223,6 @@ footer {
 .journey-mobile { display: none; }
 
 @media (max-width: 820px) {
-  #bootSplash {
-    display: flex;
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    background: #0d0d0d;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-  }
-  #bootSplash.boot-done {
-    opacity: 0;
-    transition: opacity 0.45s ease;
-  }
-  #bootSplash.boot-gone { display: none; }
-  .boot-mark {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 200;
-    font-size: 4.5rem;
-    letter-spacing: -0.025em;
-    line-height: 1;
-    color: #f5f5f3;
-  }
-  .boot-mark sup {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.36em;
-    font-weight: 300;
-    letter-spacing: 0.04em;
-    vertical-align: top;
-    margin-top: 0.1em;
-  }
   body.booting .wm-hn,
   body.booting .wm-12,
   body.booting .hero-tagline,
@@ -1283,24 +1234,36 @@ footer {
     opacity: 0;
   }
 
-  /* ── MOBILE NAV BAR — single row: logo+tag · ticker · apply ── */
-  nav {
-    background: var(--white);
-    border-bottom: 1px solid rgba(13,13,13,0.08);
-    padding: 0;
+  /* HN12 appears instantly on mobile — no entry animation */
+  .wm-hn {
+    opacity: 1;
+    animation: none;
+    transform: none;
   }
-  .nav-row {
-    padding: 0.6rem 0.85rem;
-    gap: 0.65rem;
+  .wm-12 {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+  body.booting .wm-hn,
+  body.booting .wm-12 {
+    opacity: 1;
+  }
+
+
+  /* ── MOBILE NAV BAR — single row: logo+tag · ticker · apply ── */
+  nav,
+  nav.nav-light {
+    display: none;
   }
   nav .nav-brand,
-  nav.nav-light .nav-brand { color: var(--black); }
+  nav.nav-light .nav-brand { color: var(--white); }
   nav .nav-links a,
-  nav.nav-light .nav-links a { color: var(--black); }
+  nav.nav-light .nav-links a { color: var(--white); }
   nav .nav-apply,
   nav.nav-light .nav-apply {
-    background: var(--black);
-    color: var(--white) !important;
+    background: var(--white);
+    color: var(--black) !important;
     padding: 0.45rem 0.85rem;
     font-size: 0.52rem;
     letter-spacing: 0.18em;
@@ -1309,16 +1272,17 @@ footer {
   .nav-links { gap: 0; flex-shrink: 0; }
   .nav-links li:not(:last-child) { display: none; }
 
-  /* left cluster: HN12 + compact "Powered by HackNation" */
+  /* left cluster: HN12 + compact "Powered by Hack-Nation" */
   .nav-left {
     flex-shrink: 0;
     gap: 0.55rem;
     align-items: center;
   }
-  nav #hnTag {
+  nav #hnTag,
+  nav.nav-light #hnTag {
     display: flex;
-    color: var(--black);
-    border-left: 1px solid rgba(13,13,13,0.12);
+    color: var(--white);
+    border-left: 1px solid rgba(245,245,243,0.18);
     padding-left: 0.55rem;
     gap: 0;
   }
@@ -1339,7 +1303,7 @@ footer {
     position: relative;
     overflow: hidden;
     flex: 1 1 auto;
-    min-width: 0; /* allow shrinking in flex */
+    min-width: 0;
     -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
             mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
   }
@@ -1356,12 +1320,12 @@ footer {
     font-size: 0.46rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: rgba(13,13,13,0.3);
+    color: rgba(245,245,243,0.35);
   }
   .nav-ticker-dot {
     font-family: 'DM Mono', monospace;
     font-size: 0.55rem;
-    color: rgba(13,13,13,0.16);
+    color: rgba(245,245,243,0.18);
   }
   @keyframes tickerScroll {
     from { transform: translateX(0); }
@@ -1880,7 +1844,7 @@ footer {
       <a href="#" class="nav-brand">HN<sup>12</sup></a>
       <a href="https://hack-nation.ai" id="hnTag" target="_blank" rel="noopener" style="text-decoration:none;">
         <div class="ss-label">Powered by</div>
-        <div class="hn-name">HackNation</div>
+        <div class="hn-name">Hack-Nation</div>
       </a>
     </div>
     <div class="nav-ticker" aria-hidden="true">
@@ -1888,8 +1852,6 @@ footer {
         <span class="nav-ticker-item">Backed by</span>
         <span class="nav-ticker-dot">·</span>
         <span class="nav-ticker-item">OpenAI</span>
-        <span class="nav-ticker-dot">·</span>
-        <span class="nav-ticker-item">Databricks</span>
         <span class="nav-ticker-dot">·</span>
         <span class="nav-ticker-item">Lovable</span>
         <span class="nav-ticker-dot">·</span>
@@ -1900,8 +1862,6 @@ footer {
         <span class="nav-ticker-item">Backed by</span>
         <span class="nav-ticker-dot">·</span>
         <span class="nav-ticker-item">OpenAI</span>
-        <span class="nav-ticker-dot">·</span>
-        <span class="nav-ticker-item">Databricks</span>
         <span class="nav-ticker-dot">·</span>
         <span class="nav-ticker-item">Lovable</span>
         <span class="nav-ticker-dot">·</span>
@@ -1947,14 +1907,14 @@ footer {
   <!-- /program overview -->
   <article class="m-card">
     <div class="m-card-eyebrow">/ program overview</div>
-    <p class="m-card-lede">A six-month scout program for twelve students from the world's best universities. We give you a kickoff weekend, a cohort, and a budget. You find exceptional people on your campus and bring them into our community: raw talent for hackathons, and ideas, teams, and ventures for the HackNation accelerator.</p>
+    <p class="m-card-lede">A six-month scout program for twelve students from the world's best universities. We give you a kickoff weekend, a cohort, and a budget. You find exceptional people on your campus and bring them into our community: raw talent for hackathons, and ideas, teams, and ventures for the Hack-Nation accelerator.</p>
     <ul class="m-steps">
       <li><strong>Apply</strong>: rolling basis, early decision June 15, 2026. Promising candidates get a personal interview. Cohort selected mid-July.</li>
       <li><strong>Kickoff weekend in Latin America</strong>: August 8-9, 2026. Flights and accommodation covered. Location announced closer to the date.</li>
-      <li><strong>Weekly mentorship calls</strong>: recurring sessions with AI leaders, VCs, and professors. Scouts can suggest speakers and host sessions.</li>
+      <li><strong>Weekly mentorship calls</strong>: recurring sessions with AI leaders, VCs, and top founders. Scouts can suggest speakers and host sessions.</li>
       <li><strong>Host 2 campus events</strong>: any format, scout's choice. Goal: surface exceptional talent. Sponsorship revenue partially shared.</li>
       <li><strong>Host 1 hackathon</strong>: on your campus. You handle venue and marketing; we handle the rest centrally.</li>
-      <li><strong>Scout Finale in SF</strong>: championship-style closing event in November. Each scout brings the best people from their school. Major prize pool (sponsors TBA).</li>
+      <li><strong>Scout Finale</strong>: championship-style closing event. Each scout brings the best people from their school. Location & date TBD.</li>
     </ul>
 
     <!-- collapsible visual flow diagram -->
@@ -2044,7 +2004,7 @@ footer {
               fill="rgba(13,13,13,0.92)">Scout Finale</text>
             <text x="887" y="103" text-anchor="middle" dominant-baseline="central"
               font-family="DM Mono, monospace" font-size="10"
-              fill="rgba(13,13,13,0.48)">Championship · SF · November</text>
+              fill="rgba(13,13,13,0.48)">Championship · Location TBD</text>
             <text x="887" y="121" text-anchor="middle" dominant-baseline="central"
               font-family="DM Mono, monospace" font-size="10"
               fill="rgba(13,13,13,0.42)">best from each school</text>
@@ -2064,8 +2024,8 @@ footer {
       <li><strong>Currently enrolled student</strong>: currently enrolled and graduating 2027 or later. This program is built around undergraduate student life, though we genuinely welcome exceptional master's and PhD candidates who feel the scout role fits them.</li>
       <li><strong>Community and network builder</strong>: you invest in genuine relationships and build things that bring people together - you've started clubs, run events, and helped others connect.</li>
       <li><strong>Thoughtful judge of talent</strong>: you notice potential others overlook and can articulate clearly why someone stands out.</li>
-      <li><strong>Storyteller</strong>: you understand how to position a story and are comfortable being the public face of what you build.</li>
-      <li><strong>Creatively ambitious</strong>: you find unconventional paths forward and stay committed to seeing things through.</li>
+      <li><strong>Storyteller</strong>: you understand how to position a story, are comfortable being the public face of what you build, and are okay with being featured on our social media.</li>
+      <li><strong>Entrepreneurially ambitious</strong>: you find unconventional paths forward and stay committed to seeing things through.</li>
     </ul>
   </article>
 
@@ -2074,9 +2034,9 @@ footer {
     <div class="m-card-eyebrow">/ what you can expect</div>
     <ul class="m-criteria">
       <li><strong>A world-class cohort</strong>: peers from the best schools in the world. The group you'll scout with, travel with, and possibly be friends with for life.</li>
-      <li><strong>A personalized program</strong>: with only 12 scouts globally, every participant gets regular 1:1 check-ins, individual goal-setting at the start, and customized mentorship and support throughout.</li>
+      <li><strong>Mentorship</strong>: Weekly calls. Connect with top investors, founders, operators and researchers.</li>
       <li><strong>Real skill-building</strong>: learn how to assess potential, recognize patterns, understand team dynamics, validate ideas, and build fluency across fields (engineering, entrepreneurship, and beyond).</li>
-      <li><strong>Warm intros to the industry</strong>: founders, accelerators, VCs, tech leaders and our sponsors (OpenAI, Databricks, Lovable, ElevenLabs, Mozilla).</li>
+      <li><strong>Highly personalized</strong>: With only 12 scouts globally, we work with each of you individually to transform your career trajectory. The program is designed to give you maximum flexibility and your academics can stay your priority.</li>
     </ul>
   </article>
 
@@ -2145,17 +2105,32 @@ footer {
         <input type="text" id="m-gradyear" placeholder="2027">
       </div>
       <div class="m-form-group">
-        <label for="m-linkedin">LinkedIn URL</label>
+        <label for="m-linkedin">LinkedIn URL <span style="opacity:0.45;font-weight:400;">(optional)</span></label>
         <input type="url" id="m-linkedin" placeholder="linkedin.com/in/yourname">
       </div>
       <div class="m-form-group">
-        <p class="file-note" style="margin-bottom:0.65rem;">A video says more than a resume. Please upload a 30-60 second video about yourself, why you want to be a scout, and how you'd shape HN12 at your campus.</p>
-        <label>Video (30-60 sec &middot; max 50 MB)</label>
+        <label>CV <span style="opacity:0.45;font-weight:400;">(PDF or Word)</span></label>
+        <label class="m-file-label" id="mCvLabel" for="m-cvFile">
+          <span class="m-file-icon">↑ Upload CV</span>
+          <span id="mCvFileName">No file chosen</span>
+        </label>
+        <input type="file" id="m-cvFile" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+      </div>
+      <div class="m-form-group">
+        <label>Introduce yourself <span style="opacity:0.45;font-weight:400;">(30-60 sec video)</span></label>
         <label class="m-file-label" id="mVideoLabel" for="m-videoFile">
           <span class="m-file-icon">↑ Upload video</span>
           <span id="mVideoFileName">No file chosen</span>
         </label>
         <input type="file" id="m-videoFile" accept="video/*,.mp4,.mov,.avi,.webm">
+      </div>
+      <div class="m-form-group">
+        <label for="m-campus">How would you shape HN12 on your campus?</label>
+        <textarea id="m-campus" rows="4" placeholder="Tell us your ideas..."></textarea>
+      </div>
+      <div class="m-form-group">
+        <label for="m-goals">Tell us about your goals and how we can help you achieve them.</label>
+        <textarea id="m-goals" rows="4" placeholder="Share your goals..."></textarea>
       </div>
       <button class="m-submit" type="button" onclick="submitMForm()">Submit application</button>
     </form>
@@ -2210,7 +2185,7 @@ footer {
             <li><strong>Kickoff Weekend:</strong> August 8-9, 2026 · Latin America</li>
             <li><strong>Scouting:</strong> August - December 2026</li>
             <li><strong>Hackathon:</strong> October 3-4, 2026</li>
-            <li><strong>Scout Championship:</strong> TBD, November 2026 · San Francisco</li>
+            <li><strong>Scout Championship:</strong> Location &amp; date TBD</li>
             <li><strong>Spots:</strong> 12 globally</li>
           </ul>
         </div>
@@ -2234,40 +2209,11 @@ footer {
           <span>What does the Scout Finale look like?</span>
           <span class="m-faq-icon">+</span>
         </button>
-        <div class="m-faq-a"><p>A championship-style closing event in San Francisco in November 2026. Each scout brings the best people from their school to compete in a speed hackathon. There's a major prize pool; sponsors will be announced closer to the date.</p></div>
+        <div class="m-faq-a"><p>A championship-style closing event bringing together all scouts and the best talent from their schools. Location and date TBD.</p></div>
       </li>
     </ul>
   </article>
 
-  <!-- /contact -->
-  <article class="m-card" id="m-contact">
-    <div class="m-card-eyebrow">/ contact</div>
-    <h2 class="m-card-title">Get in touch</h2>
-    <form class="m-form" id="mContactForm" onsubmit="return false;">
-      <div class="m-form-group">
-        <label for="mc-name">Name</label>
-        <input type="text" id="mc-name" placeholder="Ada Lovelace">
-      </div>
-      <div class="m-form-group">
-        <label for="mc-email">Email</label>
-        <input type="email" id="mc-email" placeholder="ada@university.edu">
-      </div>
-      <div class="m-form-group">
-        <label for="mc-subject">Subject</label>
-        <input type="text" id="mc-subject" placeholder="e.g. Sponsorship, collaboration">
-      </div>
-      <div class="m-form-group">
-        <label for="mc-message">Message</label>
-        <textarea id="mc-message" rows="4" placeholder="Tell us what's on your mind..."></textarea>
-      </div>
-      <button class="m-submit" type="button" onclick="submitMContactForm()">Send Message</button>
-    </form>
-    <div style="display:none;padding:2rem 0;" id="mContactSuccess">
-      <div class="success-ring">✓</div>
-      <h3>Message received.</h3>
-      <p>We'll get back to you shortly.</p>
-    </div>
-  </article>
 
 </div><!-- /m-about -->
 
@@ -2287,7 +2233,7 @@ footer {
     <div class="section-title reveal">The Program</div>
 
     <div class="program-intro reveal">
-      <p>You know your campus better than we ever will, so you're the one doing the scouting. Over six months, we give you a kickoff weekend in Latin America with eleven peers from the world's top universities, a dedicated budget, and ongoing mentorship from AI leaders, VCs, and professors. Your job: find exceptional people and bring them into the HackNation community - raw talent for hackathons, and ideas, teams, and founders for the HackNation accelerator. The program closes with a scout championship in San Francisco in November.</p>
+      <p>You know your campus better than we ever will, so you're the one doing the scouting. Over six months, we give you a kickoff weekend in Latin America with eleven peers from the world's top universities, a dedicated budget, and ongoing mentorship from AI leaders, VCs, and top founders. Your job: find exceptional people and bring them into the Hack-Nation community - raw talent for hackathons, and ideas, teams, and founders for the Hack-Nation accelerator.</p>
     </div>
 
     <!-- Mobile-only mini-drawer wrapping just the diagram -->
@@ -2328,7 +2274,7 @@ footer {
         <div class="jm-arrow">↓</div>
         <div class="jm-step jm-step--final">
           <div class="jm-label">Scout Finale ✦</div>
-          <div class="jm-sub">Championship · SF · November</div>
+          <div class="jm-sub">Championship · Location TBD</div>
         </div>
 
         <!-- NEW mobile diagram v2 — tappable cards -->
@@ -2400,7 +2346,7 @@ footer {
             <div class="jm2-step-header">
               <div class="jm2-step-main">
                 <span class="jm2-label">Scout Finale ✦</span>
-                <span class="jm2-sub">Championship · SF · November</span>
+                <span class="jm2-sub">Championship · Location TBD</span>
               </div>
               <span class="jm2-icon">+</span>
             </div>
@@ -2507,7 +2453,7 @@ footer {
             fill="rgba(13,13,13,0.55)">TBD · November 2026</text>
           <text x="1192" y="154" text-anchor="middle" dominant-baseline="central"
             font-family="DM Mono, monospace" font-size="11"
-            fill="rgba(13,13,13,0.42)">Championship · San Francisco</text>
+            fill="rgba(13,13,13,0.42)">Championship · Location TBD</text>
           <text x="1192" y="172" text-anchor="middle" dominant-baseline="central"
             font-family="DM Mono, monospace" font-size="11"
             fill="rgba(13,13,13,0.38)">best from each school</text>
@@ -2575,8 +2521,8 @@ footer {
           <div class="criteria-item reveal"><span class="ci-key">Currently enrolled student:</span> you're currently enrolled and graduating 2027 or later. This program is built around undergraduate student life, though we genuinely welcome exceptional master's and PhD candidates who feel the scout role fits them.</div>
           <div class="criteria-item reveal"><span class="ci-key">Community and network builder:</span> you invest in genuine relationships and build things that bring people together - you've started clubs, run events, and helped others connect</div>
           <div class="criteria-item reveal rd1"><span class="ci-key">Thoughtful judge of talent:</span> you notice potential others overlook and can articulate clearly why someone stands out</div>
-          <div class="criteria-item reveal rd2"><span class="ci-key">Storyteller:</span> you understand how to position a story and are comfortable being the public face of what you build</div>
-          <div class="criteria-item reveal rd3"><span class="ci-key">Creatively ambitious:</span> you find unconventional paths forward and stay committed to seeing things through</div>
+          <div class="criteria-item reveal rd2"><span class="ci-key">Storyteller:</span> you understand how to position a story, are comfortable being the public face of what you build, and are okay with being featured on our social media</div>
+          <div class="criteria-item reveal rd3"><span class="ci-key">Entrepreneurially ambitious:</span> you find unconventional paths forward and stay committed to seeing things through</div>
         </div>
       </div>
 
@@ -2616,18 +2562,13 @@ footer {
       </div>
 
       <div class="criteria-item reveal rd1">
-        <span class="ci-key">A personalized program:</span> with only 12 scouts globally, every participant gets regular 1:1 check-ins, individual goal-setting at the start, and customized mentorship and support throughout.
+        <span class="ci-key">Mentorship:</span> Weekly calls. Connect with top investors, founders, operators and researchers.
       </div>
 
       <div class="criteria-item reveal rd2"><span class="ci-key">Real skill-building:</span> learn how to assess potential, recognize patterns, understand team dynamics, validate ideas, and build fluency across fields (engineering, entrepreneurship, and beyond).</div>
 
       <div class="criteria-item reveal rd3">
-        <span class="ci-key">Warm intros to the industry:</span> founders, accelerators, VCs, tech leaders and our wonderful sponsors. <button class="expand-btn" onclick="toggleDrawer(this, 'drawer-sponsors')" aria-expanded="false">See our sponsors</button>
-        <div class="item-drawer" id="drawer-sponsors">
-          <div class="item-drawer-inner">
-            <div class="drawer-vals">OpenAI · Databricks · Lovable · ElevenLabs · Mozilla</div>
-          </div>
-        </div>
+        <span class="ci-key">Highly personalized:</span> With only 12 scouts globally, we work with each of you individually to transform your career trajectory. The program is designed to give you maximum flexibility and your academics can stay your priority.
       </div>
 
 
@@ -2657,7 +2598,7 @@ footer {
       <div class="reveal rd1">
         <form class="apply-form" id="appForm" onsubmit="return false;">
 
-          <div class="form-row">
+          <div class="form-row-4">
             <div class="form-group">
               <label for="fname">First Name</label>
               <input type="text" id="fname" autocomplete="given-name" placeholder="Ada">
@@ -2666,15 +2607,12 @@ footer {
               <label for="lname">Last Name</label>
               <input type="text" id="lname" autocomplete="family-name" placeholder="Lovelace">
             </div>
-          </div>
-
-          <div class="form-row">
             <div class="form-group">
               <label for="email">Email</label>
               <input type="email" id="email" autocomplete="email" placeholder="ada@university.edu">
             </div>
             <div class="form-group">
-              <label for="phone">Phone (with country code)</label>
+              <label for="phone">Phone</label>
               <input type="tel" id="phone" autocomplete="tel" placeholder="+1 555 123 4567">
             </div>
           </div>
@@ -2704,7 +2642,7 @@ footer {
                 </optgroup>
                 <option value="other">Not on this list</option>
               </select>
-              <input type="text" id="universityOther" placeholder="Your university" style="display:none; margin-top:0.6rem;">
+              <input type="text" id="universityOther" placeholder="Your university" style="display:none; margin-top:0.4rem;">
             </div>
             <div class="form-group">
               <label for="degree">Degree</label>
@@ -2724,7 +2662,7 @@ footer {
 
           <div class="form-row">
             <div class="form-group">
-              <label for="linkedin">LinkedIn URL</label>
+              <label for="linkedin">LinkedIn <span style="opacity:0.45;font-weight:400;">(optional)</span></label>
               <input type="url" id="linkedin" placeholder="linkedin.com/in/yourname">
             </div>
             <div class="form-group">
@@ -2733,14 +2671,34 @@ footer {
             </div>
           </div>
 
-          <div class="video-upload-feature">
-            <p class="file-note">A video says more than a resume. Please upload a 30-60 second video about yourself, why you want to be a scout, and how you'd shape HN12 at your campus.</p>
-            <span class="vuf-label">Video (30-60 sec &middot; max 50 MB)</span>
-            <label class="file-label" id="videoLabel" for="videoFile">
-              <span class="file-icon">↑ Upload video</span>
-              <span id="videoFileName">No file chosen</span>
-            </label>
-            <input type="file" id="videoFile" accept="video/*,.mp4,.mov,.avi,.webm">
+          <div class="upload-row">
+            <div class="video-upload-feature">
+              <span class="vuf-label">CV <span style="opacity:0.45;">(PDF or Word)</span></span>
+              <label class="file-label" id="cvLabel" for="cvFile">
+                <span class="file-icon">↑ Upload CV</span>
+                <span id="cvFileName">No file chosen</span>
+              </label>
+              <input type="file" id="cvFile" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+            </div>
+            <div class="video-upload-feature">
+              <span class="vuf-label">Intro video &middot; 30-60 sec</span>
+              <label class="file-label" id="videoLabel" for="videoFile">
+                <span class="file-icon">↑ Upload video</span>
+                <span id="videoFileName">No file chosen</span>
+              </label>
+              <input type="file" id="videoFile" accept="video/*,.mp4,.mov,.avi,.webm">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="campus">How would you shape HN12 on your campus?</label>
+              <textarea id="campus" rows="2" placeholder="Tell us your ideas..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="goals">Tell us about your goals and how we can help you achieve them.</label>
+              <textarea id="goals" rows="2" placeholder="Share your goals..."></textarea>
+            </div>
           </div>
 
           <div class="form-submit">
@@ -2803,7 +2761,7 @@ footer {
               <li><span class="faq-k">Early decision:</span> June 15, 2026</li>
               <li><span class="faq-k">Kickoff:</span> August 8-9, 2026 · Latin America</li>
               <li><span class="faq-k">Scouting start:</span> September 2026</li>
-              <li><span class="faq-k">Scout Finale:</span> November 2026 · San Francisco</li>
+              <li><span class="faq-k">Scout Finale:</span> Location &amp; date TBD</li>
               <li><span class="faq-k">Duration:</span> 6 months</li>
               <li><span class="faq-k">Spots:</span> 12 globally</li>
             </ul>
@@ -2828,7 +2786,7 @@ footer {
             <span>What does the Scout Finale look like?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a"><p>A championship-style closing event in San Francisco in November 2026. Each scout brings the best people from their school to compete in a speed hackathon. There's a major prize pool; sponsors will be announced closer to the date.</p></div>
+          <div class="faq-a"><p>A championship-style closing event bringing together all scouts and the best talent from their schools. Location and date TBD.</p></div>
         </div>
       </div>
     </div>
@@ -2844,7 +2802,7 @@ footer {
     </button>
     <div class="team-body" id="aboutBody">
       <div class="about-body">
-        <p><a href="https://hack-nation.ai" target="_blank" rel="noopener">HackNation</a> runs one of the world's largest global hackathons, built out of MIT by students and run bottom-up. It also encompasses a venture accelerator. A global platform at this scale needs global scouts: HN<sup>12</sup> is the first student-founded, student-run global talent and venture scout program.</p>
+        <p><a href="https://hack-nation.ai" target="_blank" rel="noopener">Hack-Nation</a> runs one of the world's largest global hackathons, built out of MIT by students and run bottom-up. It also encompasses a venture accelerator. A global platform at this scale needs global scouts: HN<sup>12</sup> is the first student-founded, student-run global talent and venture scout program.</p>
 
         <p>Connecting the best schools on the planet, we aim to build an opportunity engine for responsible AI research and use.</p>
       </div>
@@ -2862,18 +2820,13 @@ footer {
     <div class="team-body" id="teamBody">
       <div class="team-grid">
         <div class="team-member">
-          <div class="member-name">Linn Bieske</div>
-          <div class="member-title">Co-Founder, Hacknation</div>
-          <a href="https://www.linkedin.com/in/linn-bieske-189b9b138/" class="member-li" target="_blank" rel="noopener">LinkedIn ↗</a>
-        </div>
-        <div class="team-member">
           <div class="member-name">Kai Wiederhold</div>
-          <div class="member-title">Co-Founder & CEO, HackNation</div>
+          <div class="member-title">Co-Founder & CEO, Hack-Nation</div>
           <a href="https://www.linkedin.com/in/kaiw/" class="member-li" target="_blank" rel="noopener">LinkedIn ↗</a>
         </div>
         <div class="team-member">
           <div class="member-name">Christian Cierny</div>
-          <div class="member-title">Head of Recruitment, HackNation</div>
+          <div class="member-title">Head of Scouting, Hack-Nation</div>
           <a href="https://www.linkedin.com/in/christian-cierny-579940378" class="member-li" target="_blank" rel="noopener">LinkedIn ↗</a>
         </div>
       </div>
@@ -2925,32 +2878,18 @@ footer {
 <footer>
   <div class="footer-top">
     <div class="footer-left">
-      <span class="footer-line">HN<sup>12</sup> is a program by HackNation.</span>
-      <span class="footer-line">Backed by OpenAI · Databricks · Lovable · ElevenLabs · Mozilla</span>
+      <span class="footer-line">HN<sup>12</sup> is a program by Hack-Nation.</span>
+      <span class="footer-line">Backed by OpenAI · Lovable · ElevenLabs · Mozilla</span>
     </div>
     <div class="footer-addr">
       Hack-Nation UG<br>
       Tal 44 · 80339 München
     </div>
   </div>
-  <div class="footer-copy">© 2026 HackNation</div>
+  <div class="footer-copy">© 2026 Hack-Nation</div>
 </footer>
 
 <script>
-// ── MOBILE BOOT SPLASH ──
-(function() {
-  if (!window.matchMedia('(max-width: 820px)').matches) return;
-  document.body.classList.add('booting');
-  const splash = document.getElementById('bootSplash');
-  if (!splash) return;
-  setTimeout(() => {
-    splash.classList.add('boot-done');
-    setTimeout(() => {
-      document.body.classList.remove('booting');
-      splash.classList.add('boot-gone');
-    }, 480);
-  }, 1500);
-})();
 
 // ── MOBILE SECTION DRAWERS (Program / Who / Included) ──
 function toggleMDrawer(btn, bodyId) {
@@ -2966,10 +2905,10 @@ function toggleMDrawer(btn, bodyId) {
 const JM2_DETAILS = {
   apply:      'Applications reviewed on a rolling basis.\nEarly decision: June 15, 2026.\nAll promising candidates get a personal call.',
   kickoff:    'Kickoff weekend in Latin America.\nAugust 8-9, 2026.\nFlights and accommodation covered.\nMeet your 11 cohort members in person.\nExact location announced closer to the date.',
-  mentorship: 'Weekly calls with AI leaders, VCs, and professors.\nSmall, interactive sessions.\nScouts can suggest speakers and host sessions themselves.',
+  mentorship: 'Weekly calls with AI leaders, VCs, and top founders.\nSmall, interactive sessions.\nScouts can suggest speakers and host sessions themselves.',
   events:     'Host 2 events at your university.\nAny format you choose.\nGoal: surface exceptional talent on your campus.',
   hack:       'Host 1 hackathon on your campus.\nYou handle venue and on-campus marketing.\nThe rest is run centrally.',
-  finale:     'Scout Finale in SF, November 2026.\nBring the best people from your school to compete.\nSpeed hackathon, major prize pool.',
+  finale:     'Scout Finale.\nBring the best people from your school to compete.\nLocation & date TBD.',
 };
 // populate detail text once
 document.querySelectorAll('.jm2-step').forEach(el => {
@@ -3024,21 +2963,25 @@ function handleMUniversitySelect(sel) {
   }
 }
 
-// ── MOBILE FILE UPLOAD LABEL ──
+// ── MOBILE FILE UPLOAD LABELS ──
 (function () {
-  const input = document.getElementById('m-videoFile');
-  const label = document.getElementById('mVideoLabel');
-  const name  = document.getElementById('mVideoFileName');
-  if (!input || !label || !name) return;
-  input.addEventListener('change', function () {
-    if (this.files && this.files[0]) {
-      name.textContent = this.files[0].name;
-      label.classList.add('has-file');
-    } else {
-      name.textContent = 'No file chosen';
-      label.classList.remove('has-file');
-    }
-  });
+  function bindMobile(inputId, labelId, nameId) {
+    const input = document.getElementById(inputId);
+    const label = document.getElementById(labelId);
+    const name  = document.getElementById(nameId);
+    if (!input || !label || !name) return;
+    input.addEventListener('change', function () {
+      if (this.files && this.files[0]) {
+        name.textContent = this.files[0].name;
+        label.classList.add('has-file');
+      } else {
+        name.textContent = 'No file chosen';
+        label.classList.remove('has-file');
+      }
+    });
+  }
+  bindMobile('m-videoFile', 'mVideoLabel', 'mVideoFileName');
+  bindMobile('m-cvFile',    'mCvLabel',    'mCvFileName');
 })();
 
 // ── MOBILE FORM SUBMIT ──
@@ -3092,6 +3035,7 @@ if (window.matchMedia('(hover: hover)').matches) {
   window.addEventListener('scroll', updateNav, { passive: true });
   updateNav();
 })();
+
 
 // ── SCROLL REVEAL ──
 const revealObs = new IntersectionObserver(entries => {
@@ -3297,11 +3241,11 @@ document.querySelectorAll('.journey-wrap').forEach(el => journeyObs.observe(el))
     apply:      { title: 'Apply',                body: 'Applications reviewed on a rolling basis.\nEarly decision: June 15, 2026.\nAll promising candidates get a personal call.' },
     kickoff:    { title: 'Kickoff Weekend',      body: 'August 8-9, 2026 · Latin America.\nFlights and accommodation covered.\nMeet your 11 cohort members in person.\nLocation announced closer to the date.' },
     scout:      { title: 'Two Recruiting Pipelines',
-                  body: '① Raw talent for hackathons: identify outstanding builders and operators on your campus and bring them into the HackNation community.\n\n② Ventures for the accelerator: surface early and mid-stage ideas, teams, and founders for the HackNation Venture Accelerator program.' },
-    mentorship: { title: 'Weekly Mentorship',    body: 'Recurring calls with AI leaders, VCs, and professors.\nSmall, interactive sessions.\nScouts can suggest speakers and host sessions.' },
+                  body: '① Raw talent for hackathons: identify outstanding builders and operators on your campus and bring them into the Hack-Nation community.\n\n② Ventures for the accelerator: surface early and mid-stage ideas, teams, and founders for the Hack-Nation Venture Accelerator program.' },
+    mentorship: { title: 'Weekly Mentorship',    body: 'Recurring calls with AI leaders, VCs, and top founders.\nSmall, interactive sessions.\nScouts can suggest speakers and host sessions.' },
     events:     { title: '2 Campus Events',      body: 'Host 2 events at your university.\nAny format, scout\'s choice.\nGoal: surface exceptional talent on your campus.\nSponsorship revenue partially shared with you.' },
     hack:       { title: '1 Hackathon',          body: 'Host 1 hackathon on your campus.\nYou handle venue and on-campus marketing.\nThe rest is run centrally by HN12.' },
-    finale:     { title: 'Scout Finale',         body: 'Championship-style closing event · SF · TBD November 2026.\nEach scout brings the best people from their school.\nSpeed hackathon · major prize pool.' },
+    finale:     { title: 'Scout Finale',         body: 'Championship-style closing event.\nEach scout brings the best people from their school.\nLocation & date TBD.' },
   };
   document.querySelectorAll('.j-box').forEach(el => {
     el.addEventListener('mouseenter', e => {
@@ -3364,6 +3308,7 @@ function bindFile(inputId, labelId, nameId) {
   });
 }
 bindFile('videoFile', 'videoLabel', 'videoFileName');
+bindFile('cvFile',    'cvLabel',    'cvFileName');
 
 
 
